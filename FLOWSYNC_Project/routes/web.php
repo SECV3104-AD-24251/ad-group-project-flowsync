@@ -23,4 +23,21 @@ Route::view('/CLIENTS','clients');
 Route::view('/ABOUT','about');
 Route::view('/CONTACT','contact');
 
+//use Illuminate\Support\Facades\Route;
+
+Route::get('/login', function () {
+    return view('login'); // Renders the login page
+})->name('login');
+
+Route::post('/login', function (Illuminate\Http\Request $request) {
+    $username = $request->input('user');
+    $password = $request->input('pass');
+
+    if ($username === 'admin' && $password === 'admin') {
+        return redirect('/')->with('message', 'Login Successful');
+    } else {
+        return back()->with('error', 'Invalid Credentials');
+    }
+});
+
 

@@ -29,8 +29,8 @@
                 <a class="mr-5 hover:text-gray-900" href="/CLIENTS">Clients</a>
                 <a class="mr-5 hover:text-gray-900" href="/ABOUT">About</a>
                 <a class="mr-5 hover:text-gray-900" href="/CONTACT">Contact</a>
-                </nav>
-                
+                <a class="mr-5 hover:text-gray-900" href="/login">Login</a>
+                </nav>               
             </div>
         </header>
 
