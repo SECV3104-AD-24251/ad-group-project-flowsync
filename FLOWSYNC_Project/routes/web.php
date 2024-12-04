@@ -1,43 +1,42 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-//CODING ASAL
-/*Route::get('/', function () {
-    return view('welcome');
-});*/
+// Public routes
+Route::view('/', 'welcome');
+Route::view('/CLIENTS', 'clients');
+Route::view('/ABOUT', 'about');
+Route::view('/CONTACT', 'contact');
 
-
-Route::view('/','welcome');
-Route::view('/CLIENTS','clients');
-Route::view('/ABOUT','about');
-Route::view('/CONTACT','contact');
-
-//use Illuminate\Support\Facades\Route;
-
+// Login page route
 Route::get('/login', function () {
-    return view('login'); // Renders the login page
+    return view('login');
 })->name('login');
 
-Route::post('/login', function (Illuminate\Http\Request $request) {
+// Handle login form submission
+Route::post('/login', function (Request $request) {
     $username = $request->input('user');
     $password = $request->input('pass');
 
     if ($username === 'admin' && $password === 'admin') {
-        return redirect('/')->with('message', 'Login Successful');
+        $request->session()->put('user', $username); // Store user in session
+        return redirect('/dashboard')->with('message', 'Login Successful');
     } else {
         return back()->with('error', 'Invalid Credentials');
     }
 });
 
+// Dashboard (protected)
+Route::get('/dashboard', function () {
+    if (session('user')) {
+        return view('dashboard');
+    }
+    return redirect('/login')->with('error', 'Please login first.');
+})->name('dashboard');
 
+// Logout
+Route::post('/logout', function (Request $request) {
+    $request->session()->forget('user'); // Remove session data
+    return redirect('/login')->with('message', 'You have been logged out.');
+})->name('logout');

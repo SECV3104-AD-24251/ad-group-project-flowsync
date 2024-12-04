@@ -3,18 +3,12 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
         <title>Laravel</title>
-
-        <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-
-        <!-- TailwindCSS -->
         <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     </head>
-
     <body class="antialiased bg-gray-50 text-gray-700">
-        <!-- HEADER WEBSITE -->
+        <!-- HEADER -->
         <header class="bg-gradient-to-r from-red-500 to-red-700 text-white shadow-lg">
             <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
                 <a href="/" class="flex title-font font-medium items-center text-white mb-4 md:mb-0">
@@ -27,14 +21,21 @@
                     <a class="mr-5 hover:text-gray-200 transition duration-200" href="/CLIENTS">Clients</a>
                     <a class="mr-5 hover:text-gray-200 transition duration-200" href="/ABOUT">About</a>
                     <a class="mr-5 hover:text-gray-200 transition duration-200" href="/CONTACT">Contact</a>
-                    <a class="mr-5 bg-white text-red-500 hover:bg-gray-200 rounded px-3 py-1 transition duration-200" href="/login">Login</a>
+                    @if(session('user'))
+                        <form action="{{ route('logout') }}" method="POST" class="inline">
+                            @csrf
+                            <button class="mr-5 bg-white text-red-500 hover:bg-gray-200 rounded px-3 py-1 transition duration-200">Logout</button>
+                        </form>
+                    @else
+                        <a class="mr-5 bg-white text-red-500 hover:bg-gray-200 rounded px-3 py-1 transition duration-200" href="/login">Login</a>
+                    @endif
                 </nav>
             </div>
         </header>
 
         <!-- MAIN CONTENT -->
         <main class="max-w-4xl mx-auto my-10 bg-white p-8 rounded shadow-md">
-            {{ $slot }}
+            @yield('content')
         </main>
 
         <!-- FOOTER -->
