@@ -9,34 +9,43 @@
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
-        <!-- STYLES -->
+        <!-- TailwindCSS -->
         <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
-
     </head>
 
-<!-- EDIT HERE --> 
-    <body class="antialiased">
+    <body class="antialiased bg-gray-50 text-gray-700">
         <!-- HEADER WEBSITE -->
-        <header class="text-gray-600 body-font">
+        <header class="bg-gradient-to-r from-red-500 to-red-700 text-white shadow-lg">
             <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
-                <a href="/" class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 bg-red-500 rounded-full" viewBox="0 0 24 24">
-                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-                </svg>
-                <span class="ml-3 text-xl">FLOWSYNC</span>
+                <a href="/" class="flex title-font font-medium items-center text-white mb-4 md:mb-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 bg-white rounded-full" viewBox="0 0 24 24">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                    </svg>
+                    <span class="ml-3 text-xl font-bold">FLOWSYNC</span>
                 </a>
                 <nav class="md:ml-auto flex flex-wrap items-center text-base justify-center">
-                <a class="mr-5 hover:text-gray-900" href="/CLIENTS">Clients</a>
-                <a class="mr-5 hover:text-gray-900" href="/ABOUT">About</a>
-                <a class="mr-5 hover:text-gray-900" href="/CONTACT">Contact</a>
-                <a class="mr-5 hover:text-gray-900" href="/login">Login</a>
-                </nav>               
+                    <a class="mr-5 hover:text-gray-200 transition duration-200" href="/CLIENTS">Clients</a>
+                    <a class="mr-5 hover:text-gray-200 transition duration-200" href="/ABOUT">About</a>
+                    <a class="mr-5 hover:text-gray-200 transition duration-200" href="/CONTACT">Contact</a>
+                    <a class="mr-5 bg-white text-red-500 hover:bg-gray-200 rounded px-3 py-1 transition duration-200" href="/login">Login</a>
+                </nav>
             </div>
         </header>
 
-        <main class="max-w-4xl mx-auto">    <!-- KEDUDUKAN AYAT -->
-            {{ $slot }}  <!-- CALL AYAT -->
+        <!-- MAIN CONTENT -->
+        <main class="max-w-4xl mx-auto my-10 bg-white p-8 rounded shadow-md">
+            {{ $slot }}
         </main>
 
+        <!-- FOOTER -->
+        <footer class="bg-gray-100 text-gray-600">
+            <div class="container mx-auto px-5 py-8 flex flex-col sm:flex-row justify-between items-center">
+                <p class="text-sm text-gray-500 sm:mb-0">© 2024 FlowSync. All rights reserved.</p>
+                <div class="flex mt-4 sm:mt-0">
+                    <a href="#" class="text-gray-400 hover:text-gray-700 mx-2">Privacy</a>
+                    <a href="#" class="text-gray-400 hover:text-gray-700 mx-2">Terms</a>
+                </div>
+            </div>
+        </footer>
     </body>
 </html>
