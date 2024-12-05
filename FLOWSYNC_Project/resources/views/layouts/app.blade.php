@@ -18,9 +18,8 @@
                     <span class="ml-3 text-xl font-bold">FLOWSYNC</span>
                 </a>
                 <nav class="md:ml-auto flex flex-wrap items-center text-base justify-center">
-                    <a class="mr-5 hover:text-gray-200 transition duration-200" href="/CLIENTS">Clients</a>
-                    <a class="mr-5 hover:text-gray-200 transition duration-200" href="/ABOUT">About</a>
-                    <a class="mr-5 hover:text-gray-200 transition duration-200" href="/CONTACT">Contact</a>
+                    <a class="mr-5 hover:text-gray-200 transition duration-200" href="/timetable">Timetable</a>
+                    <a class="mr-5 hover:text-gray-200 transition duration-200" href="/calendar">Calendar</a>
                     @if(session('user'))
                         <form action="{{ route('logout') }}" method="POST" class="inline">
                             @csrf
@@ -34,7 +33,7 @@
         </header>
 
         <!-- MAIN CONTENT -->
-        <main class="max-w-4xl mx-auto my-10 bg-white p-8 rounded shadow-md">
+        <main>          <!--LETAK IN MAIN TU FOR A:  class="max-w-4xl mx-auto my-10 bg-white p-8 rounded shadow-md "-->
             @yield('content')
         </main>
 

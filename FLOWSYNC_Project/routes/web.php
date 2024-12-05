@@ -5,6 +5,9 @@ use Illuminate\Http\Request;
 
 // Public routes
 Route::view('/', 'welcome');
+Route::view('/timetable', 'timetable');
+Route::view('/calendar', 'calendar');
+
 Route::view('/CLIENTS', 'clients');
 Route::view('/ABOUT', 'about');
 Route::view('/CONTACT', 'contact');
