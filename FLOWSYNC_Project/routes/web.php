@@ -8,10 +8,9 @@ Route::view('/', 'welcome');
 Route::view('/timetable', 'timetable');
 Route::view('/calendar', 'calendar');
 Route::view('/solution', 'solution');
+Route::view('/helpCenter', 'helpCenter');
+Route::view('/HC1', 'HC1');
 
-Route::view('/CLIENTS', 'clients');
-Route::view('/ABOUT', 'about');
-Route::view('/CONTACT', 'contact');
 
 // Login page route
 Route::get('/login', function () {
