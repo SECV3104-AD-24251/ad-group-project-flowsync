@@ -28,7 +28,7 @@
             font-size: 5px; /* Increase the font size */
             font-weight: bold;
             background-color: #ff8d33;
-            color: light orange;
+            color: lightorange;
             border: none;
             border-radius: 5px; /* Rounded corners */
             cursor: pointer;
@@ -36,74 +36,105 @@
             margin-right: 10px;
             transition: transform 0.3s ease, background-color 0.3s ease;
         }
+
         .ai-button .ai-icon {
             width: 110px;  /* Resize the image */
-          height: 110px; /* Resize the height to maintain aspect ratio */
+            height: 110px; /* Resize the height to maintain aspect ratio */
         }
+
         .ai-button:hover {
             transform: scale(1.1); /* Slight zoom effect on hover */
             background-color: #ff5733; 
         }
-</style>
+
+        /* Solution Button Container */
+        .solution-button-container {
+            margin-top: 50px; /* Add more space above the button */
+            text-align: center; /* Ensure the button is centered */
+        }
+
+        .solution-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #8B0000; /* Maroon color */
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .solution-button:hover {
+            background-color: #B22222; /* Darker maroon on hover */
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-5">
-       <h1>Schedule</h1>
-       <div class="ai-button-container">
-       <button id="aiAssistantBtn" onclick="detectClashes()" class="ai-button">
+        <h1>Schedule</h1>
+
+        <div class="ai-button-container">
+            <button id="aiAssistantBtn" onclick="detectClashes()" class="ai-button">
                 <img src="{{ asset('images/AI.png') }}" alt="AI Assistant Logo" class="ai-icon">
             </button>
-    <div class="container mt-5 text-center">
-        </style>
-        <!-- Test with static data to see if rendering works -->
-        <table class="table table-bordered">
-            <thead>
-            <tr>
-                <th>Course Code</th>
-                <th>Course Name</th>
-                <th>Section</th>
-                <th>Time Slot</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>SECVH101</td>
-                <td>Intro to Computer Science</td>
-                <td>01</td>
-                <td>Monday 10:00-12:00</td>
-            </tr>
-            <tr>
-                <td>SECVH102</td>
-                <td>Data Structures</td>
-                <td>02</td>
-                <td>Tuesday 14:00-16:00</td>
-            </tr>
-            <tr>
-                <td>SECVH201</td>
-                <td>Advanced Mathematics</td>
-                <td>03</td>
-                <td>Monday 11:00-13:00</td>
-            </tr>
-            <tr>
-                <td>SECVH202</td>
-                <td>Discrete Mathematics</td>
-                <td>02</td>
-                <td>Monday 10:00-12:00</td>
-            </tr>
-            <tr>
-                <td>SECVH301</td>
-                <td>Computer Networks</td>
-                <td>01</td>
-                <td>Wednesday 13:00-15:00</td>
-            </tr>
-            <tr>
-                <td>SECVH302</td>
-                <td>Operating Systems</td>
-                <td>03</td>
-                <td>Tuesday 15:00-17:00</td>
-            </tr>
-            </tbody>
-        </table>
+        </div>
+
+        <div class="container mt-5 text-center">
+            <!-- Test with static data to see if rendering works -->
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Course Code</th>
+                        <th>Course Name</th>
+                        <th>Section</th>
+                        <th>Time Slot</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>SECVH101</td>
+                        <td>Intro to Computer Science</td>
+                        <td>01</td>
+                        <td>Monday 10:00-12:00</td>
+                    </tr>
+                    <tr>
+                        <td>SECVH102</td>
+                        <td>Data Structures</td>
+                        <td>02</td>
+                        <td>Tuesday 14:00-16:00</td>
+                    </tr>
+                    <tr>
+                        <td>SECVH201</td>
+                        <td>Advanced Mathematics</td>
+                        <td>03</td>
+                        <td>Monday 11:00-13:00</td>
+                    </tr>
+                    <tr>
+                        <td>SECVH202</td>
+                        <td>Discrete Mathematics</td>
+                        <td>02</td>
+                        <td>Monday 10:00-12:00</td>
+                    </tr>
+                    <tr>
+                        <td>SECVH301</td>
+                        <td>Computer Networks</td>
+                        <td>01</td>
+                        <td>Wednesday 13:00-15:00</td>
+                    </tr>
+                    <tr>
+                        <td>SECVH302</td>
+                        <td>Operating Systems</td>
+                        <td>03</td>
+                        <td>Tuesday 15:00-17:00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Solution Button Below the Table -->
+        <div class="solution-button-container">
+            <a href="{{ route('solution') }}" class="solution-button">Go to Solution</a>
+        </div>
     </div>
 </body>
 </html>

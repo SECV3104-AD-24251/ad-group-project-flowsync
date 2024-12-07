@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 Route::view('/', 'welcome');
 Route::view('/timetable', 'timetable');
 Route::view('/calendar', 'calendar');
+Route::view('/solution', 'solution');
 
 Route::view('/CLIENTS', 'clients');
 Route::view('/ABOUT', 'about');
@@ -43,3 +44,14 @@ Route::post('/logout', function (Request $request) {
     $request->session()->forget('user'); // Remove session data
     return redirect('/login')->with('message', 'You have been logged out.');
 })->name('logout');
+
+// Solution page
+Route::get('/solution', function () {
+    return view('solution'); // Assumes you have a Blade view named 'solution.blade.php'
+})->name('solution');
+
+Route::get('/timetable', function () {
+    return view('timetable');
+})->name('timetable');
+
+
