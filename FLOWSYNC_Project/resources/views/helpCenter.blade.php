@@ -8,7 +8,7 @@
     </div>
     
     <!-- Help Center List -->
-    <div class="w-full max-w-4xl mx-auto bg-white rounded-lg shadow-md">
+    <div class="w-full max-w-8xl mx-auto bg-white rounded-lg shadow-md">
       <ul class="divide-y divide-gray-300">
         <!-- List Item 1 -->
         <li class="flex justify-between items-center p-4 hover:bg-gray-100 cursor-pointer">
@@ -24,7 +24,7 @@
         <!-- List Item 2 -->
         <li class="flex justify-between items-center p-4 hover:bg-gray-100 cursor-pointer">
             <!--LINK KAT HREF BAWAH NII -->
-          <a href="/help/HC2" class="text-lg font-medium text-gray-900">How to resolve scheduling clashes</a>
+          <a href="/HC2" class="text-lg font-medium text-gray-900">How to resolve scheduling clashes</a>
           <span>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -35,7 +35,7 @@
         <!-- List Item 3 -->
         <li class="flex justify-between items-center p-4 hover:bg-gray-100 cursor-pointer">
             <!--LINK KAT HREF BAWAH NII -->
-          <a href="/help/HC3" class="text-lg font-medium text-gray-900">FAQs on Scheduling Conflicts</a>
+          <a href="/HC3" class="text-lg font-medium text-gray-900">FAQs on Scheduling Conflicts</a>
           <span>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -46,7 +46,7 @@
         <!-- List Item 4 -->
         <li class="flex justify-between items-center p-4 hover:bg-gray-100 cursor-pointer">
             <!--LINK KAT HREF BAWAH NII -->
-          <a href="/help/HC4" class="text-lg font-medium text-gray-900">How to view timetable</a>
+          <a href="/HC4" class="text-lg font-medium text-gray-900">How to view timetable</a>
           <span>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />

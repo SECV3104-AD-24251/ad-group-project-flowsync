@@ -15,24 +15,6 @@
     <a href="{{ url('/timetable') }}" class="mt-4 inline-block text-blue-500 hover:underline">
         Back to Timetable
     </a>
-</x-app-layout>
-<x-app-layout>
-    <h1 class="text-2xl font-bold">Solution Page</h1>
-    <p class="mt-4 text-lg">This is where the solution details will be displayed.</p>
-
-    {{-- Solution Details Section --}}
-    <div id="solution" class="mt-6 p-4 bg-gray-100 rounded shadow">
-        <p class="text-lg font-medium">Generated Solution:</p>
-        <div id="openai-solution" class="mt-2 text-gray-700">
-            {{-- This will display the solution from OpenAI --}}
-            <p>Loading solution...</p>
-        </div>
-    </div>
-
-    {{-- Back to Timetable Button --}}
-    <a href="{{ url('/timetable') }}" class="mt-4 inline-block text-blue-500 hover:underline">
-        Back to Timetable
-    </a>
 
     {{-- Script to Fetch Solution --}}
     <script>
