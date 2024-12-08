@@ -1,5 +1,3 @@
-<?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -9,7 +7,6 @@ class SolutionController extends Controller
 {
     public function generateSolution(Request $request)
     {
-        // Simulate receiving timetable data from the request
         $timetableData = $request->input('timetable_data', []);
 
         if (empty($timetableData)) {
@@ -17,7 +14,6 @@ class SolutionController extends Controller
         }
 
         try {
-            // Interact with OpenAI API
             $client = OpenAI::client(env('OPENAI_API_KEY'));
 
             $prompt = "Detect clashes in the following timetable data:\n" . json_encode($timetableData, JSON_PRETTY_PRINT);
@@ -29,7 +25,6 @@ class SolutionController extends Controller
             ]);
 
             $result = trim($response['choices'][0]['text']);
-
             return response()->json(['solution' => $result]);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to generate solution: ' . $e->getMessage()], 500);

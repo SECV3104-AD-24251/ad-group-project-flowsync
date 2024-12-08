@@ -73,14 +73,15 @@
     <div class="container mt-5">
         <h1>Schedule</h1>
 
+        <!-- AI Button to detect clashes -->
         <div class="ai-button-container">
             <button id="aiAssistantBtn" onclick="detectClashes()" class="ai-button">
                 <img src="{{ asset('images/AI.png') }}" alt="AI Assistant Logo" class="ai-icon">
             </button>
         </div>
 
+        <!-- Display Timetable -->
         <div class="container mt-5 text-center">
-            <!-- Test with static data to see if rendering works -->
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -91,42 +92,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>SECVH101</td>
-                        <td>Intro to Computer Science</td>
-                        <td>01</td>
-                        <td>Monday 10:00-12:00</td>
-                    </tr>
-                    <tr>
-                        <td>SECVH102</td>
-                        <td>Data Structures</td>
-                        <td>02</td>
-                        <td>Tuesday 14:00-16:00</td>
-                    </tr>
-                    <tr>
-                        <td>SECVH201</td>
-                        <td>Advanced Mathematics</td>
-                        <td>03</td>
-                        <td>Monday 11:00-13:00</td>
-                    </tr>
-                    <tr>
-                        <td>SECVH202</td>
-                        <td>Discrete Mathematics</td>
-                        <td>02</td>
-                        <td>Monday 10:00-12:00</td>
-                    </tr>
-                    <tr>
-                        <td>SECVH301</td>
-                        <td>Computer Networks</td>
-                        <td>01</td>
-                        <td>Wednesday 13:00-15:00</td>
-                    </tr>
-                    <tr>
-                        <td>SECVH302</td>
-                        <td>Operating Systems</td>
-                        <td>03</td>
-                        <td>Tuesday 15:00-17:00</td>
-                    </tr>
+                    <!-- Dynamically render timetable rows here (using Blade or JavaScript) -->
                 </tbody>
             </table>
         </div>
@@ -136,5 +102,13 @@
             <a href="{{ route('solution') }}" class="solution-button">Go to Solution</a>
         </div>
     </div>
+
+    <script>
+        // Function to handle clash detection when AI button is clicked
+        function detectClashes() {
+            // You can add logic here to send the form data or timetable details to the OpenAI API
+            alert('Clash detection function triggered!');
+        }
+    </script>
 </body>
 </html>

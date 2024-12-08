@@ -19,17 +19,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/clash-detection', function (Request $request) {
-    // Validate the uploaded file
+    // Validate timetable data
     $request->validate([
-        'file' => 'required|file|mimes:json',
+        'timetable_data' => 'required|array',
     ]);
 
-    // Read the JSON file
-    $file = $request->file('file');
-    $timetableData = json_decode(file_get_contents($file->getRealPath()), true);
-
-    if (!$timetableData) {
-        return response()->json(['error' => 'Invalid JSON structure.'], 400);
+    $timetableData = $request->input('timetable_data');
+    
+    if (empty($timetableData)) {
+        return response()->json(['error' => 'No timetable data provided.'], 400);
     }
 
     // Interact with OpenAI API
@@ -45,7 +43,6 @@ Route::post('/clash-detection', function (Request $request) {
         ]);
 
         $result = trim($response['choices'][0]['text']);
-
         return response()->json(['clashes' => $result]);
     } catch (\Exception $e) {
         return response()->json(['error' => 'Failed to process request: ' . $e->getMessage()], 500);
