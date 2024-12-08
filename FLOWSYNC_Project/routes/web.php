@@ -2,15 +2,15 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use App\Http\Controllers\SolutionController;
 
 // Public routes
 Route::view('/', 'welcome');
-Route::view('/timetable', 'timetable');
+Route::view('/timetable', 'timetable')->name('timetable');
 Route::view('/calendar', 'calendar');
-Route::view('/solution', 'solution');
+Route::view('/solution', 'solution')->name('solution');
 Route::view('/helpCenter', 'helpCenter');
 Route::view('/HC1', 'HC1');
-
 
 // Login page route
 Route::get('/login', function () {
@@ -44,13 +44,5 @@ Route::post('/logout', function (Request $request) {
     return redirect('/login')->with('message', 'You have been logged out.');
 })->name('logout');
 
-// Solution page
-Route::get('/solution', function () {
-    return view('solution'); // Assumes you have a Blade view named 'solution.blade.php'
-})->name('solution');
-
-Route::get('/timetable', function () {
-    return view('timetable');
-})->name('timetable');
-
-
+// API integration: Generate solution from OpenAI
+Route::post('/generate-solution', [SolutionController::class, 'generateSolution']);
