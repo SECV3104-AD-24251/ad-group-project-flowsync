@@ -143,20 +143,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Example Rows -->
-                    <tr>
-                        <td>CMP101</td>
-                        <td>Introduction to Computing</td>
-                        <td>A</td>
-                        <td>Monday, 9:00 AM - 10:30 AM</td>
-                    </tr>
-                    <tr>
-                        <td>CMP202</td>
-                        <td>Data Structures</td>
-                        <td>B</td>
-                        <td>Tuesday, 11:00 AM - 12:30 PM</td>
-                    </tr>
-                    <!-- Dynamic rows will be rendered here -->
+                    @foreach($timetable as $row)
+                        <tr>
+                            <td>{{ $row->course_code }}</td>
+                            <td>{{ $row->course_name }}</td>
+                            <td>{{ $row->section }}</td>
+                            <td>{{ $row->time_slot }}</td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -177,7 +171,26 @@
     <script>
         // Function to handle clash detection when AI button is clicked
         function detectClashes() {
-            alert('AI Assistant is analyzing your schedule for clashes!');
+            // Send a request to the detect-clashes route
+            fetch('{{ route('detect.clashes') }}')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        let clashMessage = "Clashes detected:\n\n";
+                        data.forEach(clash => {
+                            clashMessage += `Courses: ${clash.course1} and ${clash.course2}\n`;
+                            clashMessage += `Sections: ${clash.section1} and ${clash.section2}\n`;
+                            clashMessage += `Time Slot: ${clash.time_slot}\n\n`;
+                        });
+                        alert(clashMessage);
+                    } else {
+                        alert('No clashes detected!');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error detecting clashes:', error);
+                    alert('An error occurred while detecting clashes.');
+                });
         }
     </script>
 </body>

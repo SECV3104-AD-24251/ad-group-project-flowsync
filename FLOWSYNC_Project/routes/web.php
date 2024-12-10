@@ -3,6 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\SolutionController;
+use App\Http\Controllers\TimetableController;
+
+
+
+
+
 
 // Public routes
 Route::view('/', 'welcome');
@@ -11,6 +17,11 @@ Route::view('/calendar', 'calendar');
 Route::view('/solution', 'solution')->name('solution');
 Route::view('/helpCenter', 'helpCenter');
 Route::view('/HC1', 'HC1');
+
+Route::get('/timetable', [TimetableController::class, 'showTimetable'])->name('timetable');
+Route::get('/detect-clashes', [TimetableController::class, 'detectClashes'])->name('detect.clashes');
+
+
 
 // Login page route
 Route::get('/login', function () {
