@@ -1,33 +1,52 @@
+<?php
+
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use OpenAI;
+use GuzzleHttp\Client;
 
 class SolutionController extends Controller
 {
     public function generateSolution(Request $request)
     {
-        $timetableData = $request->input('timetable_data', []);
-
-        if (empty($timetableData)) {
-            return response()->json(['error' => 'No timetable data provided.'], 400);
-        }
-
         try {
-            $client = OpenAI::client(env('OPENAI_API_KEY'));
+            // Fetch timetable data from MySQL
+            $timetableData = DB::table('timetable_entries')->get();
 
-            $prompt = "Detect clashes in the following timetable data:\n" . json_encode($timetableData, JSON_PRETTY_PRINT);
+            // Format the data
+            $formattedData = $timetableData->map(function ($entry) {
+                return [
+                    'course_code' => $entry->course_code,
+                    'course_name' => $entry->course_name,
+                    'section' => $entry->section,
+                    'time_slot' => $entry->time_slot,
+                    'lecturer_name' => $entry->lecturer_name,
+                ];
+            })->toArray();
 
-            $response = $client->completions()->create([
-                'model' => 'text-davinci-003',
-                'prompt' => $prompt,
-                'max_tokens' => 200,
+            $prompt = "Analyze the following timetable for potential conflicts: " . json_encode($formattedData);
+
+            // Send data to OpenAI
+            $client = new Client();
+            $response = $client->post('https://api.openai.com/v1/completions', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . env('OPENAI_API_KEY'),
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => [
+                    'model' => 'text-davinci-003',
+                    'prompt' => $prompt,
+                    'max_tokens' => 150,
+                ],
             ]);
 
-            $result = trim($response['choices'][0]['text']);
-            return response()->json(['solution' => $result]);
+            $responseData = json_decode($response->getBody(), true);
+
+            // Return the solution
+            return response()->json(['solution' => $responseData['choices'][0]['text'] ?? 'No solution provided.']);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to generate solution: ' . $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 }
