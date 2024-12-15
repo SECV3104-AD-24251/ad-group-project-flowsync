@@ -62,7 +62,7 @@ if (isset($_POST["login"])) {
         <div class="login-container">
             <!-- Logo -->
             <div class="logo">
-                <img src="{{ asset('images/utm-logo.png') }}" alt="UTM Logo" width="100">
+                <img src="{{ asset('images/utm-logo.png') }}" alt="UTM Logo" width="200">
             </div>
             <h3 class="mb-4 text-uppercase fw-bold" style="color: #800000;">Timetable Management</h3>
             <!-- Login Form -->
