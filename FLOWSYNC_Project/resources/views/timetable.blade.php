@@ -155,10 +155,59 @@
         </div>
 
         <!-- Solution Button -->
-        <div class="solution-button-container">
-            <a href="{{ route('solution') }}" class="solution-button">📖 View Conflict Solution</a>
+<div class="solution-button-container">
+    <button type="button" class="solution-button" data-bs-toggle="modal" data-bs-target="#solutionModal">
+        📖 Recommendation
+    </button>
+</div>
+
+<!-- Solution Modal -->
+<div class="modal fade" id="solutionModal" tabindex="-1" aria-labelledby="solutionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="solutionModalLabel">Conflict Solutions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Loading solutions...</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
+</div>
+
+<script>
+    // Function to handle clash detection and display solutions in the modal
+    document.querySelector('.solution-button').addEventListener('click', function () {
+        const modalBody = document.querySelector('#solutionModal .modal-body');
+        modalBody.innerHTML = '<p>Loading solutions...</p>';
+
+        fetch('{{ route('detect.clashes') }}')
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    let solutionHTML = '<ul>';
+                    data.forEach(clash => {
+                        solutionHTML += `<li><strong>Courses:</strong> ${clash.course1} and ${clash.course2}<br>`;
+                        solutionHTML += `<strong>Sections:</strong> ${clash.section1} and ${clash.section2}<br>`;
+                        solutionHTML += `<strong>Suggested Action:</strong> Move one class to another day (e.g., Thursday).</li><br>`;
+                    });
+                    solutionHTML += '</ul>';
+                    modalBody.innerHTML = solutionHTML;
+                } else {
+                    modalBody.innerHTML = '<p>No clashes detected!</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error detecting clashes:', error);
+                modalBody.innerHTML = '<p>An error occurred while detecting clashes.</p>';
+            });
+    });
+</script>
+
 
     <!-- Floating AI Button -->
     <div class="ai-button-container">
