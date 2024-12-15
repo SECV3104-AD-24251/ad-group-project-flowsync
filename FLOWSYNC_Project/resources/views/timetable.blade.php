@@ -81,32 +81,6 @@
             background-color: #FF5733;
         }
 
-        .solution-button-container {
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        .solution-button {
-            display: inline-block;
-            padding: 12px 30px;
-            background-color: #8B0000;
-            color: #FFFFFF;
-            font-weight: bold;
-            text-decoration: none;
-            border-radius: 30px;
-            font-size: 18px;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-        }
-
-        .solution-button:hover {
-            background-color: #B22222;
-            transform: scale(1.1);
-        }
-
-        .table-hover tbody tr:hover {
-            background-color: #FFFAE5;
-        }
-
         .fade-in {
             animation: fadeIn 1s ease-in-out;
         }
@@ -153,16 +127,11 @@
                 </tbody>
             </table>
         </div>
-
-        <!-- Solution Button -->
-        <div class="solution-button-container">
-            <a href="{{ route('solution') }}" class="solution-button">📖 View Conflict Solution</a>
-        </div>
     </div>
 
     <!-- Floating AI Button -->
     <div class="ai-button-container">
-        <button id="aiAssistantBtn" onclick="detectClashes()" class="ai-button">
+        <button id="aiAssistantBtn" onclick="detectClashesAndSolutions()" class="ai-button">
             <img src="{{ asset('images/AI.png') }}" alt="AI Assistant Logo">
         </button>
     </div>
@@ -172,7 +141,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="clashModalLabel">Clash Detection Results</h5>
+                    <h5 class="modal-title" id="clashModalLabel">Clash Detection & Solutions</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -188,51 +157,61 @@
     </div>
 
     <script>
-    // CONFLICT DETECTION FUNCTION
-    function detectClashes() {
-    // Show loading indicator in the modal
-    const clashResults = document.getElementById('clashResults');
-    clashResults.innerHTML = '<p>Detecting clashes... Please wait.</p>';
+    function detectClashesAndSolutions() {
+        const clashResults = document.getElementById('clashResults');
+        clashResults.innerHTML = '<p>Detecting clashes... Please wait.</p>';
 
-    // Show the modal
-    const clashModal = new bootstrap.Modal(document.getElementById('clashModal'));
-    clashModal.show();
+        const clashModal = new bootstrap.Modal(document.getElementById('clashModal'));
+        clashModal.show();
 
-    // Fetch clash detection results
-    fetch('{{ route('detect.clashes') }}')
-        .then(response => response.json())
-        .then(data => {
-            setTimeout(() => {
-                if (data.message === 'No timetable data available.') {
-                    clashResults.innerHTML = '<p>No timetable data available!</p>';
-                } else if (data.message === 'No clashes detected.') {
-                    clashResults.innerHTML = '<p>No conflicts detected!</p>';
-                } else {
-                    let clashMessage = '<ul>';
-                    data.forEach(clash => {
-                        clashMessage += `
+        fetch('{{ route('detect.clashes') }}')
+            .then(response => response.json())
+            .then(data => {
+                setTimeout(() => {
+                    if (data.message === 'No timetable data available.') {
+                        clashResults.innerHTML = '<p>No timetable data available!</p>';
+                    } else if (data.message === 'No clashes detected.') {
+                        clashResults.innerHTML = '<p>No conflicts detected!</p>';
+                    } else {
+                        let clashMessage = '<h5>Clash Details:</h5><ul>';
+                        data.forEach(clash => {
+                            clashMessage += `
+                                <li>
+                                    <strong>Conflict between:</strong><br>
+                                    Course 1: ${clash.course1.course_code} - ${clash.course1.course_name}, Section: ${clash.course1.section} <br>
+                                    Course 2: ${clash.course2.course_code} - ${clash.course2.course_name}, Section: ${clash.course2.section} <br>
+                                    <strong>Time Slot:</strong> ${clash.time_slot}
+                                </li><hr>`;
+                        });
+                        clashMessage += '</ul>';
+
+                        // SOLUTION LIST
+
+                        clashMessage += '<h5>Suggested Solutions:</h5><ul>';
+                        data.forEach(clash => {
+                            clashMessage += `
+                            
                             <li>
-                                <strong>Conflict between:</strong><br>
-                                Course 1: ${clash.course1.course_code} - ${clash.course1.course_name}, Section: ${clash.course1.section} <br>
-                                Course 2: ${clash.course2.course_code} - ${clash.course2.course_name}, Section: ${clash.course2.section} <br>
-                                <strong>Time Slot:</strong> ${clash.time_slot}
-                            </li><hr>`;
-                    });
-                    clashMessage += '</ul>';
-                    clashResults.innerHTML = clashMessage;
-                }
-            }, 2000); // 2-second delay
-        })
-        .catch(error => {
-            // Show error message after 3 seconds
-            setTimeout(() => {
-                clashResults.innerHTML = '<p>An error occurred while detecting clashes.</p>';
-            }, 2000); // 2-second delay
-        });
-}
+                                
+                                    To resolve the clash between ${clash.course1.course_code} and ${clash.course2.course_code}, consider moving one class to another day (e.g., Thursday).
+                                </li>`;
+                        });
+                        clashMessage += '</ul>';
 
-</script>
+                        clashResults.innerHTML = clashMessage;
+                    }
+                }, 1000); // 1-second delay
+            })
+            .catch(error => {
+                setTimeout(() => {
+                    clashResults.innerHTML = '<p>An error occurred while detecting clashes.</p>';
+                }, 1000); // 1-second delay
+            });
+    }
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
