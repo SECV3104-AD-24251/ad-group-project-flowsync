@@ -155,59 +155,10 @@
         </div>
 
         <!-- Solution Button -->
-<div class="solution-button-container">
-    <button type="button" class="solution-button" data-bs-toggle="modal" data-bs-target="#solutionModal">
-        📖 Recommendation
-    </button>
-</div>
-
-<!-- Solution Modal -->
-<div class="modal fade" id="solutionModal" tabindex="-1" aria-labelledby="solutionModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="solutionModalLabel">Conflict Solutions</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Loading solutions...</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
+        <div class="solution-button-container">
+            <a href="{{ route('solution') }}" class="solution-button">📖 View Conflict Solution</a>
         </div>
     </div>
-</div>
-
-<script>
-    // Function to handle clash detection and display solutions in the modal
-    document.querySelector('.solution-button').addEventListener('click', function () {
-        const modalBody = document.querySelector('#solutionModal .modal-body');
-        modalBody.innerHTML = '<p>Loading solutions...</p>';
-
-        fetch('{{ route('detect.clashes') }}')
-            .then(response => response.json())
-            .then(data => {
-                if (data.length > 0) {
-                    let solutionHTML = '<ul>';
-                    data.forEach(clash => {
-                        solutionHTML += `<li><strong>Courses:</strong> ${clash.course1} and ${clash.course2}<br>`;
-                        solutionHTML += `<strong>Sections:</strong> ${clash.section1} and ${clash.section2}<br>`;
-                        solutionHTML += `<strong>Suggested Action:</strong> Move one class to another day (e.g., Thursday).</li><br>`;
-                    });
-                    solutionHTML += '</ul>';
-                    modalBody.innerHTML = solutionHTML;
-                } else {
-                    modalBody.innerHTML = '<p>No clashes detected!</p>';
-                }
-            })
-            .catch(error => {
-                console.error('Error detecting clashes:', error);
-                modalBody.innerHTML = '<p>An error occurred while detecting clashes.</p>';
-            });
-    });
-</script>
-
 
     <!-- Floating AI Button -->
     <div class="ai-button-container">
@@ -237,41 +188,50 @@
     </div>
 
     <script>
-        // CONFLICT DETECTION FUNCTION
-        function detectClashes() {
-            // Show loading indicator in the modal
-            const clashResults = document.getElementById('clashResults');
-            clashResults.innerHTML = '<p>Detecting clashes... Please wait.</p>';
+    // CONFLICT DETECTION FUNCTION
+    function detectClashes() {
+    // Show loading indicator in the modal
+    const clashResults = document.getElementById('clashResults');
+    clashResults.innerHTML = '<p>Detecting clashes... Please wait.</p>';
 
-            // Show the modal
-            const clashModal = new bootstrap.Modal(document.getElementById('clashModal'));
-            clashModal.show();
+    // Show the modal
+    const clashModal = new bootstrap.Modal(document.getElementById('clashModal'));
+    clashModal.show();
 
-            // Fetch clash detection results
-            fetch('{{ route('detect.clashes') }}')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.length > 0) {
-                        let clashMessage = '<ul>';
-                        data.forEach(clash => {
-                            clashMessage += `<li>
-                                <strong>Courses:</strong> ${clash.course1} and ${clash.course2}<br>
-                                <strong>Sections:</strong> ${clash.section1} and ${clash.section2}<br>
-                                <strong>Time Slot:</strong> ${clash.time_slot}<br>
+    // Fetch clash detection results
+    fetch('{{ route('detect.clashes') }}')
+        .then(response => response.json())
+        .then(data => {
+            setTimeout(() => {
+                if (data.message === 'No timetable data available.') {
+                    clashResults.innerHTML = '<p>No timetable data available!</p>';
+                } else if (data.message === 'No clashes detected.') {
+                    clashResults.innerHTML = '<p>No conflicts detected!</p>';
+                } else {
+                    let clashMessage = '<ul>';
+                    data.forEach(clash => {
+                        clashMessage += `
+                            <li>
+                                <strong>Conflict between:</strong><br>
+                                Course 1: ${clash.course1.course_code} - ${clash.course1.course_name}, Section: ${clash.course1.section} <br>
+                                Course 2: ${clash.course2.course_code} - ${clash.course2.course_name}, Section: ${clash.course2.section} <br>
+                                <strong>Time Slot:</strong> ${clash.time_slot}
                             </li><hr>`;
-                        });
-                        clashMessage += '</ul>';
-                        clashResults.innerHTML = clashMessage;
-                    } else {
-                        clashResults.innerHTML = '<p>No clashes detected!</p>';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error detecting clashes:', error);
-                    clashResults.innerHTML = '<p>An error occurred while detecting clashes. Please try again later.</p>';
-                });
-        }
-    </script>
+                    });
+                    clashMessage += '</ul>';
+                    clashResults.innerHTML = clashMessage;
+                }
+            }, 2000); // 2-second delay
+        })
+        .catch(error => {
+            // Show error message after 3 seconds
+            setTimeout(() => {
+                clashResults.innerHTML = '<p>An error occurred while detecting clashes.</p>';
+            }, 2000); // 2-second delay
+        });
+}
+
+</script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
