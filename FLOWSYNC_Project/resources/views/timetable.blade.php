@@ -174,26 +174,31 @@
                         clashResults.innerHTML = '<p>No conflicts detected!</p>';
                     } else {
                         let clashMessage = '<h5>Clash Details:</h5><ul>';
+                        let uniqueClashes = new Set(); // To track unique clashes
+
                         data.forEach(clash => {
-                            clashMessage += `
-                                <li>
-                                    <strong>Conflict between:</strong><br>
-                                    Course 1: ${clash.course1.course_code} - ${clash.course1.course_name}, Section: ${clash.course1.section} <br>
-                                    Course 2: ${clash.course2.course_code} - ${clash.course2.course_name}, Section: ${clash.course2.section} <br>
-                                    <strong>Time Slot:</strong> ${clash.time_slot}
-                                </li><hr>`;
+                            const uniqueKey = `${clash.course1.course_code}-${clash.course1.section}-${clash.course2.course_code}-${clash.course2.section}-${clash.time_slot}`;
+                            if (!uniqueClashes.has(uniqueKey)) {
+                                uniqueClashes.add(uniqueKey); // Add to the Set to prevent duplicates
+                                clashMessage += `
+                                    <li>
+                                        <strong>Conflict between:</strong><br>
+                                        Course 1: ${clash.course1.course_code} - ${clash.course1.course_name}, Section: ${clash.course1.section} <br>
+                                        Course 2: ${clash.course2.course_code} - ${clash.course2.course_name}, Section: ${clash.course2.section} <br>
+                                        <strong>Time Slot:</strong> ${clash.time_slot}
+                                    </li><hr>`;
+                            }
                         });
+
                         clashMessage += '</ul>';
 
                         // SOLUTION LIST
-
                         clashMessage += '<h5>Suggested Solutions:</h5><ul>';
-                        data.forEach(clash => {
+                        uniqueClashes.forEach(uniqueKey => {
+                            const [course1, section1, course2, section2, time_slot] = uniqueKey.split('-');
                             clashMessage += `
-                            
-                            <li>
-                                
-                                    To resolve the clash between ${clash.course1.course_code} and ${clash.course2.course_code}, consider moving one class to another day (e.g., Thursday).
+                                <li>
+                                    To resolve the clash between ${course1} and ${course2}, consider moving one class to another day (e.g., Thursday).
                                 </li>`;
                         });
                         clashMessage += '</ul>';
@@ -213,5 +218,3 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-
