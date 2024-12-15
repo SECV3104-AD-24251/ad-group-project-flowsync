@@ -136,84 +136,122 @@
         </button>
     </div>
 
-    <!-- Clash Detection Modal -->
-    <div class="modal fade" id="clashModal" tabindex="-1" aria-labelledby="clashModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="clashModalLabel">Clash Detection & Solutions</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<!-- Clash Detection Modal -->
+<div class="modal fade" id="clashModal" tabindex="-1" aria-labelledby="clashModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="clashModalLabel">Clash Detection</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="clashResults">
+                    <!-- Clash results will be dynamically populated here -->
                 </div>
-                <div class="modal-body">
-                    <div id="clashResults">
-                        <!-- Clash results will be dynamically populated here -->
-                    </div>
+                <div id="solutionResults" style="display:none;">
+                    <!-- Solution results will be dynamically populated here -->
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <!-- Back button to return to clash detection -->
+                <button type="button" class="btn btn-secondary" id="backToClashesBtn" onclick="showClashes()" style="display: none;">Back</button>
+                <button type="button" class="btn btn-primary" id="showSolutionsBtn" onclick="showSolutions()">Show Solutions</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-    function detectClashesAndSolutions() {
-        const clashResults = document.getElementById('clashResults');
-        clashResults.innerHTML = '<p>Detecting clashes... Please wait.</p>';
+<script>
+let clashData = []; // Store the clash data globally
 
-        const clashModal = new bootstrap.Modal(document.getElementById('clashModal'));
-        clashModal.show();
+function detectClashesAndSolutions() {
+    const clashResults = document.getElementById('clashResults');
+    const solutionResults = document.getElementById('solutionResults');
+    const clashModalLabel = document.getElementById('clashModalLabel'); // Access the modal title
+    const backToClashesBtn = document.getElementById('backToClashesBtn');
+    const showSolutionsBtn = document.getElementById('showSolutionsBtn');
 
-        fetch('{{ route('detect.clashes') }}')
-            .then(response => response.json())
-            .then(data => {
-                setTimeout(() => {
-                    if (data.message === 'No timetable data available.') {
-                        clashResults.innerHTML = '<p>No timetable data available!</p>';
-                    } else if (data.message === 'No clashes detected.') {
-                        clashResults.innerHTML = '<p>No conflicts detected!</p>';
-                    } else {
-                        let clashMessage = '<h5>Clash Details:</h5><ul>';
-                        let uniqueClashes = new Set(); // To track unique clashes
+    clashResults.innerHTML = '<p>Detecting clashes... Please wait.</p>';
+    solutionResults.style.display = 'none'; // Hide solutions initially
+    backToClashesBtn.style.display = 'none'; // Hide back button initially
+    showSolutionsBtn.style.display = 'inline-block'; // Show solutions button
 
-                        data.forEach(clash => {
-                            const uniqueKey = `${clash.course1.course_code}-${clash.course1.section}-${clash.course2.course_code}-${clash.course2.section}-${clash.time_slot}`;
-                            if (!uniqueClashes.has(uniqueKey)) {
-                                uniqueClashes.add(uniqueKey); // Add to the Set to prevent duplicates
-                                clashMessage += `
-                                    <li>
-                                        <strong>Conflict between:</strong><br>
-                                        Course 1: ${clash.course1.course_code} - ${clash.course1.course_name}, Section: ${clash.course1.section} <br>
-                                        Course 2: ${clash.course2.course_code} - ${clash.course2.course_name}, Section: ${clash.course2.section} <br>
-                                        <strong>Time Slot:</strong> ${clash.time_slot}
-                                    </li><hr>`;
-                            }
-                        });
+    const clashModal = new bootstrap.Modal(document.getElementById('clashModal'));
+    clashModal.show();
 
-                        clashMessage += '</ul>';
+    fetch('{{ route('detect.clashes') }}')
+        .then(response => response.json())
+        .then(data => {
+            setTimeout(() => {
+                if (data.message === 'No timetable data available.') {
+                    clashResults.innerHTML = '<p>No timetable data available!</p>';
+                } else if (data.message === 'No clashes detected.') {
+                    clashResults.innerHTML = '<p>No conflicts detected!</p>';
+                } else {
+                    clashData = data; // Store clash data for later use
+                    let clashMessage = '<h5>Clash Details:</h5><ul>';
+                    data.forEach(clash => {
+                        clashMessage += `
+                            <li>
+                                <strong>Conflict between:</strong><br>
+                                Course 1: ${clash.course1.course_code} - ${clash.course1.course_name}, Section: ${clash.course1.section} <br>
+                                Course 2: ${clash.course2.course_code} - ${clash.course2.course_name}, Section: ${clash.course2.section} <br>
+                                <strong>Time Slot:</strong> ${clash.time_slot}
+                            </li><hr>`;
+                    });
+                    clashMessage += '</ul>';
+                    clashResults.innerHTML = clashMessage;
+                }
+            }, 1000); // 1-second delay
+        })
+        .catch(error => {
+            setTimeout(() => {
+                clashResults.innerHTML = '<p>An error occurred while detecting clashes.</p>';
+            }, 1000); // 1-second delay
+        });
+}
 
-                        // SOLUTION LIST
-                        clashMessage += '<h5>Suggested Solutions:</h5><ul>';
-                        uniqueClashes.forEach(uniqueKey => {
-                            const [course1, section1, course2, section2, time_slot] = uniqueKey.split('-');
-                            clashMessage += `
-                                <li>
-                                    To resolve the clash between ${course1} and ${course2}, consider moving one class to another day (e.g., Thursday).
-                                </li>`;
-                        });
-                        clashMessage += '</ul>';
+function showSolutions() {
+    const solutionResults = document.getElementById('solutionResults');
+    const clashResults = document.getElementById('clashResults');
+    const backToClashesBtn = document.getElementById('backToClashesBtn');
+    const showSolutionsBtn = document.getElementById('showSolutionsBtn');
+    const modalTitle = document.getElementById('clashModalLabel'); 
 
-                        clashResults.innerHTML = clashMessage;
-                    }
-                }, 1000); // 1-second delay
-            })
-            .catch(error => {
-                setTimeout(() => {
-                    clashResults.innerHTML = '<p>An error occurred while detecting clashes.</p>';
-                }, 1000); // 1-second delay
-            });
-    }
-    </script>
+    let solutionMessage = '<h5>Suggested Solutions:</h5><ul>';
+    clashData.forEach(clash => {
+        solutionMessage += `
+            <li>
+                To resolve the clash between ${clash.course1.course_code} and ${clash.course2.course_code}, consider moving one class to another day (e.g., Thursday).
+            </li>`;
+    });
+    solutionMessage += '</ul>';
+
+    solutionResults.innerHTML = solutionMessage;
+    solutionResults.style.display = 'block'; // Show solutions
+    clashResults.style.display = 'none'; // Hide clash details
+    backToClashesBtn.style.display = 'inline-block'; // Show back button
+    showSolutionsBtn.style.display = 'none'; // Hide solutions button
+
+    modalTitle.textContent = 'Clash Solution'; // Change title to "Clash Solution"
+}
+
+function showClashes() {
+    const solutionResults = document.getElementById('solutionResults');
+    const clashResults = document.getElementById('clashResults');
+    const backToClashesBtn = document.getElementById('backToClashesBtn');
+    const showSolutionsBtn = document.getElementById('showSolutionsBtn');
+    const modalTitle = document.getElementById('clashModalLabel');
+
+    solutionResults.style.display = 'none'; // Hide solutions
+    clashResults.style.display = 'block'; // Show clash details
+    backToClashesBtn.style.display = 'none'; // Hide back button
+    showSolutionsBtn.style.display = 'inline-block'; // Show solutions button
+
+    modalTitle.textContent = 'Clash Detection';
+}
+</script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
