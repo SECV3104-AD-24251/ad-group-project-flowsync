@@ -1,4 +1,5 @@
 <x-app-layout>
+    <!-- Page Title -->
     <h1 class="text-2xl font-bold">Solution Page</h1>
     <p class="mt-4 text-lg">This is where the solution details will be displayed.</p>
 
@@ -41,25 +42,28 @@
                 }
             ];
 
-            // Fetch solution from the backend
+            // Fetch solution from the backend API
             fetch('/generate-solution', {
-                method: 'POST',
+                method: 'POST',     // HTTP method
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json',     // Content type for JSON data
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),      // CSRF token for Laravel
                 },
-                body: JSON.stringify({ timetable_data: timetableData })
+                body: JSON.stringify({ timetable_data: timetableData })     // Pass timetable data as JSON
             })
-            .then(response => response.json())
+            .then(response => response.json())      // Parse JSON response
             .then(data => {
                 const solutionDiv = document.getElementById('openai-solution');
                 if (data.solution) {
+                    // Display the solution if available
                     solutionDiv.innerHTML = `<p>${data.solution}</p>`;
                 } else {
+                    // Display an error message if solution is missing
                     solutionDiv.innerHTML = `<p class="text-red-500">${data.error}</p>`;
                 }
             })
             .catch(error => {
+                // Handle fetch errors
                 document.getElementById('openai-solution').innerHTML = 
                     `<p class="text-red-500">Error fetching solution: ${error.message}</p>`;
             });

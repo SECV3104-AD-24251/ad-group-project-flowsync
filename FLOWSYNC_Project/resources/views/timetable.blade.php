@@ -180,9 +180,10 @@ function detectClashesAndSolutions() {
     const clashModal = new bootstrap.Modal(document.getElementById('clashModal'));
     clashModal.show();
 
+    // Fetch clash data and update the modal dynamically
     fetch('{{ route('detect.clashes') }}')
         .then(response => response.json())
-        .then(data => {
+        .then(data => {     // Handle responses
             setTimeout(() => {
                 if (data.message === 'No timetable data available.') {
                     clashResults.innerHTML = '<p>No timetable data available!</p>';
@@ -205,13 +206,14 @@ function detectClashesAndSolutions() {
                 }
             }, 1000); // 1-second delay
         })
-        .catch(error => {
+        .catch(error => {       // Handle errors during fetch
             setTimeout(() => {
                 clashResults.innerHTML = '<p>An error occurred while detecting clashes.</p>';
             }, 1000); // 1-second delay
         });
 }
 
+// Display suggested solutions and update modal view
 function showSolutions() {
     const solutionResults = document.getElementById('solutionResults');
     const clashResults = document.getElementById('clashResults');
@@ -237,6 +239,7 @@ function showSolutions() {
     modalTitle.textContent = 'Clash Solution'; // Change title to "Clash Solution"
 }
 
+// Revert back to clash details view
 function showClashes() {
     const solutionResults = document.getElementById('solutionResults');
     const clashResults = document.getElementById('clashResults');

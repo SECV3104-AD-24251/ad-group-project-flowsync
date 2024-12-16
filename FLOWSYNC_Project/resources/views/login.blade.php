@@ -1,11 +1,14 @@
 <?php
+// Check if the login form is submitted
 if (isset($_POST["login"])) {
-    $username = $_POST["user"];
-    $password = $_POST["pass"];
+    $username = $_POST["user"];     // Retrieve the username from the form
+    $password = $_POST["pass"];     // Retrieve the password from the form
+
+    // Simple authentication check
     if ($username == "admin" && $password == "admin") {
-        echo "<script type='text/javascript'>alert('Login Success')</script>";
+        echo "<script type='text/javascript'>alert('Login Success')</script>";      // Display success alert
     } else {
-        echo "<script type='text/javascript'>alert('Login Error')</script>";
+        echo "<script type='text/javascript'>alert('Login Error')</script>";        // Display error alert
     }
 }
 ?>
@@ -16,11 +19,14 @@ if (isset($_POST["login"])) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Login Form</title>
-        <!-- Add Bootstrap for styling -->
+        
+        <!-- Include Bootstrap CSS for styling -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Font Awesome for icons -->
+        
+        <!-- Include Font Awesome for icons -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <style>
+            /* Styling for the login page */
             body {
                 background-color: #f9f9f9;
                 display: flex;
@@ -60,26 +66,32 @@ if (isset($_POST["login"])) {
     </head>
     <body>
         <div class="login-container">
-            <!-- Logo -->
+            <!-- Display the logo -->
             <div class="logo">
+                <!-- UTM logo -->
                 <img src="{{ asset('images/utm-logo.png') }}" alt="UTM Logo" width="200">
             </div>
+
+            <!-- Title -->
             <h3 class="mb-4 text-uppercase fw-bold" style="color: #800000;">Timetable Management</h3>
+            
             <!-- Login Form -->
             <form action="" method="POST">
                 @csrf <!-- CSRF Token for security -->
                 <div class="mb-3">
+                    <!-- Username input -->
                     <input type="text" name="user" class="form-control" placeholder="Enter UTMID" required>
                 </div>
                 <div class="mb-3">
+                    <!-- Password input -->
                     <input type="password" name="pass" class="form-control" placeholder="Enter Password" required>
                 </div>
-                <!-- Login Button -->
-                <button type="submit" name="login" class="btn btn-login w-100">Log in</button>
+                    <!-- Submit button -->
+                    <button type="submit" name="login" class="btn btn-login w-100">Log in</button>
             </form>
         </div>
 
-        <!-- Bootstrap and JS libraries -->
+        <!-- Include Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>
