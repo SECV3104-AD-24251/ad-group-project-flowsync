@@ -2,51 +2,57 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use GuzzleHttp\Client;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class SolutionController extends Controller
 {
-    public function generateSolution(Request $request)
+    public function detectClashes(Request $request)
     {
         try {
-            // Fetch timetable data from MySQL
-            $timetableData = DB::table('timetable_entries')->get();
+            // Step 1: Fetch data from MySQL
+            $timetableData = DB::table('timetable_management')->get();
 
-            // Format the data
+            if ($timetableData->isEmpty()) {
+                return response()->json(['error' => 'No timetable data found.'], 404);
+            }
+
+            // Step 2: Format the data
             $formattedData = $timetableData->map(function ($entry) {
                 return [
-                    'course_code' => $entry->course_code,
-                    'course_name' => $entry->course_name,
-                    'section' => $entry->section,
-                    'time_slot' => $entry->time_slot,
-                    'lecturer_name' => $entry->lecturer_name,
+                    'course' => $entry->course_name,
+                    'room' => $entry->room,
+                    'time' => $entry->time_slot,
+                    'lecturer' => $entry->lecturer_name,
                 ];
-            })->toArray();
+            });
 
-            $prompt = "Analyze the following timetable for potential conflicts: " . json_encode($formattedData);
-
-            // Send data to OpenAI
-            $client = new Client();
-            $response = $client->post('https://api.openai.com/v1/completions', [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . env('OPENAI_API_KEY'),
-                    'Content-Type' => 'application/json',
-                ],
-                'json' => [
-                    'model' => 'text-davinci-003',
-                    'prompt' => $prompt,
-                    'max_tokens' => 150,
-                ],
+            // Step 3: Call AI API
+            $apiKey = env('OPENAI_API_KEY');
+            $response = Http::withHeaders([
+                'Authorization' => "Bearer $apiKey",
+            ])->post('https://api.openai.com/v1/completions', [
+                'model' => 'text-davinci-003',
+                'prompt' => "Analyze the following timetable data for clashes:\n" 
+                    . json_encode($formattedData, JSON_PRETTY_PRINT),
+                'max_tokens' => 150,
+                'temperature' => 0.7,
             ]);
 
-            $responseData = json_decode($response->getBody(), true);
+            // Step 4: Parse the AI response
+            if ($response->failed()) {
+                throw new \Exception('AI request failed: ' . $response->body());
+            }
 
-            // Return the solution
-            return response()->json(['solution' => $responseData['choices'][0]['text'] ?? 'No solution provided.']);
+            $result = $response->json();
+            $clashes = $result['choices'][0]['text'] ?? 'No clashes detected.';
+
+            // Step 5: Return the result
+            return response()->json(['clashes' => $clashes], 200);
+
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['error' => 'Failed to process request: ' . $e->getMessage()], 500);
         }
     }
 }

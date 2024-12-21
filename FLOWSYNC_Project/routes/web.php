@@ -50,3 +50,4 @@ Route::post('/logout', function (Request $request) {
 
 // API integration: Generate solution from OpenAI
 Route::post('/generate-solution', [SolutionController::class, 'generateSolution']);
+Route::post('/detect-clashes', [SolutionController::class, 'detectClashes']);

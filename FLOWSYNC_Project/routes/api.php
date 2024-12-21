@@ -2,53 +2,56 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-// OpenAI for Overlapping Schedule
 Route::post('/clash-detection', function (Request $request) {
-    // Validate timetable data
-    $request->validate([
-        'timetable_data' => 'required|array',
-    ]);
+    // Step 1: Fetch timetable data from MySQL
+    $timetableData = DB::table('timetable_management')->get();
 
-    $timetableData = $request->input('timetable_data');
-    
-    if (empty($timetableData)) {
-        return response()->json(['error' => 'No timetable data provided.'], 400);
+    // Check if the timetable data is empty
+    if ($timetableData->isEmpty()) {
+        return response()->json(['error' => 'No timetable data found.'], 404);
     }
 
-    // Interact with OpenAI API
-    $client = \OpenAI::client(env('OPENAI_API_KEY'));
+    // Step 2: Format the data for the AI API
+    $formattedData = $timetableData->map(function ($entry) {
+        return [
+            'course' => $entry->course_name,
+            'room' => $entry->room,
+            'time' => $entry->time_slot,
+            'lecturer' => $entry->lecturer_name,
+        ];
+    });
 
-    // Preparing the Prompt
-    $prompt = "Detect timetable clashes in the following data:\n" . json_encode($timetableData, JSON_PRETTY_PRINT);
+    // Step 3: Prepare the prompt for OpenAI
+    $prompt = "Analyze the following timetable data for clashes or conflicts:\n" . json_encode($formattedData, JSON_PRETTY_PRINT);
 
     try {
-        // Sending a Request to OpenAI
-        $response = $client->completions()->create([
-            'model' => 'text-davinci-003',              //AI model that dvanced and can handle natural language tasks
-            'prompt' => $prompt,                        //Sends the data along with instructions to detect timetable clashes
-            'max_tokens' => 150,                        //Limits the number of tokens (words) the AI can return in the respons
+        // Step 4: Call OpenAI API
+        $apiKey = env('OPENAI_API_KEY');
+        $response = Http::withHeaders([
+            'Authorization' => "Bearer $apiKey",
+        ])->post('https://api.openai.com/v1/completions', [
+            'model' => 'text-davinci-003',
+            'prompt' => $prompt,
+            'max_tokens' => 150,
+            'temperature' => 0.7,
         ]);
 
-        // Processing the Response
-        $result = trim($response['choices'][0]['text']);
-        return response()->json(['clashes' => $result]);
+        // Step 5: Handle the response from OpenAI
+        if ($response->failed()) {
+            return response()->json(['error' => 'AI request failed: ' . $response->body()], 500);
+        }
+
+        $result = $response->json();
+        $clashes = $result['choices'][0]['text'] ?? 'No clashes detected.';
+
+        // Step 6: Return the AI result
+        return response()->json(['clashes' => $clashes]);
+
     } catch (\Exception $e) {
+        // Step 7: Handle any errors
         return response()->json(['error' => 'Failed to process request: ' . $e->getMessage()], 500);
     }
 });

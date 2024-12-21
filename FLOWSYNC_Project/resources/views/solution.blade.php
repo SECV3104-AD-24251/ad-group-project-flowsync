@@ -1,73 +1,95 @@
-<x-app-layout>
-    <!-- Page Title -->
-    <h1 class="text-2xl font-bold">Solution Page</h1>
-    <p class="mt-4 text-lg">This is where the solution details will be displayed.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solution Page</title>
+    <!-- Include your global CSS -->
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+</head>
+<body>
+    <!-- Common Header -->
+    <header class="header">
+        <nav class="navbar">
+            <a href="/" class="logo">MyApp</a>
+            <ul class="nav-links">
+                <li><a href="/calendar">Calendar</a></li>
+                <li><a href="/timetable">Timetable</a></li>
+                <li><a href="/solution" class="active">Solution</a></li>
+                <li><a href="/helpCenter">Help Center</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    {{-- Solution Details Section --}}
-    <div id="solution" class="mt-6 p-4 bg-gray-100 rounded shadow">
-        <p class="text-lg font-medium">Generated Solution:</p>
-        <div id="openai-solution" class="mt-2 text-gray-700">
-            {{-- This will display the solution from OpenAI --}}
-            <p>Loading solution...</p>
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <h1>Solution Page</h1>
+            <!-- Form to trigger AI analysis -->
+            <form id="aiForm" class="form">
+                <p>The system will automatically analyze timetable data stored in the database.</p>
+                <button type="submit" class="btn-primary">Analyze Timetable</button>
+            </form>
+
+            <!-- Section to display AI analysis result -->
+            <div id="result" class="result-section">
+                <h2>AI Analysis Result:</h2>
+                <div id="aiResponse" class="ai-response"></div>
+            </div>
         </div>
-    </div>
+    </main>
 
-    {{-- Back to Timetable Button --}}
-    <a href="{{ url('/timetable') }}" class="mt-4 inline-block text-blue-500 hover:underline">
-        Back to Timetable
-    </a>
+    <!-- Common Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 MyApp. All rights reserved.</p>
+    </footer>
 
-    {{-- Script to Fetch Solution --}}
+    <!-- JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Example timetable data for demonstration
-            const timetableData = [
-                {
-                    course_name: "SECV3104",
-                    instructor_name: "Dr. Smith",
-                    room_name: "Room A",
-                    section: "Section 1",
-                    day_of_week: "Monday",
-                    start_time: "09:00:00",
-                    end_time: "10:30:00"
-                },
-                {
-                    course_name: "SECV3104",
-                    instructor_name: "Dr. Smith",
-                    room_name: "Room A",
-                    section: "Section 2",
-                    day_of_week: "Monday",
-                    start_time: "11:00:00",
-                    end_time: "12:30:00"
-                }
-            ];
+        document.getElementById('aiForm').addEventListener('submit', async (e) => {
+            e.preventDefault(); // Prevent form from reloading the page
 
-            // Fetch solution from the backend API
-            fetch('/generate-solution', {
-                method: 'POST',     // HTTP method
-                headers: {
-                    'Content-Type': 'application/json',     // Content type for JSON data
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),      // CSRF token for Laravel
-                },
-                body: JSON.stringify({ timetable_data: timetableData })     // Pass timetable data as JSON
-            })
-            .then(response => response.json())      // Parse JSON response
-            .then(data => {
-                const solutionDiv = document.getElementById('openai-solution');
-                if (data.solution) {
-                    // Display the solution if available
-                    solutionDiv.innerHTML = `<p>${data.solution}</p>`;
+            try {
+                const response = await fetch('/generate-solution', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                });
+
+                const result = await response.json();
+
+                const aiResponseContainer = document.getElementById('aiResponse');
+
+                if (response.ok) {
+                    // Check if the AI returned any clashes
+                    if (result.clashes) {
+                        // Format and display the clashes and suggestions
+                        aiResponseContainer.innerHTML = `
+                            <p><strong>Detected Clashes:</strong></p>
+                            <ul>
+                                ${result.clashes.map(clash => `<li>${clash}</li>`).join('')}
+                            </ul>
+                            <p><strong>Suggestions:</strong></p>
+                            <ul>
+                                ${result.suggestions ? result.suggestions.map(suggestion => `<li>${suggestion}</li>`).join('') : '<li>No suggestions available.</li>'}
+                            </ul>
+                        `;
+                    } else {
+                        aiResponseContainer.innerHTML = `<p>No clashes detected.</p>`;
+                    }
                 } else {
-                    // Display an error message if solution is missing
-                    solutionDiv.innerHTML = `<p class="text-red-500">${data.error}</p>`;
+                    aiResponseContainer.innerHTML = `
+                        <p style="color: red;">Error processing the request: ${result.error || 'Unknown error'}</p>
+                    `;
                 }
-            })
-            .catch(error => {
-                // Handle fetch errors
-                document.getElementById('openai-solution').innerHTML = 
-                    `<p class="text-red-500">Error fetching solution: ${error.message}</p>`;
-            });
+            } catch (error) {
+                document.getElementById('aiResponse').innerHTML = `
+                    <p style="color: red;">Failed to fetch AI response: ${error.message}</p>
+                `;
+            }
         });
     </script>
-</x-app-layout>
-
+</body>
+</html>
