@@ -22,7 +22,6 @@ class SolutionController extends Controller
             $formattedData = $timetableData->map(function ($entry) {
                 return [
                     'course' => $entry->course_name,
-                    'room' => $entry->room,
                     'time' => $entry->time_slot,
                     'lecturer' => $entry->lecturer_name,
                 ];
@@ -33,7 +32,7 @@ class SolutionController extends Controller
             $response = Http::withHeaders([
                 'Authorization' => "Bearer $apiKey",
             ])->post('https://api.openai.com/v1/completions', [
-                'model' => 'text-davinci-003',
+                'model' => 'gpt-3.5-turbo',
                 'prompt' => "Analyze the following timetable data for clashes:\n" 
                     . json_encode($formattedData, JSON_PRETTY_PRINT),
                 'max_tokens' => 150,

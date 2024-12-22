@@ -8,7 +8,7 @@ use App\Http\Controllers\TimetableController;
 // Public routes
 Route::view('/', 'welcome');
 Route::view('/calendar', 'calendar');
-Route::view('/solution', 'solution')->name('solution');
+Route::view('/solution', 'solution');
 Route::view('/helpCenter', 'helpCenter');
 Route::view('/HC1', 'HC1');
 
@@ -49,5 +49,6 @@ Route::post('/logout', function (Request $request) {
 })->name('logout');
 
 // API integration: Generate solution from OpenAI
-Route::post('/generate-solution', [SolutionController::class, 'generateSolution']);
-Route::post('/detect-clashes', [SolutionController::class, 'detectClashes']);
+//Route::post('/generate-solution', [SolutionController::class, 'generateSolution']);
+//Route::post('/detect-clashes', [SolutionController::class, 'detectClashes']);
+Route::post('/generate-solution', [SolutionController::class, 'detectClashes']);
