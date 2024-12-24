@@ -86,4 +86,26 @@ class TimetableController extends Controller
 
         return response()->json($clashes);
     }
+
+    public function deleteEntry(Request $request)
+    {
+        $validated = $request->validate([
+            'course_code' => 'required',
+            'course_name' => 'required',
+            'section' => 'required',
+            'time_slot' => 'required',
+        ]);
+
+        $deleted = TimetableManagement::where('course_code', $validated['course_code'])
+            ->where('course_name', $validated['course_name'])
+            ->where('section', $validated['section'])
+            ->where('time_slot', $validated['time_slot'])
+            ->delete();
+
+        if ($deleted) {
+            return response()->json(['message' => 'Entry deleted successfully.']);
+        } else {
+            return response()->json(['message' => 'Failed to delete entry.'], 400);
+        }
+    }
 }

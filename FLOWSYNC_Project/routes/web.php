@@ -57,3 +57,4 @@ Route::post('/generate-solution', [SolutionController::class, 'detectClashes']);
 
 Route::get('/timetable/dropdown-data', [TimetableController::class, 'getDropdownData']);
 Route::post('/timetable/add', [TimetableController::class, 'storeTimetableEntry']);
+Route::post('/timetable/delete', [TimetableController::class, 'delete']);

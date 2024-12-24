@@ -187,14 +187,15 @@
         <!-- Display Timetable -->
         <div class="table-responsive">
             <table class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>Course Code</th>
-                        <th>Course Name</th>
-                        <th>Section</th>
-                        <th>Time Slot</th>
-                    </tr>
-                </thead>
+            <thead>
+    <tr>
+        <th>Course Code</th>
+        <th>Course Name</th>
+        <th>Section</th>
+        <th>Time Slot</th>
+        <th>Actions</th> <!-- New column for actions -->
+    </tr>
+</thead>
                 <tbody id="timetableBody">
                     <tr id="emptyRow">
                         <td colspan="4" class="text-center">No timetable entries yet.</td>
@@ -253,17 +254,19 @@
                     },
                     body: JSON.stringify(entry),
                 })
+                
                 .then(response => response.json())
                 .then(data => {
                     if (data.message) {
                         const tbody = document.getElementById('timetableBody');
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td>${courseCode}</td>
-                            <td>${courseName}</td>
-                            <td>${section}</td>
-                            <td>${timeSlot}</td>
-                        `;
+    <td>${courseCode}</td>
+    <td>${courseName}</td>
+    <td>${section}</td>
+    <td>${timeSlot}</td>
+    <td><button class="btn btn-danger btn-sm delete-btn">Delete</button></td>
+`;
                         if (document.getElementById('emptyRow')) {
                             document.getElementById('emptyRow').remove();
                         }
@@ -276,6 +279,112 @@
             });
         });
 
+        document.getElementById('deleteEntryBtn').addEventListener('click', () => {
+    const courseCode = document.getElementById('courseCode').value;
+    const courseName = document.getElementById('courseName').value;
+    const section = document.getElementById('section').value;
+    const timeSlot = document.getElementById('timeSlot').value;
+
+    if (!courseCode || !courseName || !section || !timeSlot) {
+        Swal.fire('Please select a timetable entry to delete!');
+        return;
+    }
+
+    const entry = { course_code: courseCode, course_name: courseName, section, time_slot: timeSlot };
+
+    fetch('/timetable/delete', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        },
+        body: JSON.stringify(entry),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            Swal.fire('Entry deleted successfully.');
+            // Remove the row from the table
+            const tbody = document.getElementById('timetableBody');
+            const rows = tbody.querySelectorAll('tr');
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                if (
+                    cells[0]?.textContent === courseCode &&
+                    cells[1]?.textContent === courseName &&
+                    cells[2]?.textContent === section &&
+                    cells[3]?.textContent === timeSlot
+                ) {
+                    row.remove();
+                }
+            });
+
+            // Check if the table is empty and show the "No timetable entries" row
+            if (tbody.children.length === 0) {
+                const emptyRow = document.createElement('tr');
+                emptyRow.id = 'emptyRow';
+                emptyRow.innerHTML = `<td colspan="4" class="text-center">No timetable entries yet.</td>`;
+                tbody.appendChild(emptyRow);
+            }
+        } else {
+            Swal.fire('Failed to delete entry.');
+        }
+    })
+    .catch(error => Swal.fire(`Failed to delete entry: ${error.message}`));
+});
+
+document.getElementById('timetableBody').addEventListener('click', (event) => {
+    if (event.target.classList.contains('delete-btn')) {
+        const row = event.target.closest('tr');
+        const courseCode = row.cells[0].textContent;
+        const courseName = row.cells[1].textContent;
+        const section = row.cells[2].textContent;
+        const timeSlot = row.cells[3].textContent;
+
+        const entry = { course_code: courseCode, course_name: courseName, section, time_slot: timeSlot };
+
+        // Confirm delete action
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('/timetable/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    },
+                    body: JSON.stringify(entry),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        Swal.fire('Entry deleted successfully.');
+                        row.remove();  // Remove the row from the table after successful deletion
+
+                        // Check if the table is empty and show the "No timetable entries" row
+                        const tbody = document.getElementById('timetableBody');
+                        if (tbody.children.length === 0) {
+                            const emptyRow = document.createElement('tr');
+                            emptyRow.id = 'emptyRow';
+                            emptyRow.innerHTML = `<td colspan="4" class="text-center">No timetable entries yet.</td>`;
+                            tbody.appendChild(emptyRow);
+                        }
+                    } else {
+                        Swal.fire('Failed to delete entry.');
+                    }
+                })
+                .catch(error => Swal.fire(`Failed to delete entry: ${error.message}`));
+            }
+        });
+    }
+});
         function detectClashes() {
             fetch('/detect-clashes')
                 .then(response => response.json())
