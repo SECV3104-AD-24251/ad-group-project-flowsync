@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Schedule Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
             background-color: #ffffff;
@@ -112,6 +114,17 @@
         .back-button span {
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
         }
+
+        .table tbody tr[data-clash="true"] {
+            background-color: #ffcccc;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25%, 75% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+        }
     </style>
 </head>
 <body>
@@ -133,39 +146,39 @@
                 <div class="col-md-3">
                     <select id="courseCode" class="form-select">
                         <option value="">Select Course Code</option>
-                        <option value="CS101">CS101</option>
-                        <option value="CS102">CS102</option>
+                        <option value="SECV3113">SECV3113</option>
+                        <option value="SECV3104">SECV3104</option>
                     </select>
                 </div>
 
                 <div class="col-md-3">
                     <select id="courseName" class="form-select">
                         <option value="">Select Course Name</option>
-                        <option value="Intro to Programming">Intro to Programming</option>
-                        <option value="Data Structures">Data Structures</option>
+                        <option value="Geometry Modelling">Geometry Modelling</option>
+                        <option value="Application Development">Application Development</option>
                     </select>
                 </div>
 
                 <div class="col-md-3">
                     <select id="section" class="form-select">
                         <option value="">Select Section</option>
-                        <option value="A">A</option>
-                        <option value="B">B</option>
+                        <option value="01">01</option>
+                        <option value="02">02</option>
                     </select>
                 </div>
 
                 <div class="col-md-3">
                     <select id="timeSlot" class="form-select">
                         <option value="">Select Time Slot</option>
-                        <option value="8:00 - 10:00">8:00 - 10:00</option>
-                        <option value="10:00 - 12:00">10:00 - 12:00</option>
+                        <option value="WED 10:00-13:00">WED 10:00-13:00</option>
+                        <option value="THU 8:00-11:00">THU 8:00-11:00</option>
                     </select>
                 </div>
             </div>
 
-            <!-- Add button wrapped in a flexbox container -->
+            <!-- Add button -->
             <div class="d-flex justify-content-end mt-3">
-                <button id="addEntryBtn" class="btn btn-primary">Add</button>
+                <button id="addEntryBtn" class="btn btn-primary" aria-label="Add timetable entry">Add</button>
             </div>
         </div>
 
@@ -183,7 +196,9 @@
                     </tr>
                 </thead>
                 <tbody id="timetableBody">
-                    <!-- Entries will be dynamically added here -->
+                    <tr id="emptyRow">
+                        <td colspan="4" class="text-center">No timetable entries yet.</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -191,38 +206,91 @@
 
     <!-- Floating AI Button -->
     <div class="ai-button-container">
-        <button id="aiAssistantBtn" class="ai-button" onclick="detectClashes()">
-            <img src="{{ asset('images/AI.png') }}" alt="AI">
+        <button id="aiAssistantBtn" class="ai-button" aria-label="Detect schedule clashes" onclick="detectClashes()">
+            <img src="{{ asset('images/AI.png') }}" alt="AI Assistant">
         </button>
     </div>
 
     <script>
-// Add new entry to the table
-document.getElementById('addEntryBtn').addEventListener('click', () => {
-    const courseCode = document.getElementById('courseCode').value;
-    const courseName = document.getElementById('courseName').value;
-    const section = document.getElementById('section').value;
-    const timeSlot = document.getElementById('timeSlot').value;
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('/timetable/dropdown-data')
+                .then(response => response.json())
+                .then(data => {
+                    populateDropdown('courseCode', data.courses, 'code');
+                    populateDropdown('courseName', data.courses, 'name');
+                    populateDropdown('section', data.sections, 'name');
+                    populateDropdown('timeSlot', data.time_slots, 'slot');
+                });
 
-    if (courseCode && courseName && section && timeSlot) {
-        const tbody = document.getElementById('timetableBody');
-        const row = document.createElement('tr');
+            function populateDropdown(elementId, items, key) {
+                const dropdown = document.getElementById(elementId);
+                items.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item[key];
+                    option.textContent = item[key];
+                    dropdown.appendChild(option);
+                });
+            }
 
-        row.innerHTML = `
-            <td>${courseCode}</td>
-            <td>${courseName}</td>
-            <td>${section}</td>
-            <td>${timeSlot}</td>
-        `;
+            document.getElementById('addEntryBtn').addEventListener('click', () => {
+                const courseCode = document.getElementById('courseCode').value;
+                const courseName = document.getElementById('courseName').value;
+                const section = document.getElementById('section').value;
+                const timeSlot = document.getElementById('timeSlot').value;
 
-        tbody.appendChild(row);
-    } else {
-        alert('Please fill in all fields before adding!');
-    }
-});
-        // AI button for clash detection (dummy function)
+                if (!courseCode || !courseName || !section || !timeSlot) {
+                    Swal.fire('Please fill in all fields before adding!');
+                    return;
+                }
+
+                const entry = { course_code: courseCode, course_name: courseName, section, time_slot: timeSlot };
+
+                fetch('/timetable/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    },
+                    body: JSON.stringify(entry),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        const tbody = document.getElementById('timetableBody');
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${courseCode}</td>
+                            <td>${courseName}</td>
+                            <td>${section}</td>
+                            <td>${timeSlot}</td>
+                        `;
+                        if (document.getElementById('emptyRow')) {
+                            document.getElementById('emptyRow').remove();
+                        }
+                        tbody.appendChild(row);
+                    } else {
+                        Swal.fire('Failed to add entry.');
+                    }
+                })
+                .catch(error => Swal.fire(`Failed to add entry: ${error.message}`));
+            });
+        });
+
         function detectClashes() {
-            alert('Clash detection feature coming soon!');
+            fetch('/detect-clashes')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        Swal.fire(data.message);
+                    } else {
+                        let clashes = '';
+                        data.forEach(clash => {
+                            clashes += `Clash detected:\n- ${clash.course1.course_name} (${clash.course1.section}) with ${clash.course2.course_name} (${clash.course2.section}) at ${clash.time_slot}\n\n`;
+                        });
+                        Swal.fire('Clashes Found', clashes, 'error');
+                    }
+                })
+                .catch(error => Swal.fire('An error occurred while detecting clashes.'));
         }
     </script>
 

@@ -52,3 +52,8 @@ Route::post('/logout', function (Request $request) {
 //Route::post('/generate-solution', [SolutionController::class, 'generateSolution']);
 //Route::post('/detect-clashes', [SolutionController::class, 'detectClashes']);
 Route::post('/generate-solution', [SolutionController::class, 'detectClashes']);
+
+
+
+Route::get('/timetable/dropdown-data', [TimetableController::class, 'getDropdownData']);
+Route::post('/timetable/add', [TimetableController::class, 'storeTimetableEntry']);
