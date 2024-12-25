@@ -146,16 +146,22 @@
                 <div class="col-md-3">
                     <select id="courseCode" class="form-select">
                         <option value="">Select Course Code</option>
-                        <option value="SECV3113">SECV3113</option>
+                        <option value="SECJ3553">SECJ3553</option>
                         <option value="SECV3104">SECV3104</option>
+                        <option value="SECV3113">SECV3113</option>
+                        <option value="SECV3213">SECV3213</option>
+                        <option value="UHLB3132">UHLB3132</option>
                     </select>
                 </div>
 
                 <div class="col-md-3">
                     <select id="courseName" class="form-select">
                         <option value="">Select Course Name</option>
-                        <option value="Geometry Modelling">Geometry Modelling</option>
+                        <option value="Artificial Intelligence">Artificial Intelligence</option>
                         <option value="Application Development">Application Development</option>
+                        <option value="Geometry Modelling">Geometric Modelling</option>
+                        <option value="Fundamental of Image Processing">Fundamental of Image Processing</option>
+                        <option value="Professional Communication Skills 2">Professional Communication Skills 2</option>
                     </select>
                 </div>
 
@@ -164,12 +170,20 @@
                         <option value="">Select Section</option>
                         <option value="01">01</option>
                         <option value="02">02</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="ALL">ALL</option>
                     </select>
+
                 </div>
 
                 <div class="col-md-3">
                     <select id="timeSlot" class="form-select">
                         <option value="">Select Time Slot</option>
+                        <option value="SUN 11:00-13:00">SUN 11:00-13:00</option>
+                        <option value="MON 8:00-10:00">MON 8:00-10:00</option>
+                        <option value="MON 10:00-13:00">MON 10:00-13:00</option>
+                        <option value="TUE 8:00-10:00">TUE 8:00-10:00</option>
                         <option value="WED 10:00-13:00">WED 10:00-13:00</option>
                         <option value="THU 8:00-11:00">THU 8:00-11:00</option>
                     </select>
