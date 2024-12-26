@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\SolutionController;
 use App\Http\Controllers\TimetableController;
+use App\Http\Controllers\GoogleCalendarController;
 
 // Public routes
 Route::view('/', 'welcome');
@@ -58,3 +59,21 @@ Route::post('/generate-solution', [SolutionController::class, 'detectClashes']);
 Route::get('/timetable/dropdown-data', [TimetableController::class, 'getDropdownData']);
 Route::post('/timetable/add', [TimetableController::class, 'storeTimetableEntry']);
 Route::post('/timetable/delete', [TimetableController::class, 'delete']);
+
+
+
+// Step 1: Redirect to Google OAuth
+Route::get('/google-calendar/auth', [GoogleCalendarController::class, 'redirectToGoogle'])->name('google.auth');
+
+// Step 2: Handle Google OAuth callback
+Route::get('/google-calendar/callback', [GoogleCalendarController::class, 'handleGoogleCallback'])->name('google.callback');
+
+// Step 3: Display Events
+Route::get('/google-calendar/events', [GoogleCalendarController::class, 'listEvents'])->name('google.events');
+
+
+
+Route::get('google/redirect', [GoogleCalendarController::class, 'redirectToGoogle'])->name('google.auth');
+Route::get('google/callback', [GoogleCalendarController::class, 'handleGoogleCallback']);
+Route::get('google/events', [GoogleCalendarController::class, 'listEvents'])->name('google.events');
+Route::post('calendar/create', [GoogleCalendarController::class, 'createEvent'])->name('calendar.create');
