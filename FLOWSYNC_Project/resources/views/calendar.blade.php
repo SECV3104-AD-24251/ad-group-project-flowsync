@@ -11,9 +11,16 @@
         <p style="color: red; text-align: center;">{{ session('error') }}</p>
     @endif
 
-    <br><br>
+    <br>
 
-    
+    <!-- Google Calendar Button -->
+    <div style="text-align: right; margin-bottom: 20px; margin-right: 20px;">
+        <a href="https://calendar.google.com/calendar/u/0/r?pli=1" 
+           target="_blank" 
+           style="text-decoration: none; padding: 10px 20px; background-color: maroon; color: white; border-radius: 5px; font-size: 16px;">
+            View Calendar
+        </a>
+    </div>
 
     <!-- Google Calendar Embed Section -->
     <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
@@ -22,4 +29,3 @@
     </div>
 
 @endsection
-
