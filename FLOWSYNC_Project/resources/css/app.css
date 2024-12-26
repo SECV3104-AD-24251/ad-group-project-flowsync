@@ -1,0 +1,35 @@
+/* Light Mode (Default) */
+body {
+    background-color: #ffffff;
+    color: #000000;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+iframe {
+    transition: background-color 0.3s ease;
+}
+
+/* Dark Mode */
+body.dark {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+body.dark iframe {
+    background-color: #121212;
+}
+
+/* Optional: Style for the toggle button */
+button {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #444;
+}
+
+button.dark {
+    background-color: #333;
+    color: #fff;
+}

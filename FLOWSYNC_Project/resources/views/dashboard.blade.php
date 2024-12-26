@@ -3,10 +3,16 @@
 @section('content')     <!-- Section where content is injected into the 'app' layout -->
 <div class="dashboard-container py-6 px-4 text-gray-800">
     <!-- Header Section -->
-    <div class="text-left mb-6">
-        <!-- Greeting Message -->
-        <h1 class="text-2xl font-semibold">Hi, WELCOME BACK! ✋</h1>
+
+<!-- Welcome Back Section -->
+<div class="mb-8">
+        <div class="bg-gray-100 p-4 rounded shadow">
+
+            <h1 class="text-xl font-semibold">Hi, WELCOME BACK! ✋</h1>  
+        </div>
     </div>
+
+
 
     <!-- Timetable Section -->
     <div class="mb-8">

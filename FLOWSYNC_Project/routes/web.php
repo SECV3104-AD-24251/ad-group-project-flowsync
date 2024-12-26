@@ -17,6 +17,7 @@ Route::view('/HC1', 'HC1');
 Route::get('/timetable', [TimetableController::class, 'showTimetable'])->name('timetable');
 Route::get('/detect-clashes', [TimetableController::class, 'detectClashes'])->name('detect.clashes');
 
+
 // Login page route
 Route::get('/login', function () {
     return view('login');

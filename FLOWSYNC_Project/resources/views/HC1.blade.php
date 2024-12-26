@@ -15,10 +15,23 @@
         </a>
     </div>
 
-    <!-- Title -->
+    <!-- Title 
     <div class="flex w-full mb-10 flex-wrap">
         <h1 class="sm:text-2xl text-1xl font-medium title-font text-gray-900 ">TIMETABLE MANAGEMENT  |  Help Center</h1>
+    </div>  -->
+
+    <!-- Help Center Section -->
+        <div class="mb-8">
+        <div class="bg-gray-100 p-4 rounded shadow">
+
+            <h1 class="text-xl font-semibold">TIMETABLE MANAGEMENT  |  Help Center</h1>  
+        </div>
     </div>
+
+
+
+
+ 
 
     <!-- Help Section 1 Content -->
     <div class="bg-white max-w-8xl mx-auto p-6 rounded-lg shadow-md">
