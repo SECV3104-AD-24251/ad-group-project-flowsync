@@ -74,7 +74,12 @@ Route::get('/google-calendar/events', [GoogleCalendarController::class, 'listEve
 
 
 
-Route::get('google/redirect', [GoogleCalendarController::class, 'redirectToGoogle'])->name('google.auth');
+Route::get('google/calendar', [GoogleCalendarController::class, 'showGoogleCalendar'])->name('google.calendar');
+Route::get('google/redirect', [GoogleCalendarController::class, 'redirectToGoogle'])->name('google.calendar.auth');
 Route::get('google/callback', [GoogleCalendarController::class, 'handleGoogleCallback']);
-Route::get('google/events', [GoogleCalendarController::class, 'listEvents'])->name('google.events');
-Route::post('calendar/create', [GoogleCalendarController::class, 'createEvent'])->name('calendar.create');
+Route::post('google/create-event', [GoogleCalendarController::class, 'createEvent'])->name('google.create.event');
+
+Route::get('/api/events', [EventController::class, 'index']);
+Route::post('/api/events', [EventController::class, 'store']);
+Route::put('/api/events/{id}', [EventController::class, 'update']);
+Route::delete('/api/events/{id}', [EventController::class, 'destroy']);
