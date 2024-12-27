@@ -15,12 +15,13 @@
 
         <!-- Font Awesome for moon and sun icons -->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-        
+
         <style>
             /* Light mode styles */
             body {
                 background-color: #f9fafb; /* Light background */
                 color: #4b5563; /* Light text */
+                transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
             }
             header {
                 background: linear-gradient(to right, #ef4444, #dc2626); /* Light mode header */
@@ -59,13 +60,41 @@
 
             /* Add some space around the button icon */
             .dark-mode-toggle i {
-                font-size: 1.0rem;        /* Icon size */
+                font-size: 1.5rem;        /* Icon size */
                 transition: color 0.3s;   /* Smooth color transition */
             }
 
             /* Hover effect on the button */
             .dark-mode-toggle:hover i {
                 color: #ef4444;           /* Red color on hover */
+            }
+
+            /* Input fields and links */
+            input, a {
+                transition: color 0.3s ease, background-color 0.3s ease;
+            }
+
+            input {
+                background-color: #fff;
+                color: #333;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                padding: 10px;
+            }
+
+            .dark input {
+                background-color: #333;
+                color: #fff;
+                border: 1px solid #555;
+            }
+
+            a {
+                text-decoration: none;
+                transition: color 0.3s ease;
+            }
+
+            .dark a {
+                color: #ffffff; /* Links in dark mode should be white */
             }
         </style>
     </head>
