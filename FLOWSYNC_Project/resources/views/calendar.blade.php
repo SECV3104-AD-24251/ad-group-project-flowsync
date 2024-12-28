@@ -13,12 +13,12 @@
 
     <br>
     <!-- Back Button (Left side) -->
-    <a href="javascript:history.back()" 
+    <a href="/dashboard" 
        style="text-decoration: none; padding: 8px 20px; background: linear-gradient(135deg, #800000, #660000); color: white; 
               border-radius: 50px; font-size: 16px; font-weight: 500; box-shadow: 0 6px 8px rgba(0,0,0,0.1); 
               transition: background 0.3s ease, transform 0.3s ease; text-transform: uppercase; 
               display: inline-block; margin-left: 10px;">
-        <- Back
+        ← Back
     </a>
 
     <!-- Google Calendar Button -->
