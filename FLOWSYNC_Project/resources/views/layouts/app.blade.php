@@ -46,6 +46,11 @@
                 background-color: #000000; /* Black footer */
                 color: #ffffff; /* White footer text */
             }
+
+            body.dark h3 {
+                color: #4b5563; /* Ensure headers are visible in dark mode */
+            }
+
             .dark-mode-toggle i {
                 color: #ffffff; /* White icon for dark mode */
             }
@@ -95,6 +100,26 @@
 
             .dark a {
                 color: #ffffff; /* Links in dark mode should be white */
+            }
+
+            body.dark-mode {
+                background-color: #121212;
+                color: #ffffff;
+            }
+
+            body.dark-mode .calendar-container h3,
+            body.dark-mode .map-container h3,
+            body.dark-mode .links-container h3 {
+                color: #ffffff; /* Ensure headers are visible */
+            }
+
+            body.dark-mode a {
+                color: #4cc9f0; /* Adjust link color for better visibility */
+            }
+
+            body.dark-mode input {
+                background-color: #333333;
+                color: #ffffff;
             }
         </style>
     </head>

@@ -72,8 +72,6 @@ Route::get('/google-calendar/callback', [GoogleCalendarController::class, 'handl
 // Step 3: Display Events
 Route::get('/google-calendar/events', [GoogleCalendarController::class, 'listEvents'])->name('google.events');
 
-
-
 Route::get('google/calendar', [GoogleCalendarController::class, 'showGoogleCalendar'])->name('google.calendar');
 Route::get('google/redirect', [GoogleCalendarController::class, 'redirectToGoogle'])->name('google.calendar.auth');
 Route::get('google/callback', [GoogleCalendarController::class, 'handleGoogleCallback']);
