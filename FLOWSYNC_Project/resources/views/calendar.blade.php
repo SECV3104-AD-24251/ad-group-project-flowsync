@@ -40,7 +40,7 @@
     <!-- Calendar Section -->
     <div style="background-color: #ffffff; border: 1px solid #ddd; border-radius: 10px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 30px;">
         <h3 style="text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 10px;">Full Calendar</h3>
-        <iframe src="https://calendar.google.com/calendar/embed?src=nurirdinasyafiqah%40graduate.utm.my&ctz=Asia%2FKuala_Lumpur"
+        <iframe src="https://calendar.google.com/calendar/embed?src=nurirdinasyafiqahab%40gmail.com&ctz=Asia%2FKuala_Lumpur"
                 style="border: none; width: 100%; height: 400px; border-radius: 8px;" scrolling="no"></iframe>
     </div>
 
