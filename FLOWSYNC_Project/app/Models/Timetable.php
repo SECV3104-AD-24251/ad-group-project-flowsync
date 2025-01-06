@@ -1,15 +1,15 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TimetableManagement extends Model
+class Timetable extends Model
 {
     use HasFactory;
 
-    protected $table = 'timetable';
+    // Specify the updated table name
+    protected $table = 'flowsync_timetable';  // Updated table name
 
     protected $fillable = [
         'course_code',
@@ -18,3 +18,4 @@ class TimetableManagement extends Model
         'time_slot',
     ];
 }
+
