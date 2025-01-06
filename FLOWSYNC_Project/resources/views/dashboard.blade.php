@@ -4,7 +4,7 @@
 <div class="dashboard-container py-12 px-8 bg-gradient-to-r from-blue-50 via-white to-blue-50 min-h-screen relative">
     <!-- Header Section -->
     <div class="text-center mb-16">
-        <h1 class="text-5xl font-extrabold text-blue-700 mb-4">Welcome Back, Admin! 👋</h1>
+        <h1 class="text-5xl font-extrabold text-red-700 mb-4">Welcome Back, Admin! 👋</h1>
         <p class="text-gray-600 text-lg">Seamlessly manage academic schedules and resources.</p>
     </div>
 

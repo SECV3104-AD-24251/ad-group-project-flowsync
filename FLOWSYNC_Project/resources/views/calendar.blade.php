@@ -1,9 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Google Calendar')
+@section('title', 'Registered Schedule')
 
 @section('content')
 <div style="padding: 20px; font-family: 'Arial', sans-serif;">
+    <!-- Notifications -->
     @if(session('success'))
         <div style="margin: 20px auto; padding: 10px 20px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 8px; text-align: center; font-weight: bold; font-size: 16px; max-width: 600px;">
             {{ session('success') }}
@@ -16,58 +17,59 @@
         </div>
     @endif
 
-    <!-- Navigation and Buttons -->
+    <!-- Navigation Buttons -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <a href="/dashboard" 
+        <a href="/student-dashboard" 
            style="text-decoration: none; padding: 10px 20px; background-color: #800000; color: white; border-radius: 30px; font-size: 14px; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.2s;">
             ← Back
         </a>
 
-        <a href="https://calendar.google.com/calendar/u/0/r?pli=1" 
-           target="_blank" 
-           style="text-decoration: none; padding: 7px 20px; background-color: #3a4ed3; color: white; border-radius: 30px; font-size: 16px; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.2s;">
-            View Calendar
-        </a>
+        <div style="display: flex; gap: 10px;">
+            <button style="text-decoration: none; padding: 10px 20px; background-color: #3a4ed3; color: white; border-radius: 40px; font-size: 14px; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.2s;">
+                Edit
+            </button>
+            <a href="https://calendar.google.com/calendar/u/0/r?pli=1" 
+               target="_blank" 
+               style="text-decoration: none; padding: 10px 20px; background-color: #3a4ed3; color: white; border-radius: 30px; font-size: 14px; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.2s;">
+                View Calendar
+            </a>
+        </div>
     </div>
 
     <!-- Title Section -->
-    <div style="text-align: center; margin-bottom: 30px;">
-        <h1 style="font-size: 35px; font-weight: bold; background: linear-gradient(90deg, #00b4d8, #0077b6); -webkit-background-clip: text; color: transparent;">
-            Organize Your Events
-        </h1>
+    <div style="text-align: center; margin-bottom: 20px;">
+        <h1 style="font-size: 25px; font-weight: bold; color: #333;">Registered Schedule</h1>
     </div>
 
-    <!-- Calendar Section -->
-    <div style="background-color: #ffffff; border: 1px solid #ddd; border-radius: 10px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 30px;">
-        <h3 style="text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 10px;">Full Calendar</h3>
-        <iframe src="https://calendar.google.com/calendar/embed?src=nurirdinasyafiqahab%40gmail.com&ctz=Asia%2FKuala_Lumpur"
-                style="border: none; width: 100%; height: 400px; border-radius: 8px;" scrolling="no"></iframe>
+    <!-- Schedule Table -->
+    <div style="background-color: #ffffff; border: 1px solid #ddd; border-radius: 10px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background-color: #f8f9fa;">
+                    <th style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">Course</th>
+                    <th style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">Section</th>
+                    <th style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">Time Slot</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">SECVXXX - Fundamental...</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">01</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">THU 8-11 AM</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">-</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">-</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">-</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px;">-</td>
+                    <td style="padding: 10px;">-</td>
+                    <td style="padding: 10px;">-</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-
-   <!-- Map Section -->
-<div style="background-color: #ffffff; border: 1px solid #ddd; border-radius: 10px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-    <h3 style="text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 10px;">Mini Map</h3>
-    <iframe 
-        src="https://maps.google.com/maps?q=Faculty%20of%20Computing,%20UTM&t=&z=15&ie=UTF8&iwloc=&output=embed" 
-        style="border: none; width: 100%; height: 300px; border-radius: 8px;" 
-        allowfullscreen>
-    </iframe>
-
-    <div style="margin-top: 15px; text-align: center;">
-        <input 
-            type="text" 
-            id="search-location" 
-            placeholder="Search location..." 
-            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px;">
-        <button 
-            onclick="searchLocation()" 
-            style="padding: 5px 10px; background-color: #007bff; color: white; border: none; border-radius: 5px; font-size: 12px; font-weight: bold; cursor: pointer;">
-            Search Location
-        </button>
-    </div>
-</div>
-
-
 
     <style>
         a:hover {
@@ -77,17 +79,5 @@
             transform: translateY(-2px);
         }
     </style>
-
-    <script>
-        function searchLocation() {
-            let location = document.getElementById('search-location').value;
-            if (location) {
-                let googleMapsUrl = `https://www.google.com/maps?q=${encodeURIComponent(location)}`;
-                window.open(googleMapsUrl, '_blank');
-            } else {
-                alert('Please enter a location to search.');
-            }
-        }
-    </script>
 </div>
 @endsection

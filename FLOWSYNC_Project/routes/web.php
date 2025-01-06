@@ -28,6 +28,8 @@ Route::delete('/timetable/{id}/delete', [TimetableController::class, 'delete']);
 
 
 
+Route::get('/stud-timetable', [TimetableController::class, 'showTimetable'])->name('stud_timetable');
+
 
 
 // Timetable routes
@@ -71,7 +73,7 @@ Route::get('/student-dashboard', function () {
         return view('stud_dashboard');
     }
     return redirect('/login')->with('error', 'Please login first.');
-})->name('student.dashboard');
+})->name('stud_dashboard');
 
 // Logout
 Route::post('/logout', function (Request $request) {

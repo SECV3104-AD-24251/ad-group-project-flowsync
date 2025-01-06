@@ -3,9 +3,9 @@
 @section('content')     <!-- Section where content is injected into the 'app' layout -->
 <div class="dashboard-container py-6 px-4 text-gray-800">
     <!-- Header Section -->
-    <div class="header-section mb-10 text-center">
-        <h1 class="text-3xl font-bold text-red-500 mb-2">Welcome Back! 👋</h1>
-        <p class="text-gray-600 text-lg">Let’s get started with your schedule!</p>
+    <div class="text-center mb-16">
+        <h1 class="text-5xl font-extrabold text-red-700 mb-4">Welcome Back, Student! 👋</h1>
+        <p class="text-gray-600 text-lg">Seamlessly manage academic schedules and resources.</p>
     </div>
 
     <!-- Grid Container for Sections -->
