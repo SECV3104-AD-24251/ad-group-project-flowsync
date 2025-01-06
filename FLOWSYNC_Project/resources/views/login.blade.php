@@ -4,11 +4,18 @@ if (isset($_POST["login"])) {
     $username = $_POST["user"];     // Retrieve the username from the form
     $password = $_POST["pass"];     // Retrieve the password from the form
 
-    // Simple authentication check
+
+    // Authentication check for multiple users
     if ($username == "admin" && $password == "admin") {
-        echo "<script type='text/javascript'>alert('Login Success')</script>";      // Display success alert
+        // Redirect admin to the admin dashboard
+        header("Location: dashboard.blade.php");
+        exit;
+    } elseif ($username == "A12CS3456" && $password == "student") {
+        // Redirect student to the student dashboard
+        header("Location: stud_dashboard.blade.php");
+        exit;
     } else {
-        echo "<script type='text/javascript'>alert('Login Error')</script>";        // Display error alert
+        echo "<script type='text/javascript'>alert('Login Error');</script>"; // Display error alert
     }
 }
 ?>
@@ -19,10 +26,10 @@ if (isset($_POST["login"])) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Login Form</title>
-        
+       
         <!-- Include Bootstrap CSS for styling -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        
+       
         <!-- Include Font Awesome for icons -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <style>
@@ -74,7 +81,7 @@ if (isset($_POST["login"])) {
 
             <!-- Title -->
             <h3 class="mb-4 text-uppercase fw-bold" style="color: #800000;">Timetable Management</h3>
-            
+           
             <!-- Login Form -->
             <form action="" method="POST">
                 @csrf <!-- CSRF Token for security -->

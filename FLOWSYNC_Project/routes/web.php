@@ -44,9 +44,13 @@ Route::post('/login', function (Request $request) {
     $username = $request->input('user');
     $password = $request->input('pass');
 
+    // Authentication logic
     if ($username === 'admin' && $password === 'admin') {
         $request->session()->put('user', $username); // Store user in session
-        return redirect('/dashboard')->with('message', 'Login Successful');
+        return redirect('/dashboard')->with('message', 'Admin Login Successful');
+    } elseif ($username === 'A12CS3456' && $password === 'student') {
+        $request->session()->put('user', $username); // Store user in session
+        return redirect('/student-dashboard')->with('message', 'Student Login Successful');
     } else {
         return back()->with('error', 'Invalid Credentials');
     }
@@ -59,6 +63,15 @@ Route::get('/dashboard', function () {
     }
     return redirect('/login')->with('error', 'Please login first.');
 })->name('dashboard');
+
+
+// Student Dashboard (protected)
+Route::get('/student-dashboard', function () {
+    if (session('user') === 'A12CS3456') {
+        return view('stud_dashboard');
+    }
+    return redirect('/login')->with('error', 'Please login first.');
+})->name('student.dashboard');
 
 // Logout
 Route::post('/logout', function (Request $request) {
