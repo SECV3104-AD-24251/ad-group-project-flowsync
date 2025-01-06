@@ -11,7 +11,16 @@
     <!-- Grid Container for Sections -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Timetable Section -->
-
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+            <div class="mb-4">
+                <h2 class="text-2xl font-semibold text-gray-800">Timetable</h2>
+                <p class="text-gray-500 text-sm">3 SECVH - Semester 1 Session 2024/2025</p>
+            </div>
+            <a href="{{ route('stud_timetable') }}" 
+               class="w-full inline-block bg-red-500 text-white text-center py-2 rounded-lg font-medium hover:bg-red-600 transition">
+                View Timetable
+            </a>
+        </div>
 
         <!-- Calendar Section -->
         <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
