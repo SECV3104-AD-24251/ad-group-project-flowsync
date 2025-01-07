@@ -1,4 +1,4 @@
-@extends('layouts.app') <!-- Extends the 'app' layout template -->
+@extends('layouts.admin') <!-- Extends the 'app' layout template -->
 
 @section('content') <!-- Section where content is injected into the 'app' layout -->
 <div class="dashboard-container py-12 px-8 bg-gradient-to-r from-blue-50 via-white to-blue-50 min-h-screen relative">

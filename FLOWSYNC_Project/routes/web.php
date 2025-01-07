@@ -12,7 +12,7 @@ Route::view('/calendar', 'calendar');
 Route::view('/solution', 'solution');
 Route::view('/helpCenter', 'helpCenter');
 Route::view('/HC1', 'HC1');
-
+Route::view('/student-timetable', 'stud_timetable');
 
 Route::get('/timetable', [TimetableController::class, 'showTimetable']);
 Route::post('/timetable/add', [TimetableController::class, 'addTimetableEntry']);
