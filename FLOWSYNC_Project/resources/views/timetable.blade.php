@@ -233,97 +233,158 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const timetableBody = document.getElementById('timetableBody');
+document.addEventListener('DOMContentLoaded', () => {
+    const timetableBody = document.getElementById('timetableBody');
+    const addEntryBtn = document.getElementById('addEntryBtn');
 
-            // Fetch timetable entries on page load
-            fetch('/timetable/get')  // Make sure this URL corresponds to your new route
-                .then(response => response.json())
-                .then(data => {
-                    if (data.length === 0) {
-                        timetableBody.innerHTML = `
-                            <tr id="emptyRow">
-                                <td colspan="5" class="text-center">No timetable entries yet.</td>
-                            </tr>
-                        `;
-                    } else {
-                        timetableBody.innerHTML = ''; // Clear the empty row
-                        data.forEach(entry => {
+    // Fetch timetable entries on page load
+    fetch('/timetable/get')  // Make sure this URL corresponds to your new route
+        .then(response => response.json())
+        .then(data => {
+            if (data.length === 0) {
+                timetableBody.innerHTML = `
+                    <tr id="emptyRow">
+                        <td colspan="5" class="text-center">No timetable entries yet.</td>
+                    </tr>
+                `;
+            } else {
+                timetableBody.innerHTML = ''; // Clear the empty row
+                data.forEach(entry => {
+                    const newRow = `
+                        <tr>
+                            <td>${entry.course_code}</td>
+                            <td>${entry.course_name}</td>
+                            <td>${entry.section}</td>
+                            <td>${entry.time_slot}</td>
+                            <td><button class="btn btn-danger delete-btn">Delete</button></td>
+                        </tr>
+                    `;
+                    timetableBody.insertAdjacentHTML('beforeend', newRow);
+                });
+            }
+        })
+        .catch(error => {
+            console.log('Error fetching timetable entries:', error);
+        });
+
+    // Handle Add Button
+    addEntryBtn.addEventListener('click', () => {
+        const courseCode = document.getElementById('courseCode').value;
+        const courseName = document.getElementById('courseName').value;
+        const section = document.getElementById('section').value;
+        const timeSlot = document.getElementById('timeSlot').value;
+
+        // Validate inputs
+        if (!courseCode || !courseName || !section || !timeSlot) {
+            Swal.fire('Error', 'Please fill in all fields.', 'error');
+            return;
+        }
+
+        // Check if the timetable already has this entry
+        const existingEntries = Array.from(timetableBody.rows).map(row => ({
+            course_code: row.cells[0].innerText,
+            course_name: row.cells[1].innerText,
+            section: row.cells[2].innerText,
+            time_slot: row.cells[3].innerText
+        }));
+
+        const isDuplicate = existingEntries.some(entry => 
+            entry.course_code === courseCode &&
+            entry.course_name === courseName &&
+            entry.section === section &&
+            entry.time_slot === timeSlot
+        );
+
+        if (isDuplicate) {
+            // Display a button to confirm adding the duplicate entry
+            Swal.fire({
+                title: 'Duplicate Entry',
+                text: 'This timetable entry already exists. Do you want to add it again?',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, add it!',
+                cancelButtonText: 'No, cancel',
+            }).then(result => {
+                if (result.isConfirmed) {
+                    // Send data via AJAX to store it in the database
+                    fetch('/timetable/store', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify({
+                            course_code: courseCode,
+                            course_name: courseName,
+                            section: section,
+                            time_slot: timeSlot
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.message) {
+                            Swal.fire('Success', 'Course added to timetable.', 'success');
+                            // Add new row to the table
                             const newRow = `
                                 <tr>
-                                    <td>${entry.course_code}</td>
-                                    <td>${entry.course_name}</td>
-                                    <td>${entry.section}</td>
-                                    <td>${entry.time_slot}</td>
+                                    <td>${courseCode}</td>
+                                    <td>${courseName}</td>
+                                    <td>${section}</td>
+                                    <td>${timeSlot}</td>
                                     <td><button class="btn btn-danger delete-btn">Delete</button></td>
                                 </tr>
                             `;
                             timetableBody.insertAdjacentHTML('beforeend', newRow);
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.log('Error fetching timetable entries:', error);
-                });
-
-
-            // Handle Add Button
-            const addEntryBtn = document.getElementById('addEntryBtn');
-            addEntryBtn.addEventListener('click', () => {
-                const courseCode = document.getElementById('courseCode').value;
-                const courseName = document.getElementById('courseName').value;
-                const section = document.getElementById('section').value;
-                const timeSlot = document.getElementById('timeSlot').value;
-
-                // Validate inputs
-                if (!courseCode || !courseName || !section || !timeSlot) {
-                    Swal.fire('Error', 'Please fill in all fields.', 'error');
-                    return;
-                }
-
-                // Send data via AJAX to store it in the database
-                fetch('/timetable/store', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify({
-                        course_code: courseCode,
-                        course_name: courseName,
-                        section: section,
-                        time_slot: timeSlot
+                        }
                     })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.message) {
-                        Swal.fire('Success', 'Course added to timetable.', 'success');
-                        // Add new row to the table
-                        const newRow = `
-                            <tr>
-                                <td>${courseCode}</td>
-                                <td>${courseName}</td>
-                                <td>${section}</td>
-                                <td>${timeSlot}</td>
-                                <td><button class="btn btn-danger delete-btn">Delete</button></td>
-                            </tr>
-                        `;
-                        timetableBody.insertAdjacentHTML('beforeend', newRow);
-                    }
-                })
-                .catch(error => {
-                    Swal.fire('Error', 'Failed to add timetable entry.', 'error');
-                });
-
-                // Reset select inputs
-                document.getElementById('courseCode').value = '';
-                document.getElementById('courseName').value = '';
-                document.getElementById('section').value = '';
-                document.getElementById('timeSlot').value = '';
+                    .catch(error => {
+                        Swal.fire('Error', 'Failed to add timetable entry.', 'error');
+                    });
+                }
             });
-        });
+        } else {
+            // Send data via AJAX to store it in the database
+            fetch('/timetable/store', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    course_code: courseCode,
+                    course_name: courseName,
+                    section: section,
+                    time_slot: timeSlot
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    Swal.fire('Success', 'Course added to timetable.', 'success');
+                    // Add new row to the table
+                    const newRow = `
+                        <tr>
+                            <td>${courseCode}</td>
+                            <td>${courseName}</td>
+                            <td>${section}</td>
+                            <td>${timeSlot}</td>
+                            <td><button class="btn btn-danger delete-btn">Delete</button></td>
+                        </tr>
+                    `;
+                    timetableBody.insertAdjacentHTML('beforeend', newRow);
+                }
+            })
+            .catch(error => {
+                Swal.fire('Error', 'Failed to add timetable entry.', 'error');
+            });
+        }
 
+        // Reset select inputs
+        document.getElementById('courseCode').value = '';
+        document.getElementById('courseName').value = '';
+        document.getElementById('section').value = '';
+        document.getElementById('timeSlot').value = '';
+    });
+});
         
         document.getElementById('aiButton').addEventListener('click', () => {
     // Get all rows from the timetable
