@@ -235,6 +235,65 @@
     <script>
 document.addEventListener('DOMContentLoaded', () => {
     const timetableBody = document.getElementById('timetableBody');
+
+    // Event delegation for delete buttons
+    timetableBody.addEventListener('click', (event) => {
+        if (event.target.classList.contains('delete-btn')) {
+            handleDeleteButtonClick(event);
+        }
+    });
+
+    function handleDeleteButtonClick(event) {
+        const row = event.target.closest('tr'); // Get the closest row
+        const courseCode = row.cells[0].innerText; // Get course code from the row
+        const courseName = row.cells[1].innerText; // Get course name from the row
+        const section = row.cells[2].innerText; // Get section from the row
+        const timeSlot = row.cells[3].innerText; // Get time slot from the row
+
+        // Confirm deletion
+        Swal.fire({
+            title: 'Are you sure?',
+            text: `You are about to delete the entry for ${courseName} (${courseCode}) in section ${section} during ${timeSlot}.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Send DELETE request to the server
+                fetch('/timetable/delete', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        course_code: courseCode,
+                        course_name: courseName,
+                        section: section,
+                        time_slot: timeSlot
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        Swal.fire('Deleted!', 'The timetable entry has been deleted.', 'success');
+                        // Remove the row from the table
+                        row.remove();
+                    } else {
+                        Swal.fire('Error', 'Failed to delete the timetable entry.', 'error');
+                    }
+                })
+                .catch(error => {
+                    Swal.fire('Error', 'Failed to delete the timetable entry.', 'error');
+                });
+            }
+        });
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const timetableBody = document.getElementById('timetableBody');
     const addEntryBtn = document.getElementById('addEntryBtn');
 
     // Fetch timetable entries on page load

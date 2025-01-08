@@ -51,7 +51,7 @@ class TimetableController extends Controller
     // Detect timetable clashes
     public function detectClashes()
     {
-        // Step 1: Fetch all timetable data from the database
+        // Fetch all timetable data from the database
         $timetables = Timetable::select('id', 'course_code', 'course_name as subject_name', 'section', 'day', 'start_time', 'end_time')
             ->orderBy('day') // Group by day
             ->orderBy('start_time', 'asc') // Order by time
@@ -59,7 +59,7 @@ class TimetableController extends Controller
     
         $clashes = []; // Array to store detected clashes
     
-        // Step 2: Compare each timetable entry with others
+        // Compare each timetable entry with others
         foreach ($timetables as $current) {
             foreach ($timetables as $compare) {
                 // Skip the same entry (avoid self-comparison)
@@ -85,12 +85,49 @@ class TimetableController extends Controller
                 }
             }
         }
-    
-        // Step 3: Format and return the output as required
+
+        // Return the output as required
         return response()->json([
             'status' => 'success',
             'clashes_detected' => count($clashes), // Total clashes
             'clashes' => $clashes, // Raw clash output
         ]);
     }
+
+    // Delete a timetable entry
+public function deleteEntry(Request $request)
+{
+    // Log the incoming request data for debugging (optional)
+    \Log::info('Received data:', $request->all());
+    
+    // Validate the incoming data
+    $validated = $request->validate([
+        'course_code' => 'required|string',
+        'course_name' => 'required|string',
+        'section' => 'required|string',
+        'time_slot' => 'required|string',
+    ]);
+    
+    try {
+        // Find the timetable entry based on the incoming data
+        $entry = Timetable::where([
+            ['course_code', '=', $validated['course_code']],
+            ['course_name', '=', $validated['course_name']],
+            ['section', '=', $validated['section']],
+            ['time_slot', '=', $validated['time_slot']]
+        ])->first();
+        
+        // If entry exists, delete it
+        if ($entry) {
+            $entry->delete();
+            return response()->json(['message' => 'Successfully deleted']);
+        } else {
+            return response()->json(['message' => 'Entry not found'], 404);
+        }
+    } catch (\Exception $e) {
+        // Handle unexpected errors
+        \Log::error('Error deleting timetable entry: ' . $e->getMessage());
+        return response()->json(['message' => 'Failed to delete entry'], 500);
+    }
+}
 }

@@ -19,16 +19,16 @@ Route::view('/student-timetable', 'stud_timetable');
 
 Route::get('/timetable', [TimetableController::class, 'showTimetable']);
 Route::post('/timetable/add', [TimetableController::class, 'addTimetableEntry']);
-Route::delete('/timetable/delete/{id}', [TimetableController::class, 'deleteTimetableEntry']);
+//Route::delete('/timetable/delete', [TimetableController::class, 'deleteTimeEntry']);
 // Route for storing timetable entries
-Route::post('/timetable/store', [TimetableController::class, 'storeTimetableEntry']);
+//Route::post('/timetable/store', [TimetableController::class, 'storeTimetableEntry']);
 Route::post('/timetable/store', [TimetableController::class, 'storeTimetable']);
 Route::get('/timetable/show', [TimetableController::class, 'showTimetable']);
 Route::get('/timetable/get', [TimetableController::class, 'getTimetableEntries']);  // New route to fetch timetable data
 Route::get('/timetable', [TimetableController::class, 'showTimetable']);  // For rendering the timetable page
-Route::post('/timetable/store', [TimetableController::class, 'storeTimetable']);  // For storing timetable data
-Route::delete('/timetable/{id}/delete', [TimetableController::class, 'delete']);
-Route::post('/timetable/delete', [TimetableController::class, 'delete'])->name('timetable.delete');
+//Route::post('/timetable/store', [TimetableController::class, 'storeTimetable']);  // For storing timetable data
+//Route::delete('/timetable/{id}/delete', [TimetableController::class, 'delete']);
+Route::delete('/timetable/delete', [TimetableController::class, 'deleteEntry'])->name('timetable.delete');
 
 
 Route::get('/stud-timetable', [TimetableController::class, 'showTimetable'])->name('stud_timetable');
