@@ -2,7 +2,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Timetable;  // Ensure you import the Timetable model
+use App\Models\Timetable;
 
 class TimetableController extends Controller
 {
@@ -46,5 +46,51 @@ class TimetableController extends Controller
         
         // Return the data as JSON
         return response()->json($timetables);
+    }
+
+    // Detect timetable clashes
+    public function detectClashes()
+    {
+        // Step 1: Fetch all timetable data from the database
+        $timetables = Timetable::select('id', 'course_code', 'course_name as subject_name', 'section', 'day', 'start_time', 'end_time')
+            ->orderBy('day') // Group by day
+            ->orderBy('start_time', 'asc') // Order by time
+            ->get();
+    
+        $clashes = []; // Array to store detected clashes
+    
+        // Step 2: Compare each timetable entry with others
+        foreach ($timetables as $current) {
+            foreach ($timetables as $compare) {
+                // Skip the same entry (avoid self-comparison)
+                if ($current->id === $compare->id) {
+                    continue;
+                }
+    
+                // Check if the day and time slots overlap
+                if (
+                    $current->day === $compare->day && // Same day
+                    $current->start_time < $compare->end_time && // Overlapping start time
+                    $current->end_time > $compare->start_time // Overlapping end time
+                ) {
+                    // Ensure they are different subjects (clash condition)
+                    if ($current->course_code !== $compare->course_code) {
+                        // Store detected clash in a formatted way
+                        $clashes[] = [
+                            'subject_1' => "{$current->subject_name} ({$current->course_code}, Section {$current->section})",
+                            'subject_2' => "{$compare->subject_name} ({$compare->course_code}, Section {$compare->section})",
+                            'time_slot' => $current->start_time . '-' . $current->end_time,
+                        ];
+                    }
+                }
+            }
+        }
+    
+        // Step 3: Format and return the output as required
+        return response()->json([
+            'status' => 'success',
+            'clashes_detected' => count($clashes), // Total clashes
+            'clashes' => $clashes, // Raw clash output
+        ]);
     }
 }

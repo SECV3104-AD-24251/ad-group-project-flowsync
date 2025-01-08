@@ -5,6 +5,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\SolutionController;
 use App\Http\Controllers\TimetableController;
 use App\Http\Controllers\GoogleCalendarController;
+use App\Http\Controllers\OpenAIController;
+
+
 
 // Public routes
 Route::view('/', 'welcome');
@@ -25,7 +28,7 @@ Route::get('/timetable/get', [TimetableController::class, 'getTimetableEntries']
 Route::get('/timetable', [TimetableController::class, 'showTimetable']);  // For rendering the timetable page
 Route::post('/timetable/store', [TimetableController::class, 'storeTimetable']);  // For storing timetable data
 Route::delete('/timetable/{id}/delete', [TimetableController::class, 'delete']);
-
+Route::post('/timetable/delete', [TimetableController::class, 'delete'])->name('timetable.delete');
 
 
 Route::get('/stud-timetable', [TimetableController::class, 'showTimetable'])->name('stud_timetable');
@@ -103,7 +106,11 @@ Route::get('/api/events', [EventController::class, 'index']);
 Route::post('/api/events', [EventController::class, 'store']);
 Route::put('/api/events/{id}', [EventController::class, 'update']);
 Route::delete('/api/events/{id}', [EventController::class, 'destroy']);
+Route::post('/api/openai', [OpenAIController::class, 'handleRequest']);
 
 // Google Authentication Routes
 Route::get('google/auth', [GoogleCalendarController::class, 'redirectToGoogle'])->name('google.calendar.auth');
 Route::get('google/callback', [GoogleCalendarController::class, 'handleGoogleCallback']);
+
+// Detect clashes
+Route::get('/detect-clashes', [TimetableController::class, 'detectClashes']);

@@ -223,6 +223,12 @@
             <img src="https://via.placeholder.com/50" alt="AI Icon" />
         </button>
     </div>
+    <div class="ai-button-container">
+    <button class="ai-button" id="aiButton">
+        <img src="https://cdn-icons-png.flaticon.com/512/3079/3079021.png" alt="AI Button">
+    </button>
+</div>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -259,6 +265,7 @@
                 .catch(error => {
                     console.log('Error fetching timetable entries:', error);
                 });
+
 
             // Handle Add Button
             const addEntryBtn = document.getElementById('addEntryBtn');
@@ -316,6 +323,63 @@
                 document.getElementById('timeSlot').value = '';
             });
         });
+
+        
+        document.getElementById('aiButton').addEventListener('click', () => {
+    // Get all rows from the timetable
+    const rows = document.querySelectorAll('#timetableBody tr');
+    const conflicts = [];
+    const seen = {};
+
+    // Check for conflicts
+    rows.forEach((row, index) => {
+        const cells = row.children;
+        const section = cells[2].innerText.trim();
+        const timeSlot = cells[3].innerText.trim();
+
+        const key = `${section}-${timeSlot}`;
+        if (seen[key]) {
+            // Conflict detected
+            conflicts.push({
+                course1: seen[key].course,
+                course2: cells[1].innerText.trim(),
+                timeSlot,
+                section,
+            });
+
+            // Highlight the conflicting rows
+            row.setAttribute('data-clash', 'true');
+            rows[seen[key].index].setAttribute('data-clash', 'true');
+        } else {
+            seen[key] = {
+                course: cells[1].innerText.trim(),
+                index,
+            };
+            row.removeAttribute('data-clash');
+        }
+    });
+
+    // Show popup if conflicts exist
+    if (conflicts.length > 0) {
+        let conflictDetails = '';
+        conflicts.forEach((conflict, i) => {
+            conflictDetails += `<b>${i + 1}.</b> <u>Clash:</u> 
+            <br> <b>Courses:</b> ${conflict.course1} and ${conflict.course2}
+            <br> <b>Time Slot:</b> ${conflict.timeSlot} 
+            <br> <b>Section:</b> ${conflict.section}<br><br>`;
+        });
+
+        Swal.fire({
+            title: 'Schedule Conflicts Found!',
+            html: conflictDetails,
+            icon: 'warning',
+            confirmButtonText: 'Okay',
+        });
+    } else {
+        Swal.fire('No Conflicts', 'Your schedule is conflict-free.', 'success');
+    }
+});
+
     </script>
 
 </body>
