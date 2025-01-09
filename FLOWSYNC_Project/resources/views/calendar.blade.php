@@ -42,30 +42,46 @@
     </div>
 
     <!-- Schedule Table -->
-    <div style="background-color: #ffffff; border: 1px solid #ddd; border-radius: 10px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        <table style="width: 100%; border-collapse: collapse;">
+    <div style="background-color: #ffffff; border: 1px solid #ddd; border-radius: 10px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; justify-content: center;">
+        <table style="width: 95%; border-collapse: collapse;">
             <thead>
-                <tr style="background-color: #f8f9fa;">
+                <tr style="background-color:rgb(241, 243, 245);">
                     <th style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">Course</th>
                     <th style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">Section</th>
                     <th style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">Time Slot</th>
+                    <th style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">Place</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">SECVXXX - Fundamental...</td>
+                <tr class="hover-details" data-details="AI - MON 10AM-1PM - MPK 10">
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">SECJ3553 - ARTIFICIAL INTELLIGENCE</td>
                     <td style="padding: 10px; border-bottom: 1px solid #ddd;">01</td>
-                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">THU 8-11 AM</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">MON 10AM - 1PM</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">MPK 10</td>
                 </tr>
-                <tr>
-                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">-</td>
-                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">-</td>
-                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">-</td>
+                <tr class="hover-details" data-details="AD - MON 8AM-10AM - MPK 5">
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">SECV3104 - APPLICATION DEVELOPMENT</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">02</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">MON 8AM - 10AM</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">MPK 5</td>
                 </tr>
-                <tr>
-                    <td style="padding: 10px;">-</td>
-                    <td style="padding: 10px;">-</td>
-                    <td style="padding: 10px;">-</td>
+                <tr class="hover-details" data-details="AD - TUE 8AM-10AM - CGMTL">
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">SECV3104 - APPLICATION DEVELOPMENT</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">02</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">TUE 8AM - 10AM</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">CGMTL</td>
+                </tr>
+                <tr class="hover-details" data-details="GM - WED 10AM-1PM - MCASE">
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">SECV3113 - GEOMETRIC MODELLING</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">01</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">WED 10AM - 1PM</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">MCASE</td>
+                </tr>
+                <tr class="hover-details" data-details="FIP - THURS 8AM-11AM - IDAL LAB">
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">SECV3213 - FUNDAMENTAL OF IMAGE PROCESSING</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">01</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">THURS 8AM - 11AM</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">IDAL LAB</td>
                 </tr>
             </tbody>
         </table>
@@ -77,6 +93,23 @@
         }
         button:hover {
             transform: translateY(-2px);
+        }
+        .hover-details {
+            position: relative;
+        }
+        .hover-details:hover::after {
+            content: attr(data-details);
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color:rgb(82, 141, 205);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            white-space: nowrap;
+            z-index: 10;
         }
     </style>
 </div>
