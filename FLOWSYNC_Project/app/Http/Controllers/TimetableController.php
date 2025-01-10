@@ -1,8 +1,10 @@
 <?php
 namespace App\Http\Controllers;
 
+
 use Illuminate\Http\Request;
 use App\Models\Timetable;
+
 
 class TimetableController extends Controller
 {
@@ -12,9 +14,11 @@ class TimetableController extends Controller
         // Fetch all timetables from the database
         $timetables = Timetable::all();
 
+
         // Return the timetable view with the timetables data
         return view('timetable', compact('timetables'));
     }
+
 
     // Store a new timetable entry
     public function storeTimetable(Request $request)
@@ -26,6 +30,7 @@ class TimetableController extends Controller
             'time_slot' => 'required',
         ]);
 
+
         // Create a new timetable entry
         $timetable = new Timetable();
         $timetable->course_code = $request->course_code;
@@ -34,72 +39,99 @@ class TimetableController extends Controller
         $timetable->time_slot = $request->time_slot;
         $timetable->save();
 
+
         // Return a response to indicate success
         return response()->json(['message' => 'Timetable entry added successfully']);
     }
+
 
     // Fetch timetable entries as JSON for AJAX
     public function getTimetableEntries()
     {
         // Fetch all timetable entries from the database
         $timetables = Timetable::all();
-        
+       
         // Return the data as JSON
         return response()->json($timetables);
     }
 
-    // Detect timetable clashes
-    public function detectClashes()
-    {
-        // Fetch all timetable data from the database
-        $timetables = Timetable::select('id', 'course_code', 'course_name as subject_name', 'section', 'day', 'start_time', 'end_time')
-            ->orderBy('day') // Group by day
-            ->orderBy('start_time', 'asc') // Order by time
-            ->get();
-    
-        $clashes = []; // Array to store detected clashes
-    
-        // Compare each timetable entry with others
-        foreach ($timetables as $current) {
-            foreach ($timetables as $compare) {
-                // Skip the same entry (avoid self-comparison)
-                if ($current->id === $compare->id) {
-                    continue;
-                }
-    
-                // Check if the day and time slots overlap
-                if (
-                    $current->day === $compare->day && // Same day
-                    $current->start_time < $compare->end_time && // Overlapping start time
-                    $current->end_time > $compare->start_time // Overlapping end time
-                ) {
-                    // Ensure they are different subjects (clash condition)
-                    if ($current->course_code !== $compare->course_code) {
-                        // Store detected clash in a formatted way
-                        $clashes[] = [
-                            'subject_1' => "{$current->subject_name} ({$current->course_code}, Section {$current->section})",
-                            'subject_2' => "{$compare->subject_name} ({$compare->course_code}, Section {$compare->section})",
-                            'time_slot' => $current->start_time . '-' . $current->end_time,
+
+// Detect timetable clashes
+public function detectClashes()
+{
+    // Fetch all timetable data from the database, including the day, start time, and end time
+    $timetables = Timetable::select('id', 'course_code', 'course_name', 'section', 'day', 'start_time', 'end_time')
+        ->orderBy('day') // Order by day
+        ->orderBy('start_time', 'asc') // Order by start time
+        ->get();
+
+
+    $clashes = []; // Array to store detected clashes
+
+
+    // Iterate over the timetables to compare each entry with others
+    foreach ($timetables as $current) {
+        foreach ($timetables as $compare) {
+            // Skip comparing the same entry
+            if ($current->id === $compare->id) {
+                continue;
+            }
+
+
+            // Check if the day and time slots overlap
+            if (
+                $current->day === $compare->day && // Same day
+                $current->start_time < $compare->end_time && // Overlapping start time
+                $current->end_time > $compare->start_time // Overlapping end time
+            ) {
+                // Ensure they are different subject codes (clash condition)
+                if ($current->course_code !== $compare->course_code) {
+                    // Group clashes by time slot and day
+                    $key = "{$current->day} {$current->start_time}-{$current->end_time}";
+
+
+                    // Store clash details
+                    if (!isset($clashes[$key])) {
+                        $clashes[$key] = [
+                            'day' => $current->day,
+                            'time_slot' => "{$current->start_time}-{$current->end_time}",
+                            'clashes' => [],
                         ];
                     }
+
+
+                    // Add both courses to the clash group
+                    $clashes[$key]['clashes'][] = [
+                        'course_code' => $current->course_code,
+                        'course_name' => $current->course_name,
+                        'section' => $current->section,
+                    ];
+
+
+                    $clashes[$key]['clashes'][] = [
+                        'course_code' => $compare->course_code,
+                        'course_name' => $compare->course_name,
+                        'section' => $compare->section,
+                    ];
                 }
             }
         }
-
-        // Return the output as required
-        return response()->json([
-            'status' => 'success',
-            'clashes_detected' => count($clashes), // Total clashes
-            'clashes' => $clashes, // Raw clash output
-        ]);
     }
 
+
+    // Return the output as JSON
+    return response()->json([
+        'status' => 'success',
+        'clashes_detected' => count($clashes), // Total number of clashes
+        'clashes' => $clashes, // Clash details grouped by time slot
+    ]);
+}        
     // Delete a timetable entry
 public function deleteEntry(Request $request)
 {
     // Log the incoming request data for debugging (optional)
     \Log::info('Received data:', $request->all());
-    
+   
     // Validate the incoming data
     $validated = $request->validate([
         'course_code' => 'required|string',
@@ -107,7 +139,7 @@ public function deleteEntry(Request $request)
         'section' => 'required|string',
         'time_slot' => 'required|string',
     ]);
-    
+   
     try {
         // Find the timetable entry based on the incoming data
         $entry = Timetable::where([
@@ -116,7 +148,7 @@ public function deleteEntry(Request $request)
             ['section', '=', $validated['section']],
             ['time_slot', '=', $validated['time_slot']]
         ])->first();
-        
+       
         // If entry exists, delete it
         if ($entry) {
             $entry->delete();
@@ -131,3 +163,4 @@ public function deleteEntry(Request $request)
     }
 }
 }
+

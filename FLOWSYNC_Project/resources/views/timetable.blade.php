@@ -115,9 +115,10 @@
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
         }
 
-        .table tbody tr[data-clash="true"] {
-            background-color: #ffcccc;
-            animation: shake 0.5s ease-in-out;
+        .highlight {
+        background-color: #ffcccc;
+        animation: shake 0.5s ease-in-out;
+        color: black;
         }
 
         @keyframes shake {
@@ -225,10 +226,9 @@
     </div>
     <div class="ai-button-container">
     <button class="ai-button" id="aiButton">
-        <img src="https://cdn-icons-png.flaticon.com/512/3079/3079021.png" alt="AI Button">
+        <img src='images/AI.png' alt="AI Button">
     </button>
 </div>
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -327,50 +327,98 @@
                 console.error('Error fetching timetable entries:', error);
             });
 
-        // Handle Add Button
-        addEntryBtn.addEventListener('click', () => {
-            const courseCode = document.getElementById('courseCode').value;
-            const courseName = document.getElementById('courseName').value;
-            const section = document.getElementById('section').value;
-            const timeSlot = document.getElementById('timeSlot').value;
+// Handle Add Button
+    addEntryBtn.addEventListener('click', () => {
+        const courseCode = document.getElementById('courseCode').value;
+        const courseName = document.getElementById('courseName').value;
+        const section = document.getElementById('section').value;
+        const timeSlot = document.getElementById('timeSlot').value;
 
-            // Validate inputs
-            if (!courseCode || !courseName || !section || !timeSlot) {
-                Swal.fire('Error', 'Please fill in all fields.', 'error');
-                return;
-            }
 
-            // Check for clashes in the current table
-            const rows = Array.from(timetableBody.rows);
-            const isClashing = rows.some(row => {
-                const rowSection = row.cells[2].innerText.trim();
-                const rowTimeSlot = row.cells[3].innerText.trim();
-                return rowSection === section && rowTimeSlot === timeSlot;
+        // Validate inputs
+        if (!courseCode || !courseName || !section || !timeSlot) {
+            Swal.fire('Error', 'Please fill in all fields.', 'error');
+            return;
+        }
+
+
+        // Check if the timetable already has this entry
+        const existingEntries = Array.from(timetableBody.rows).map(row => ({
+            course_code: row.cells[0].innerText,
+            course_name: row.cells[1].innerText,
+            section: row.cells[2].innerText,
+            time_slot: row.cells[3].innerText
+        }));
+
+
+        const isDuplicate = existingEntries.some(entry =>
+            entry.course_code === courseCode &&
+            entry.course_name === courseName &&
+            entry.section === section &&
+            entry.time_slot === timeSlot
+        );
+
+
+        if (isDuplicate) {
+            // Display a button to confirm adding the duplicate entry
+            Swal.fire({
+                title: 'Duplicate Entry',
+                text: 'This timetable entry already exists. Do you want to add it again?',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, add it!',
+                cancelButtonText: 'No, cancel',
+            }).then(result => {
+                if (result.isConfirmed) {
+                    // Send data via AJAX to store it in the database
+                    fetch('/timetable/store', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify({
+                            course_code: courseCode,
+                            course_name: courseName,
+                            section: section,
+                            time_slot: timeSlot
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.message) {
+                            Swal.fire('Success', 'Course added to timetable.', 'success');
+                            // Add new row to the table
+                            const newRow = `
+                                <tr>
+                                    <td>${courseCode}</td>
+                                    <td>${courseName}</td>
+                                    <td>${section}</td>
+                                    <td>${timeSlot}</td>
+                                    <td><button class="btn btn-danger delete-btn">Delete</button></td>
+                                </tr>
+                            `;
+                            timetableBody.insertAdjacentHTML('beforeend', newRow);
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire('Error', 'Failed to add timetable entry.', 'error');
+                    });
+                }
             });
-
-            if (isClashing) {
-                Swal.fire({
-                    title: 'Clash Detected',
-                    text: 'A course is already scheduled in this time slot and section.',
-                    icon: 'error',
-                    confirmButtonText: 'Okay',
-                });
-                return;
-            }
-
+        } else {
             // Send data via AJAX to store it in the database
             fetch('/timetable/store', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                 },
                 body: JSON.stringify({
                     course_code: courseCode,
                     course_name: courseName,
                     section: section,
-                    time_slot: timeSlot,
-                }),
+                    time_slot: timeSlot
+                })
             })
             .then(response => response.json())
             .then(data => {
@@ -392,115 +440,61 @@
             .catch(error => {
                 Swal.fire('Error', 'Failed to add timetable entry.', 'error');
             });
-
-            // Reset select inputs
-            document.getElementById('courseCode').value = '';
-            document.getElementById('courseName').value = '';
-            document.getElementById('section').value = '';
-            document.getElementById('timeSlot').value = '';
-        });
-
-        // AI Button for Clash Detection
-        aiButton.addEventListener('click', () => {
-            const rows = Array.from(timetableBody.rows);
-            const seen = {};
-            const conflicts = [];
-
-            rows.forEach((row, index) => {
-                const section = row.cells[2].innerText.trim();
-                const timeSlot = row.cells[3].innerText.trim();
-                const key = `${section}-${timeSlot}`;
-
-                if (seen[key]) {
-                    conflicts.push({
-                        course1: seen[key].courseName,
-                        course2: row.cells[1].innerText.trim(),
-                        section,
-                        timeSlot,
-                    });
-
-                    // Highlight conflicting rows
-                    row.setAttribute('data-clash', 'true');
-                    rows[seen[key].index].setAttribute('data-clash', 'true');
-                } else {
-                    seen[key] = {
-                        courseName: row.cells[1].innerText.trim(),
-                        index,
-                    };
-                    row.removeAttribute('data-clash');
                 }
+
+
+        // Reset select inputs
+        document.getElementById('courseCode').value = '';
+        document.getElementById('courseName').value = '';
+        document.getElementById('section').value = '';
+        document.getElementById('timeSlot').value = '';
             });
-
-            // Show conflicts if any
-            if (conflicts.length > 0) {
-                let conflictDetails = '';
-                conflicts.forEach((conflict, i) => {
-                    conflictDetails += `
-                        <b>${i + 1}.</b> <u>Clash:</u> 
-                        <b>Courses:</b> ${conflict.course1} and ${conflict.course2}<br>
-                        <b>Time Slot:</b> ${conflict.timeSlot} <br>
-                        <b>Section:</b> ${conflict.section}<br><br>
-                    `;
-                });
-
-                Swal.fire({
-                    title: 'Schedule Conflicts Found!',
-                    html: conflictDetails,
-                    icon: 'warning',
-                    confirmButtonText: 'Okay',
-                });
-            } else {
-                Swal.fire('No Conflicts', 'Your schedule is conflict-free.', 'success');
-            }
-        });
-    });
+});
         
     document.getElementById('aiButton').addEventListener('click', () => {
     // Get all rows from the timetable
     const rows = document.querySelectorAll('#timetableBody tr');
-    const conflicts = [];
-    const seen = {};
-
+    const conflicts = {};
+   
     // Check for conflicts
-    rows.forEach((row, index) => {
+    rows.forEach((row) => {
         const cells = row.children;
-        const section = cells[2].innerText.trim();
+        const courseName = cells[1].innerText.trim();
+        const section = cells[2].innerText.trim(); // Get the section
         const timeSlot = cells[3].innerText.trim();
 
-        const key = `${section}-${timeSlot}`;
-        if (seen[key]) {
-            // Conflict detected
-            conflicts.push({
-                course1: seen[key].course,
-                course2: cells[1].innerText.trim(),
-                timeSlot,
-                section,
-            });
 
-            // Highlight the conflicting rows
-            row.setAttribute('data-clash', 'true');
-            rows[seen[key].index].setAttribute('data-clash', 'true');
-        } else {
-            seen[key] = {
-                course: cells[1].innerText.trim(),
-                index,
-            };
-            row.removeAttribute('data-clash');
+        // Use time slot as the key to track courses
+        if (!conflicts[timeSlot]) {
+            conflicts[timeSlot] = [];
         }
+        conflicts[timeSlot].push({ courseName, section, row });
     });
 
-    // Show popup if conflicts exist
-    if (conflicts.length > 0) {
-        let conflictDetails = '';
-        conflicts.forEach((conflict, i) => {
-            conflictDetails += `<b>${i + 1}.</b> <u>Clash:</u> 
-            <br> <b>Courses:</b> ${conflict.course1} and ${conflict.course2}
-            <br> <b>Time Slot:</b> ${conflict.timeSlot} 
-            <br> <b>Section:</b> ${conflict.section}<br><br>`;
-        });
 
+    // Prepare the output for conflicts
+    let conflictDetails = '<h3 style="color: red;">Schedule Conflicts Found!</h3>';
+    let hasConflicts = false;
+
+
+    for (const timeSlot in conflicts) {
+        if (conflicts[timeSlot].length > 1) { // Only consider time slots with more than one course
+            hasConflicts = true;
+            conflictDetails += `<p><strong>Time Slot:</strong> <strong>${timeSlot}</strong></p>`; // Bold time slot
+            conflictDetails += '<ul style="list-style-type: none; padding: 0;">';
+            conflicts[timeSlot].forEach(course => {
+                conflictDetails += `<li>${course.courseName} (Section: ${course.section})</li>`;
+                // Highlight the row
+                course.row.classList.add('highlight');
+            });
+            conflictDetails += '</ul>';
+        }
+    }
+
+
+    // Show popup if conflicts exist
+    if (hasConflicts) {
         Swal.fire({
-            title: 'Schedule Conflicts Found!',
             html: conflictDetails,
             icon: 'warning',
             confirmButtonText: 'Okay',
@@ -510,7 +504,9 @@
     }
 });
 
-    </script>
+
+</script>
+
 
 </body>
 </html>
