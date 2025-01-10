@@ -233,140 +233,36 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const timetableBody = document.getElementById('timetableBody');
+    document.addEventListener('DOMContentLoaded', () => {
+        const timetableBody = document.getElementById('timetableBody');
 
-    // Event delegation for delete buttons
-    timetableBody.addEventListener('click', (event) => {
-        if (event.target.classList.contains('delete-btn')) {
-            handleDeleteButtonClick(event);
-        }
-    });
-
-    function handleDeleteButtonClick(event) {
-        const row = event.target.closest('tr'); // Get the closest row
-        const courseCode = row.cells[0].innerText; // Get course code from the row
-        const courseName = row.cells[1].innerText; // Get course name from the row
-        const section = row.cells[2].innerText; // Get section from the row
-        const timeSlot = row.cells[3].innerText; // Get time slot from the row
-
-        // Confirm deletion
-        Swal.fire({
-            title: 'Are you sure?',
-            text: `You are about to delete the entry for ${courseName} (${courseCode}) in section ${section} during ${timeSlot}.`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'No, cancel',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Send DELETE request to the server
-                fetch('/timetable/delete', {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify({
-                        course_code: courseCode,
-                        course_name: courseName,
-                        section: section,
-                        time_slot: timeSlot
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.message) {
-                        Swal.fire('Deleted!', 'The timetable entry has been deleted.', 'success');
-                        // Remove the row from the table
-                        row.remove();
-                    } else {
-                        Swal.fire('Error', 'Failed to delete the timetable entry.', 'error');
-                    }
-                })
-                .catch(error => {
-                    Swal.fire('Error', 'Failed to delete the timetable entry.', 'error');
-                });
+        // Event delegation for delete buttons
+        timetableBody.addEventListener('click', (event) => {
+            if (event.target.classList.contains('delete-btn')) {
+                handleDeleteButtonClick(event);
             }
         });
-    }
-});
 
-document.addEventListener('DOMContentLoaded', () => {
-    const timetableBody = document.getElementById('timetableBody');
-    const addEntryBtn = document.getElementById('addEntryBtn');
+        function handleDeleteButtonClick(event) {
+            const row = event.target.closest('tr'); // Get the closest row
+            const courseCode = row.cells[0].innerText; // Get course code from the row
+            const courseName = row.cells[1].innerText; // Get course name from the row
+            const section = row.cells[2].innerText; // Get section from the row
+            const timeSlot = row.cells[3].innerText; // Get time slot from the row
 
-    // Fetch timetable entries on page load
-    fetch('/timetable/get')  // Make sure this URL corresponds to your new route
-        .then(response => response.json())
-        .then(data => {
-            if (data.length === 0) {
-                timetableBody.innerHTML = `
-                    <tr id="emptyRow">
-                        <td colspan="5" class="text-center">No timetable entries yet.</td>
-                    </tr>
-                `;
-            } else {
-                timetableBody.innerHTML = ''; // Clear the empty row
-                data.forEach(entry => {
-                    const newRow = `
-                        <tr>
-                            <td>${entry.course_code}</td>
-                            <td>${entry.course_name}</td>
-                            <td>${entry.section}</td>
-                            <td>${entry.time_slot}</td>
-                            <td><button class="btn btn-danger delete-btn">Delete</button></td>
-                        </tr>
-                    `;
-                    timetableBody.insertAdjacentHTML('beforeend', newRow);
-                });
-            }
-        })
-        .catch(error => {
-            console.log('Error fetching timetable entries:', error);
-        });
-
-    // Handle Add Button
-    addEntryBtn.addEventListener('click', () => {
-        const courseCode = document.getElementById('courseCode').value;
-        const courseName = document.getElementById('courseName').value;
-        const section = document.getElementById('section').value;
-        const timeSlot = document.getElementById('timeSlot').value;
-
-        // Validate inputs
-        if (!courseCode || !courseName || !section || !timeSlot) {
-            Swal.fire('Error', 'Please fill in all fields.', 'error');
-            return;
-        }
-
-        // Check if the timetable already has this entry
-        const existingEntries = Array.from(timetableBody.rows).map(row => ({
-            course_code: row.cells[0].innerText,
-            course_name: row.cells[1].innerText,
-            section: row.cells[2].innerText,
-            time_slot: row.cells[3].innerText
-        }));
-
-        const isDuplicate = existingEntries.some(entry => 
-            entry.course_code === courseCode &&
-            entry.course_name === courseName &&
-            entry.section === section &&
-            entry.time_slot === timeSlot
-        );
-
-        if (isDuplicate) {
-            // Display a button to confirm adding the duplicate entry
+            // Confirm deletion
             Swal.fire({
-                title: 'Duplicate Entry',
-                text: 'This timetable entry already exists. Do you want to add it again?',
+                title: 'Are you sure?',
+                text: `You are about to delete the entry for ${courseName} (${courseCode}) in section ${section} during ${timeSlot}.`,
+                icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Yes, add it!',
+                confirmButtonText: 'Yes, delete it!',
                 cancelButtonText: 'No, cancel',
-            }).then(result => {
+            }).then((result) => {
                 if (result.isConfirmed) {
-                    // Send data via AJAX to store it in the database
-                    fetch('/timetable/store', {
-                        method: 'POST',
+                    // Send DELETE request to the server
+                    fetch('/timetable/delete', {
+                        method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json',
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
@@ -381,39 +277,100 @@ document.addEventListener('DOMContentLoaded', () => {
                     .then(response => response.json())
                     .then(data => {
                         if (data.message) {
-                            Swal.fire('Success', 'Course added to timetable.', 'success');
-                            // Add new row to the table
-                            const newRow = `
-                                <tr>
-                                    <td>${courseCode}</td>
-                                    <td>${courseName}</td>
-                                    <td>${section}</td>
-                                    <td>${timeSlot}</td>
-                                    <td><button class="btn btn-danger delete-btn">Delete</button></td>
-                                </tr>
-                            `;
-                            timetableBody.insertAdjacentHTML('beforeend', newRow);
+                            Swal.fire('Deleted!', 'The timetable entry has been deleted.', 'success');
+                            // Remove the row from the table
+                            row.remove();
+                        } else {
+                            Swal.fire('Error', 'Failed to delete the timetable entry.', 'error');
                         }
                     })
                     .catch(error => {
-                        Swal.fire('Error', 'Failed to add timetable entry.', 'error');
+                        Swal.fire('Error', 'Failed to delete the timetable entry.', 'error');
                     });
                 }
             });
-        } else {
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const timetableBody = document.getElementById('timetableBody');
+        const addEntryBtn = document.getElementById('addEntryBtn');
+        const aiButton = document.getElementById('aiButton');
+
+        // Fetch timetable entries on page load
+        fetch('/timetable/get')
+            .then(response => response.json())
+            .then(data => {
+                if (data.length === 0) {
+                    timetableBody.innerHTML = `
+                        <tr id="emptyRow">
+                            <td colspan="5" class="text-center">No timetable entries yet.</td>
+                        </tr>
+                    `;
+                } else {
+                    timetableBody.innerHTML = ''; // Clear the empty row
+                    data.forEach(entry => {
+                        const newRow = `
+                            <tr>
+                                <td>${entry.course_code}</td>
+                                <td>${entry.course_name}</td>
+                                <td>${entry.section}</td>
+                                <td>${entry.time_slot}</td>
+                                <td><button class="btn btn-danger delete-btn">Delete</button></td>
+                            </tr>
+                        `;
+                        timetableBody.insertAdjacentHTML('beforeend', newRow);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching timetable entries:', error);
+            });
+
+        // Handle Add Button
+        addEntryBtn.addEventListener('click', () => {
+            const courseCode = document.getElementById('courseCode').value;
+            const courseName = document.getElementById('courseName').value;
+            const section = document.getElementById('section').value;
+            const timeSlot = document.getElementById('timeSlot').value;
+
+            // Validate inputs
+            if (!courseCode || !courseName || !section || !timeSlot) {
+                Swal.fire('Error', 'Please fill in all fields.', 'error');
+                return;
+            }
+
+            // Check for clashes in the current table
+            const rows = Array.from(timetableBody.rows);
+            const isClashing = rows.some(row => {
+                const rowSection = row.cells[2].innerText.trim();
+                const rowTimeSlot = row.cells[3].innerText.trim();
+                return rowSection === section && rowTimeSlot === timeSlot;
+            });
+
+            if (isClashing) {
+                Swal.fire({
+                    title: 'Clash Detected',
+                    text: 'A course is already scheduled in this time slot and section.',
+                    icon: 'error',
+                    confirmButtonText: 'Okay',
+                });
+                return;
+            }
+
             // Send data via AJAX to store it in the database
             fetch('/timetable/store', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 },
                 body: JSON.stringify({
                     course_code: courseCode,
                     course_name: courseName,
                     section: section,
-                    time_slot: timeSlot
-                })
+                    time_slot: timeSlot,
+                }),
             })
             .then(response => response.json())
             .then(data => {
@@ -435,17 +392,70 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => {
                 Swal.fire('Error', 'Failed to add timetable entry.', 'error');
             });
-        }
 
-        // Reset select inputs
-        document.getElementById('courseCode').value = '';
-        document.getElementById('courseName').value = '';
-        document.getElementById('section').value = '';
-        document.getElementById('timeSlot').value = '';
+            // Reset select inputs
+            document.getElementById('courseCode').value = '';
+            document.getElementById('courseName').value = '';
+            document.getElementById('section').value = '';
+            document.getElementById('timeSlot').value = '';
+        });
+
+        // AI Button for Clash Detection
+        aiButton.addEventListener('click', () => {
+            const rows = Array.from(timetableBody.rows);
+            const seen = {};
+            const conflicts = [];
+
+            rows.forEach((row, index) => {
+                const section = row.cells[2].innerText.trim();
+                const timeSlot = row.cells[3].innerText.trim();
+                const key = `${section}-${timeSlot}`;
+
+                if (seen[key]) {
+                    conflicts.push({
+                        course1: seen[key].courseName,
+                        course2: row.cells[1].innerText.trim(),
+                        section,
+                        timeSlot,
+                    });
+
+                    // Highlight conflicting rows
+                    row.setAttribute('data-clash', 'true');
+                    rows[seen[key].index].setAttribute('data-clash', 'true');
+                } else {
+                    seen[key] = {
+                        courseName: row.cells[1].innerText.trim(),
+                        index,
+                    };
+                    row.removeAttribute('data-clash');
+                }
+            });
+
+            // Show conflicts if any
+            if (conflicts.length > 0) {
+                let conflictDetails = '';
+                conflicts.forEach((conflict, i) => {
+                    conflictDetails += `
+                        <b>${i + 1}.</b> <u>Clash:</u> 
+                        <b>Courses:</b> ${conflict.course1} and ${conflict.course2}<br>
+                        <b>Time Slot:</b> ${conflict.timeSlot} <br>
+                        <b>Section:</b> ${conflict.section}<br><br>
+                    `;
+                });
+
+                Swal.fire({
+                    title: 'Schedule Conflicts Found!',
+                    html: conflictDetails,
+                    icon: 'warning',
+                    confirmButtonText: 'Okay',
+                });
+            } else {
+                Swal.fire('No Conflicts', 'Your schedule is conflict-free.', 'success');
+            }
+        });
     });
-});
         
-        document.getElementById('aiButton').addEventListener('click', () => {
+    document.getElementById('aiButton').addEventListener('click', () => {
     // Get all rows from the timetable
     const rows = document.querySelectorAll('#timetableBody tr');
     const conflicts = [];
