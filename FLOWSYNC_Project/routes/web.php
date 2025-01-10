@@ -6,6 +6,8 @@ use App\Http\Controllers\SolutionController;
 use App\Http\Controllers\TimetableController;
 use App\Http\Controllers\GoogleCalendarController;
 use App\Http\Controllers\OpenAIController;
+use App\Http\Controllers\FullCalendarController;
+use App\Http\Controllers\EventController;
 
 
 
@@ -114,3 +116,8 @@ Route::get('google/callback', [GoogleCalendarController::class, 'handleGoogleCal
 
 // Detect clashes
 Route::get('/detect-clashes', [TimetableController::class, 'detectClashes']);
+
+Route::get('/fullcalendar', [FullCalendarController::class, 'index'])->name('fullcalendar');
+Route::get('/fullcalendar-events', [FullCalendarController::class, 'fetchEvents'])->name('fullcalendar.events');
+Route::post('/fullcalendar-events', [FullCalendarController::class, 'storeEvent'])->name('fullcalendar.store');
+Route::get('/free-slots', [FullCalendarController::class, 'getFreeSlots'])->name('free.slots');

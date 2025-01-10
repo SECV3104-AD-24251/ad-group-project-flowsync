@@ -47,10 +47,6 @@
                 color: #ffffff; /* White footer text */
             }
 
-            body.dark h3 {
-                color: #4b5563; /* Ensure headers are visible in dark mode */
-            }
-
             .dark-mode-toggle i {
                 color: #ffffff; /* White icon for dark mode */
             }
@@ -73,54 +69,6 @@
             .dark-mode-toggle:hover i {
                 color: #ef4444;           /* Red color on hover */
             }
-
-            /* Input fields and links */
-            input, a {
-                transition: color 0.3s ease, background-color 0.3s ease;
-            }
-
-            input {
-                background-color: #fff;
-                color: #333;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-                padding: 10px;
-            }
-
-            .dark input {
-                background-color: #333;
-                color: #fff;
-                border: 1px solid #555;
-            }
-
-            a {
-                text-decoration: none;
-                transition: color 0.3s ease;
-            }
-
-            .dark a {
-                color: #ffffff; /* Links in dark mode should be white */
-            }
-
-            body.dark-mode {
-                background-color: #121212;
-                color: #ffffff;
-            }
-
-            body.dark-mode .calendar-container h3,
-            body.dark-mode .map-container h3,
-            body.dark-mode .links-container h3 {
-                color: #ffffff; /* Ensure headers are visible */
-            }
-
-            body.dark-mode a {
-                color: #4cc9f0; /* Adjust link color for better visibility */
-            }
-
-            body.dark-mode input {
-                background-color: #333333;
-                color: #ffffff;
-            }
         </style>
     </head>
     <body class="antialiased">
@@ -138,8 +86,9 @@
 
                 <!-- Navigation Menu -->
                 <nav class="md:ml-auto flex flex-wrap items-center text-base justify-center">
-                    <a class="mr-5 hover:text-gray-200 transition duration-200" href="/login">Timetable</a>
-                    <a class="mr-5 hover:text-gray-200 transition duration-200" href="/login">Calendar</a>
+                    <a class="mr-5 hover:text-gray-200 transition duration-200" href="/timetable">Timetable</a>
+                    <a class="mr-5 hover:text-gray-200 transition duration-200" href="/calendar">Calendar</a>
+                    <a class="mr-5 hover:text-gray-200 transition duration-200" href="/fullcalendar">FullCalendar</a>
 
                     <!-- Conditional Rendering for Login/Logout -->
                     @if(session('user'))
@@ -178,10 +127,7 @@
         <script>
             // Toggle dark mode
             function toggleDarkMode() {
-                // Toggle the dark class on body
                 document.body.classList.toggle('dark');
-
-                // Change the icon based on the current mode
                 const icon = document.querySelector('.dark-mode-toggle i');
                 if (document.body.classList.contains('dark')) {
                     icon.classList.remove('fa-moon');
