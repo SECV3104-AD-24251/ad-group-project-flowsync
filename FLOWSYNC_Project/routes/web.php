@@ -35,6 +35,26 @@ Route::delete('/timetable/delete', [TimetableController::class, 'deleteEntry'])-
 
 Route::get('/stud-timetable', [TimetableController::class, 'showTimetable'])->name('stud_timetable');
 
+//fullcalendar
+Route::get('/events', [EventController::class, 'index']); // Fetch events
+Route::post('/events', [EventController::class, 'store']); // Add new event
+Route::put('/events/{id}', [EventController::class, 'update']); // Update an event
+Route::delete('/events/{id}', [EventController::class, 'destroy']); // Delete an event
+Route::get('/calendar', function () {
+    return view('fullcalendar');
+});
+Route::post('/events', [EventController::class, 'store']);
+Route::get('/events', [EventController::class, 'index']);
+Route::delete('/events/{id}', [EventController::class, 'destroy']);
+Route::post('/events', [EventController::class, 'store']);
+Route::delete('/events/{event}', [EventController::class, 'destroy']);
+Route::resource('events', EventController::class);
+Route::post('/events', [EventController::class, 'store']);
+
+
+
+
+
 
 
 // Timetable routes

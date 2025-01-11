@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Event extends Model
 {
     use HasFactory;
+
+    // Define the table name (optional, if your table is named 'events')
+    protected $table = 'events';
+
+    // Define the fields that are mass assignable
+    protected $fillable = ['title', 'start', 'end'];
 }
