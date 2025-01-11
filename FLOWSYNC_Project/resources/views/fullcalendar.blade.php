@@ -115,10 +115,17 @@
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
             width: 90%;
-            max-width: 500px;
-            text-align: center;
+            max-width: 400px;
             font-family: 'Arial', sans-serif;
             font-size: 16px;
+            text-align: left;
+        }
+
+        #modalContent h3 {
+            text-align: center;
+            margin-bottom: 35px;
+            font-size: 1.8rem;
+            color: maroon;
         }
 
         .modal-footer {
@@ -177,10 +184,34 @@
     <div id="eventModal">
         <div id="modalContent">
             <h3>Event Details</h3>
-            <p id="eventDetails"></p>
+            <!-- Display Event Information -->
+            <div id="eventDisplay">
+                <p><strong>Title:</strong> <span id="eventTitle"></span></p>
+                <p><strong>Description:</strong> <span id="eventDescription"></span></p>
+                <p><strong>Date:</strong> <span id="eventDate"></span></p>
+                <p><strong>Time:</strong> <span id="eventTime"></span></p>
+                <p><strong>Location:</strong> <span id="eventLocation"></span></p>
+            </div>
+            <!-- Editable Form -->
+            <form id="eventEditForm" style="display: none;">
+                <label for="editTitle">Title:</label>
+                <input type="text" id="editTitle" name="editTitle" required>
+                <label for="editDescription">Description:</label>
+                <textarea id="editDescription" name="editDescription" rows="3"></textarea>
+                <label for="editDate">Date:</label>
+                <input type="date" id="editDate" name="editDate" required>
+                <label for="editTime">Time:</label>
+                <input type="time" id="editTime" name="editTime" required>
+                <label for="editLocation">Location:</label>
+                <input type="text" id="editLocation" name="editLocation">
+            </form>
+            <!-- Buttons -->
             <div class="modal-footer">
-                <button id="okBtn" class="btn-modal">OK</button>
+                <button id="editBtn" class="btn-modal">Edit</button>
+                <button id="saveBtn" class="btn-modal" style="display: none;">Save</button>
+                <button id="cancelEditBtn" class="btn-modal" style="display: none;">Cancel</button>
                 <button id="deleteBtn" class="btn-modal">Delete</button>
+                <button id="okBtn" class="btn-modal">OK</button>
             </div>
         </div>
     </div>
@@ -219,37 +250,97 @@
                         });
                     }
                 },
-                eventClick: function(info) {
-                    var eventDetails = `
-                        <strong>Title:</strong> ${info.event.title} <br>
-                        <strong>Description:</strong> ${info.event.extendedProps.description || 'No description available'}
-                    `;
-
-                    $('#eventDetails').html(eventDetails);
+                eventClick: function (info) {
+                    // Populate modal with event details
+                    $('#eventTitle').text(info.event.title);
+                    $('#eventDescription').text(info.event.extendedProps.description || 'No description available');
+                    $('#eventDate').text(info.event.start.toISOString().slice(0, 10)); // Format date as YYYY-MM-DD
+                    $('#eventTime').text(
+                        info.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    );
+                    $('#eventLocation').text(info.event.extendedProps.location || 'Not specified');
                     $('#eventModal').show();
 
-                    $('#okBtn').click(function() {
+                    // Handle Edit Button
+                    $('#editBtn').off('click').click(function () {
+                        // Show edit form and prefill values
+                        $('#eventDisplay').hide();
+                        $('#eventEditForm').show();
+                        $('#editTitle').val(info.event.title);
+                        $('#editDescription').val(info.event.extendedProps.description || '');
+                        $('#editDate').val(info.event.start.toISOString().slice(0, 10));
+                        $('#editTime').val(info.event.start.toISOString().slice(11, 16));
+                        $('#editLocation').val(info.event.extendedProps.location || '');
+                        $('#saveBtn').show();
+                        $('#cancelEditBtn').show();
+                        $('#editBtn').hide();
+                    });
+
+                    // Handle Save Button
+                    $('#saveBtn').off('click').click(function () {
+                        const updatedTitle = $('#editTitle').val();
+                        const updatedDescription = $('#editDescription').val();
+                        const updatedDate = $('#editDate').val();
+                        const updatedTime = $('#editTime').val();
+                        const updatedLocation = $('#editLocation').val();
+                        const updatedStart = new Date(`${updatedDate}T${updatedTime}`);
+                        
+                        // Make AJAX request to update the event
+                        $.ajax({
+                            url: `/events/${info.event.id}`,
+                            method: 'PUT',
+                            data: {
+                                title: updatedTitle,
+                                description: updatedDescription,
+                                start: updatedStart.toISOString(),
+                                location: updatedLocation,
+                                _token: $('meta[name="csrf-token"]').attr('content'),
+                            },
+                            success: function () {
+                                calendar.refetchEvents(); // Refresh events in the calendar
+                                alert('Event updated successfully');
+                                $('#eventModal').hide();
+                            },
+                            error: function () {
+                                alert('Failed to update event');
+                            },
+                        });
+                    });
+
+                    // Handle Cancel Edit Button
+                    $('#cancelEditBtn').off('click').click(function () {
+                        $('#eventEditForm').hide();
+                        $('#eventDisplay').show();
+                        $('#saveBtn').hide();
+                        $('#cancelEditBtn').hide();
+                        $('#editBtn').show();
+                    });
+
+                    // Handle OK Button
+                    $('#okBtn').off('click').click(function () {
                         $('#eventModal').hide();
                     });
 
-                    $('#deleteBtn').click(function() {
+                    // Handle Delete Button
+                    $('#deleteBtn').off('click').click(function () {
                         $.ajax({
                             url: `/events/${info.event.id}`,
                             method: 'DELETE',
                             data: {
-                                _token: $('meta[name="csrf-token"]').attr('content')
+                                _token: $('meta[name="csrf-token"]').attr('content'),
                             },
-                            success: function() {
+                            success: function () {
                                 calendar.refetchEvents();
                                 alert('Event deleted successfully');
                                 $('#eventModal').hide();
                             },
-                            error: function() {
+                            error: function () {
                                 alert('Failed to delete event');
-                            }
+                            },
                         });
                     });
-                }
+                },
+
             });
 
             calendar.render();

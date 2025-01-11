@@ -50,12 +50,6 @@ Route::delete('/events/{event}', [EventController::class, 'destroy']);
 Route::resource('events', EventController::class);
 Route::post('/events', [EventController::class, 'store']);
 
-
-
-
-
-
-
 // Timetable routes
 Route::get('/timetable', [TimetableController::class, 'showTimetable'])->name('timetable');
 Route::get('/detect-clashes', [TimetableController::class, 'detectClashes'])->name('detect.clashes');
@@ -140,3 +134,4 @@ Route::get('/fullcalendar', [FullCalendarController::class, 'index'])->name('ful
 Route::get('/fullcalendar-events', [FullCalendarController::class, 'fetchEvents'])->name('fullcalendar.events');
 Route::post('/fullcalendar-events', [FullCalendarController::class, 'storeEvent'])->name('fullcalendar.store');
 Route::get('/free-slots', [FullCalendarController::class, 'getFreeSlots'])->name('free.slots');
+

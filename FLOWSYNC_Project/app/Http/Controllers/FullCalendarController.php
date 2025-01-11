@@ -31,4 +31,6 @@ class FullCalendarController extends Controller
 
         return response()->json($event);
     }
+
+    
 }
