@@ -9,15 +9,14 @@ use App\Http\Controllers\OpenAIController;
 use App\Http\Controllers\FullCalendarController;
 use App\Http\Controllers\EventController;
 
-
-
 // Public routes
 Route::view('/', 'welcome');
-Route::view('/calendar', 'calendar');
+//Route::view('/calendar', 'calendar');
 Route::view('/solution', 'solution');
 Route::view('/helpCenter', 'helpCenter');
 Route::view('/HC1', 'HC1');
 Route::view('/student-timetable', 'stud_timetable');
+Route::view('/student-calendar', 'fullcalendar');
 
 Route::get('/timetable', [TimetableController::class, 'showTimetable']);
 Route::post('/timetable/add', [TimetableController::class, 'addTimetableEntry']);
@@ -40,7 +39,7 @@ Route::get('/events', [EventController::class, 'index']); // Fetch events
 Route::post('/events', [EventController::class, 'store']); // Add new event
 Route::put('/events/{id}', [EventController::class, 'update']); // Update an event
 Route::delete('/events/{id}', [EventController::class, 'destroy']); // Delete an event
-Route::get('/calendar', function () {
+Route::get('/stud-calendar', function () {
     return view('fullcalendar');
 });
 Route::post('/events', [EventController::class, 'store']);

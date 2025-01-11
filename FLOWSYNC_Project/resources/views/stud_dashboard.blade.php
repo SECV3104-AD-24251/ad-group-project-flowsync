@@ -26,9 +26,9 @@
                 <h2 class="text-2xl font-semibold text-gray-800">Student Calendar</h2>
                 <p class="text-gray-500 text-sm">Keep track of your important dates.</p>
             </div>
-            <a href="/calendar"
+            <a href="/student-calendar"
                class="w-full inline-block bg-red-500 text-white text-center py-2 rounded-lg font-medium hover:bg-red-600 transition">
-                View Registered Course
+                View Student Calendar
             </a>
         </div>
     </div>
