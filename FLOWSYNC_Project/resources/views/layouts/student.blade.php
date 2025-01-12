@@ -139,7 +139,7 @@
                 <!-- Navigation Menu -->
                 <nav class="md:ml-auto flex flex-wrap items-center text-base justify-center">
                     <a class="mr-5 hover:text-gray-200 transition duration-200" href="/student-timetable">Timetable</a>
-                    <a class="mr-5 hover:text-gray-200 transition duration-200" href="/calendar">Calendar</a>
+                    <a class="mr-5 hover:text-gray-200 transition duration-200" href="/student-calendar">Calendar</a>
                     <a class="mr-5 hover:text-gray-200 transition duration-200" href="/helpCenter">Help</a>
                     <a class="mr-5 hover:text-gray-200 transition duration-200" href="/solution">Solution</a>
 

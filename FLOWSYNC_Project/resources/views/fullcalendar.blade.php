@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Student Calendar</title>
-    
+
     <!-- FullCalendar CSS & JS -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-    
+
     <!-- jQuery Library -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -29,7 +29,7 @@
             color: white;
             padding: 30px;
             text-align: center;
-           border-radius: 0 0 5px 5px;
+            border-radius: 0 0 5px 5px;
         }
 
         .header h1 {
@@ -119,6 +119,9 @@
             font-family: 'Arial', sans-serif;
             font-size: 16px;
             text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
         #modalContent h3 {
@@ -128,23 +131,67 @@
             color: maroon;
         }
 
+        .modal-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .modal-row label {
+            flex: 1;
+            font-weight: bold;
+            color: #333;
+            margin-right: 15px;
+        }
+
+        .modal-row input,
+        .modal-row textarea {
+            flex: 2;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .modal-row span {
+            flex: 2;
+            background-color: #f7f7f7;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        textarea {
+            resize: none;
+        }
+
         .modal-footer {
-            text-align: center;
+            display: flex;
+            justify-content: space-around;
             margin-top: 20px;
         }
 
         .btn-modal {
             padding: 10px 20px;
-            margin: 10px 5px;
-            background-color: #800000;
-            color: white;
+            font-size: 14px;
+            font-weight: bold;
             border: none;
             border-radius: 5px;
+            color: white;
+            background-color: #800000;
             cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
         }
 
         .btn-modal:hover {
             background-color: darkred;
+            transform: scale(1.05);
+        }
+
+        #eventDisplay .modal-row span {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 8px;
         }
 
         /* Responsive Design */
@@ -186,24 +233,49 @@
             <h3>Event Details</h3>
             <!-- Display Event Information -->
             <div id="eventDisplay">
-                <p><strong>Title:</strong> <span id="eventTitle"></span></p>
-                <p><strong>Description:</strong> <span id="eventDescription"></span></p>
-                <p><strong>Date:</strong> <span id="eventDate"></span></p>
-                <p><strong>Time:</strong> <span id="eventTime"></span></p>
-                <p><strong>Location:</strong> <span id="eventLocation"></span></p>
+                <div class="modal-row">
+                    <strong>Title:</strong>
+                    <span id="eventTitle"></span>
+                </div>
+                <div class="modal-row">
+                    <strong>Description:</strong>
+                    <span id="eventDescription"></span>
+                </div>
+                <div class="modal-row">
+                    <strong>Date:</strong>
+                    <span id="eventDate"></span>
+                </div>
+                <div class="modal-row">
+                    <strong>Time:</strong>
+                    <span id="eventTime"></span>
+                </div>
+                <div class="modal-row">
+                    <strong>Location:</strong>
+                    <span id="eventLocation"></span>
+                </div>
             </div>
             <!-- Editable Form -->
             <form id="eventEditForm" style="display: none;">
-                <label for="editTitle">Title:</label>
-                <input type="text" id="editTitle" name="editTitle" required>
-                <label for="editDescription">Description:</label>
-                <textarea id="editDescription" name="editDescription" rows="3"></textarea>
-                <label for="editDate">Date:</label>
-                <input type="date" id="editDate" name="editDate" required>
-                <label for="editTime">Time:</label>
-                <input type="time" id="editTime" name="editTime" required>
-                <label for="editLocation">Location:</label>
-                <input type="text" id="editLocation" name="editLocation">
+                <div class="modal-row">
+                    <label for="editTitle">Title:</label>
+                    <input type="text" id="editTitle" name="editTitle" required>
+                </div>
+                <div class="modal-row">
+                    <label for="editDescription">Description:</label>
+                    <textarea id="editDescription" name="editDescription" rows="3"></textarea>
+                </div>
+                <div class="modal-row">
+                    <label for="editDate">Date:</label>
+                    <input type="date" id="editDate" name="editDate" required>
+                </div>
+                <div class="modal-row">
+                    <label for="editTime">Time:</label>
+                    <input type="time" id="editTime" name="editTime" required>
+                </div>
+                <div class="modal-row">
+                    <label for="editLocation">Location:</label>
+                    <input type="text" id="editLocation" name="editLocation">
+                </div>
             </form>
             <!-- Buttons -->
             <div class="modal-footer">
@@ -284,7 +356,7 @@
                         const updatedTime = $('#editTime').val();
                         const updatedLocation = $('#editLocation').val();
                         const updatedStart = new Date(`${updatedDate}T${updatedTime}`);
-                        
+
                         // Make AJAX request to update the event
                         $.ajax({
                             url: `/events/${info.event.id}`,

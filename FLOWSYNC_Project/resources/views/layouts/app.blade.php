@@ -86,9 +86,8 @@
 
                 <!-- Navigation Menu -->
                 <nav class="md:ml-auto flex flex-wrap items-center text-base justify-center">
-                    <a class="mr-5 hover:text-gray-200 transition duration-200" href="/timetable">Timetable</a>
-                    <a class="mr-5 hover:text-gray-200 transition duration-200" href="/calendar">Calendar</a>
-                    <a class="mr-5 hover:text-gray-200 transition duration-200" href="/fullcalendar">FullCalendar</a>
+                    <a class="mr-5 hover:text-gray-200 transition duration-200" href="/login">Timetable</a>
+                    <a class="mr-5 hover:text-gray-200 transition duration-200" href="/login">Calendar</a>
 
                     <!-- Conditional Rendering for Login/Logout -->
                     @if(session('user'))
