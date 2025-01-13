@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -334,13 +336,11 @@
         const section = document.getElementById('section').value;
         const timeSlot = document.getElementById('timeSlot').value;
 
-
         // Validate inputs
         if (!courseCode || !courseName || !section || !timeSlot) {
             Swal.fire('Error', 'Please fill in all fields.', 'error');
             return;
         }
-
 
         // Check if the timetable already has this entry
         const existingEntries = Array.from(timetableBody.rows).map(row => ({
@@ -350,14 +350,12 @@
             time_slot: row.cells[3].innerText
         }));
 
-
         const isDuplicate = existingEntries.some(entry =>
             entry.course_code === courseCode &&
             entry.course_name === courseName &&
             entry.section === section &&
             entry.time_slot === timeSlot
         );
-
 
         if (isDuplicate) {
             // Display a button to confirm adding the duplicate entry
@@ -442,7 +440,6 @@
             });
                 }
 
-
         // Reset select inputs
         document.getElementById('courseCode').value = '';
         document.getElementById('courseName').value = '';
@@ -463,7 +460,6 @@
         const section = cells[2].innerText.trim(); // Get the section
         const timeSlot = cells[3].innerText.trim();
 
-
         // Use time slot as the key to track courses
         if (!conflicts[timeSlot]) {
             conflicts[timeSlot] = [];
@@ -471,11 +467,9 @@
         conflicts[timeSlot].push({ courseName, section, row });
     });
 
-
     // Prepare the output for conflicts
     let conflictDetails = '<h3 style="color: red;">Schedule Conflicts Found!</h3>';
     let hasConflicts = false;
-
 
     for (const timeSlot in conflicts) {
         if (conflicts[timeSlot].length > 1) { // Only consider time slots with more than one course
@@ -491,22 +485,48 @@
         }
     }
 
-
     // Show popup if conflicts exist
-    if (hasConflicts) {
+    // Show popup if conflicts exist
+if (hasConflicts) {
+    Swal.fire({
+        html: conflictDetails,
+        icon: 'warning',
+        confirmButtonText: 'Okay',
+    }).then(() => {
+        // Show solutions after the initial conflict alert
+        let solutionDetails = '<h3 style="color: green;">Suggested Solutions:</h3>';
+        
+        for (const timeSlot in conflicts) {
+            if (conflicts[timeSlot].length > 1) {
+                solutionDetails += `<p><strong>Time Slot:</strong> ${timeSlot}</p>`;
+                solutionDetails += '<ul>';
+                conflicts[timeSlot].forEach((course, index) => {
+                    solutionDetails += `<li>${course.courseName} (Section: ${course.section}) - 
+                        Suggestion: Consider changing to a different available time slot or section.</li>`;
+                });
+                solutionDetails += '</ul>';
+            }
+        }
+
         Swal.fire({
-            html: conflictDetails,
-            icon: 'warning',
-            confirmButtonText: 'Okay',
+            html: solutionDetails,
+            icon: 'info',
+            confirmButtonText: 'Got It',
         });
-    } else {
-        Swal.fire('No Conflicts', 'Your schedule is conflict-free.', 'success');
-    }
+    });
+} else {
+    Swal.fire('No Conflicts', 'Your schedule is conflict-free.', 'success');
+}
+
+
+
+
+
+
+
 });
 
-
 </script>
-
 
 </body>
 </html>
