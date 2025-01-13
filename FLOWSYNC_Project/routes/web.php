@@ -8,6 +8,8 @@ use App\Http\Controllers\GoogleCalendarController;
 use App\Http\Controllers\OpenAIController;
 use App\Http\Controllers\FullCalendarController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\LectEventController;
+
 
 // Public routes
 Route::view('/', 'welcome');
@@ -17,6 +19,8 @@ Route::view('/helpCenter', 'helpCenter');
 Route::view('/HC1', 'HC1');
 Route::view('/student-timetable', 'stud_timetable');
 Route::view('/student-calendar', 'fullcalendar');
+Route::view('/lecturer-calendar', 'lect_calendar');
+
 
 Route::get('/timetable', [TimetableController::class, 'showTimetable']);
 Route::post('/timetable/add', [TimetableController::class, 'addTimetableEntry']);
@@ -50,6 +54,22 @@ Route::delete('/events/{event}', [EventController::class, 'destroy']);
 Route::resource('events', EventController::class);
 Route::post('/events', [EventController::class, 'store']);
 
+//lecturer calendar
+Route::get('/lect_event', [LectEventController::class, 'index']); // Fetch events
+Route::post('/lect_event', [LectEventController::class, 'store']); // Add new event
+Route::put('/lect_event/{id}', [LectEventController::class, 'update']); // Update an event
+Route::delete('/lect_event/{id}', [LectEventController::class, 'destroy']); // Delete an event
+Route::get('/lect-calendar', function () {
+    return view('lect_calendar');
+});
+Route::post('/lect_event', [LectEventController::class, 'store']);
+Route::get('/lect_event', [LectEventController::class, 'index']);
+Route::delete('/lect_event/{id}', [LectEventController::class, 'destroy']);
+Route::post('/lect_event', [LectEventController::class, 'store']);
+Route::delete('/lect_event/{event}', [LectEventController::class, 'destroy']);
+Route::resource('lect_event', LectEventController::class);
+Route::post('/lect_event', [LectEventController::class, 'store']);
+
 // Timetable routes
 Route::get('/timetable', [TimetableController::class, 'showTimetable'])->name('timetable');
 Route::get('/detect-clashes', [TimetableController::class, 'detectClashes'])->name('detect.clashes');
@@ -71,6 +91,9 @@ Route::post('/login', function (Request $request) {
     } elseif ($username === 'A12CS3456' && $password === 'student') {
         $request->session()->put('user', $username); // Store user in session
         return redirect('/student-dashboard')->with('message', 'Student Login Successful');
+    } elseif ($username === 'lecturer' && $password === 'lecturer') {
+        $request->session()->put('user', $username); // Store user in session
+        return redirect('/lecturer-dashboard')->with('message', 'Lecturer Login Successful');
     } else {
         return back()->with('error', 'Invalid Credentials');
     }
@@ -92,6 +115,14 @@ Route::get('/student-dashboard', function () {
     }
     return redirect('/login')->with('error', 'Please login first.');
 })->name('stud_dashboard');
+
+// Student Dashboard (protected)
+Route::get('/lecturer-dashboard', function () {
+    if (session('user') === 'lecturer') {
+        return view('lect_dashboard');
+    }
+    return redirect('/login')->with('error', 'Please login first.');
+})->name('lect_dashboard');
 
 // Logout
 Route::post('/logout', function (Request $request) {

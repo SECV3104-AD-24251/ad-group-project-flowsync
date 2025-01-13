@@ -14,6 +14,10 @@ if (isset($_POST["login"])) {
         // Redirect student to the student dashboard
         header("Location: stud_dashboard.blade.php");
         exit;
+    } elseif ($username == "lecturer" && $password == "lecturer") {
+        // Redirect lecturer to the lecturer dashboard
+        header("Location: lect_dashboard.blade.php");
+        exit;
     } else {
         echo "<script type='text/javascript'>alert('Login Error');</script>"; // Display error alert
     }
