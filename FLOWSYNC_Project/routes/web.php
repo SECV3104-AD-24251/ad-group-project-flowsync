@@ -166,3 +166,8 @@ Route::get('/fullcalendar-events', [FullCalendarController::class, 'fetchEvents'
 Route::post('/fullcalendar-events', [FullCalendarController::class, 'storeEvent'])->name('fullcalendar.store');
 Route::get('/free-slots', [FullCalendarController::class, 'getFreeSlots'])->name('free.slots');
 
+Route::get('/calendar', [FullCalendarController::class, 'index']);
+Route::get('/events', [FullCalendarController::class, 'fetchEvents']);
+Route::post('/events', [FullCalendarController::class, 'storeEvent']);
+Route::put('/events/{id}', [FullCalendarController::class, 'updateEvent']);
+Route::delete('/events/{id}', [FullCalendarController::class, 'deleteEvent']);
