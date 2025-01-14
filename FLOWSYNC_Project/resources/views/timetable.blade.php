@@ -185,7 +185,6 @@
                         <option value="">Select Time Slot</option>
                         <option value="SUN 11:00-13:00">SUN 11:00-13:00</option>
                         <option value="MON 8:00-10:00">MON 8:00-10:00</option>
-                        <option value="MON 10:00-13:00">MON 10:00-13:00</option>
                         <option value="TUE 8:00-10:00">TUE 8:00-10:00</option>
                         <option value="WED 10:00-13:00">WED 10:00-13:00</option>
                         <option value="THU 8:00-11:00">THU 8:00-11:00</option>
@@ -343,12 +342,20 @@
         }
 
         // Check if the timetable already has this entry
-        const existingEntries = Array.from(timetableBody.rows).map(row => ({
-            course_code: row.cells[0].innerText,
-            course_name: row.cells[1].innerText,
-            section: row.cells[2].innerText,
-            time_slot: row.cells[3].innerText
-        }));
+        const existingEntries = Array.from(timetableBody.rows).map(row => {
+            // Check if the row has enough cells (5 columns expected)
+            if (row.cells && row.cells.length >= 4) {
+                return {
+                    course_code: row.cells[0].innerText,
+                    course_name: row.cells[1].innerText,
+                    section: row.cells[2].innerText,
+                    time_slot: row.cells[3].innerText
+                };
+            }
+            return null;  // If not enough cells, return null
+        }).filter(entry => entry !== null); // Filter out any null entries
+
+        console.log("check:", existingEntries);
 
         const isDuplicate = existingEntries.some(entry =>
             entry.course_code === courseCode &&
