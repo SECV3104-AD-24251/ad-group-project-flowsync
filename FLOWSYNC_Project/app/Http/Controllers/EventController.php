@@ -1,55 +1,36 @@
-<?php
-
 namespace App\Http\Controllers;
 
-use App\Models\Event;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use App\Models\Event;
 
 class EventController extends Controller
 {
     public function index()
     {
-        // Return all events in JSON format
         return response()->json(Event::all());
     }
 
     public function store(Request $request)
     {
-        Log::info('Request data: ', $request->all());
-
-        // Validate the incoming request
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'start' => 'required|date',
-            'end' => 'required|date',
-            'description' => 'nullable|string',
+        $event = Event::create([
+            'title' => $request->title,
+            'start' => $request->start,
+            'end' => $request->end,
+            'description' => $request->description,
+            'location' => $request->location,
         ]);
 
-        // Create the new event
-        try {
-            $event = Event::create([
-                'title' => $request->title,
-                'start' => $request->start,
-                'end' => $request->end,
-                'description' => $request->description,
-            ]);
-
-            return response()->json($event, 201);
-        } catch (\Exception $e) {
-            Log::error('Error: ' . $e->getMessage());
-            return response()->json(['error' => 'Failed to create event'], 500);
-        }
+        return response()->json($event, 201);
     }
 
     public function update(Request $request, $id)
     {
         $event = Event::findOrFail($id);
-
-        // Update the event
         $event->update([
+            'title' => $request->title,
             'start' => $request->start,
-            'end' => $request->end,
+            'description' => $request->description,
+            'location' => $request->location,
         ]);
 
         return response()->json($event);
@@ -60,6 +41,6 @@ class EventController extends Controller
         $event = Event::findOrFail($id);
         $event->delete();
 
-        return response()->json(['message' => 'Event deleted successfully']);
+        return response()->json(null, 204);
     }
 }

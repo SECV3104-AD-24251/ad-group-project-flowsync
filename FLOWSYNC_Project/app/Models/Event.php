@@ -13,5 +13,7 @@ class Event extends Model
     protected $table = 'events';
 
     // Define the fields that are mass assignable
-    protected $fillable = ['title', 'start', 'end'];
+    protected $fillable = [
+        'title', 'description', 'location', 'start', 'end',
+    ];
 }

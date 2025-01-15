@@ -297,9 +297,6 @@
                 selectable: true,
                 editable: true,
                 eventDisplay: 'block',
-                eventContent: function(arg) {
-                    return { html: `<div class="fc-event-title">${arg.event.title}</div>` };
-                },
                 select: function(info) {
                     var title = prompt('Enter Event Title:');
                     if (title) {
@@ -323,19 +320,17 @@
                     }
                 },
                 eventClick: function (info) {
-                    // Populate modal with event details
                     $('#eventTitle').text(info.event.title);
                     $('#eventDescription').text(info.event.extendedProps.description || 'No description available');
-                    $('#eventDate').text(info.event.start.toISOString().slice(0, 10)); // Format date as YYYY-MM-DD
+                    $('#eventDate').text(info.event.start.toISOString().slice(0, 10));
                     $('#eventTime').text(
                         info.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                     );
                     $('#eventLocation').text(info.event.extendedProps.location || 'Not specified');
                     $('#eventModal').show();
 
-                    // Handle Edit Button
+                    // Show edit form and prefill values
                     $('#editBtn').off('click').click(function () {
-                        // Show edit form and prefill values
                         $('#eventDisplay').hide();
                         $('#eventEditForm').show();
                         $('#editTitle').val(info.event.title);
@@ -348,28 +343,28 @@
                         $('#editBtn').hide();
                     });
 
-                    // Handle Save Button
+                    // Save updated event details
                     $('#saveBtn').off('click').click(function () {
                         const updatedTitle = $('#editTitle').val();
                         const updatedDescription = $('#editDescription').val();
                         const updatedDate = $('#editDate').val();
                         const updatedTime = $('#editTime').val();
                         const updatedLocation = $('#editLocation').val();
-                        const updatedStart = new Date(`${updatedDate}T${updatedTime}`);
+                        const updatedStart = `${updatedDate}T${updatedTime}`;
 
-                        // Make AJAX request to update the event
+                        // AJAX request to update the event
                         $.ajax({
-                            url: `/events/${info.event.id}`,
+                            url: `/events/${info.event.id}`, // Update route
                             method: 'PUT',
                             data: {
                                 title: updatedTitle,
                                 description: updatedDescription,
-                                start: updatedStart.toISOString(),
+                                start: updatedStart,
                                 location: updatedLocation,
                                 _token: $('meta[name="csrf-token"]').attr('content'),
                             },
                             success: function () {
-                                calendar.refetchEvents(); // Refresh events in the calendar
+                                calendar.refetchEvents(); // Refresh events
                                 alert('Event updated successfully');
                                 $('#eventModal').hide();
                             },
@@ -379,7 +374,7 @@
                         });
                     });
 
-                    // Handle Cancel Edit Button
+                    // Cancel edit
                     $('#cancelEditBtn').off('click').click(function () {
                         $('#eventEditForm').hide();
                         $('#eventDisplay').show();
@@ -388,12 +383,12 @@
                         $('#editBtn').show();
                     });
 
-                    // Handle OK Button
+                    // OK button to close the modal
                     $('#okBtn').off('click').click(function () {
                         $('#eventModal').hide();
                     });
 
-                    // Handle Delete Button
+                    // Delete event
                     $('#deleteBtn').off('click').click(function () {
                         $.ajax({
                             url: `/events/${info.event.id}`,
@@ -412,11 +407,11 @@
                         });
                     });
                 },
-
             });
 
             calendar.render();
         });
     </script>
+
 </body>
 </html>
