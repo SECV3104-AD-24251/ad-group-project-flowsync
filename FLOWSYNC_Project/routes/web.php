@@ -9,6 +9,7 @@ use App\Http\Controllers\OpenAIController;
 use App\Http\Controllers\FullCalendarController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\LectEventController;
+use App\Http\Controllers\HelpCenterController;
 
 
 // Public routes
@@ -171,3 +172,7 @@ Route::get('/events', [FullCalendarController::class, 'fetchEvents']);
 Route::post('/events', [FullCalendarController::class, 'storeEvent']);
 Route::put('/events/{id}', [FullCalendarController::class, 'updateEvent']);
 Route::delete('/events/{id}', [FullCalendarController::class, 'deleteEvent']);
+
+// Help Center
+Route::get('/helpCenter', [HelpCenterController::class, 'index'])->name('helpCenter.index');
+Route::get('/helpCenter/{id}', [HelpCenterController::class, 'show'])->name('helpCenter.show');
