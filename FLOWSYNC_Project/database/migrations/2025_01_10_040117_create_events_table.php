@@ -14,6 +14,8 @@ class CreateEventsTable extends Migration
             $table->text('description')->nullable(); // Description column
             $table->timestamp('start')->nullable(); // Allow NULL values for 'start'
             $table->timestamp('end')->nullable(); // Allow NULL values for 'end'
+            $table->string('location')->nullable(); // Add location column
+            $table->string('notification')->nullable(); // Add notification column
             $table->timestamps();
         });
     }

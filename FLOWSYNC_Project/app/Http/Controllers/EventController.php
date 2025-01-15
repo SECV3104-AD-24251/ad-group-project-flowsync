@@ -1,3 +1,5 @@
+<?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -18,6 +20,7 @@ class EventController extends Controller
             'end' => $request->end,
             'description' => $request->description,
             'location' => $request->location,
+            'notification' => $request->notification, // Added notification
         ]);
 
         return response()->json($event, 201);
@@ -31,6 +34,7 @@ class EventController extends Controller
             'start' => $request->start,
             'description' => $request->description,
             'location' => $request->location,
+            'notification' => $request->notification, // Added notification
         ]);
 
         return response()->json($event);

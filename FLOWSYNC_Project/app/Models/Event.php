@@ -14,6 +14,6 @@ class Event extends Model
 
     // Define the fields that are mass assignable
     protected $fillable = [
-        'title', 'description', 'location', 'start', 'end',
+        'title', 'description', 'location', 'start', 'end', 'notification', 
     ];
 }
