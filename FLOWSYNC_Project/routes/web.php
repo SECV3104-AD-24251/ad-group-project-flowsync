@@ -11,6 +11,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\LectEventController;
 use App\Http\Controllers\HelpCenterController;
 use App\Http\Controllers\StudentTimetableController;
+use App\Http\Controllers\LecturerTimetableController;
 
 
 // Public routes
@@ -28,9 +29,6 @@ Route::post('/timetable/insert', [TimetableController::class, 'store'])->name('t
 Route::get('/timetable', [StudentTimetableController::class, 'index'])->name('timetable.index');
 Route::post('/timetable/insert', [StudentTimetableController::class, 'store'])->name('timetable.store');
 Route::delete('/timetable/{id}', [StudentTimetableController::class, 'destroy'])->name('timetable.destroy');
-
-
-
 
 
 Route::get('/timetable', [TimetableController::class, 'showTimetable']);
@@ -194,3 +192,5 @@ Route::get('/student-timetable', [StudentTimetableController::class, 'index']);
 Route::get('/lecturer-timetable', function () {
     return view('lect_timetable');
 })->name('lecturer.timetable');
+Route::post('/lecturer-timetable', [LecturerTimetableController::class, 'storeTimetable']);
+
