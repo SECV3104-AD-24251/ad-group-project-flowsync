@@ -23,6 +23,15 @@ Route::view('/student-timetable', 'stud_timetable');
 Route::view('/student-calendar', 'fullcalendar');
 Route::view('/lecturer-calendar', 'lect_calendar');
 
+//student timetable
+Route::post('/timetable/insert', [TimetableController::class, 'store'])->name('timetable.store');
+Route::get('/timetable', [StudentTimetableController::class, 'index'])->name('timetable.index');
+Route::post('/timetable/insert', [StudentTimetableController::class, 'store'])->name('timetable.store');
+Route::delete('/timetable/{id}', [StudentTimetableController::class, 'destroy'])->name('timetable.destroy');
+
+
+
+
 
 Route::get('/timetable', [TimetableController::class, 'showTimetable']);
 Route::post('/timetable/add', [TimetableController::class, 'addTimetableEntry']);
