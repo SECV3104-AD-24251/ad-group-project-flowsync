@@ -161,6 +161,14 @@
             border-radius: 5px;
         }
 
+        .modal-row select {
+            flex: 2;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
         textarea {
             resize: none;
         }
@@ -254,6 +262,7 @@
                     <span id="eventLocation"></span>
                 </div>
             </div>
+
             <!-- Editable Form -->
             <form id="eventEditForm" style="display: none;">
                 <div class="modal-row">
@@ -276,7 +285,19 @@
                     <label for="editLocation">Location:</label>
                     <input type="text" id="editLocation" name="editLocation">
                 </div>
+                <div class="modal-row">
+                    <label for="editNotification">Notification:</label>
+                    <select id="editNotification" name="editNotification">
+                        <option value="none">No Notification</option>
+                        <option value="5">5 Minutes Before</option>
+                        <option value="10">10 Minutes Before</option>
+                        <option value="15">15 Minutes Before</option>
+                        <option value="30">30 Minutes Before</option>
+                        <option value="60">1 Hour Before</option>
+                    </select>
+                </div>
             </form>
+
             <!-- Buttons -->
             <div class="modal-footer">
                 <button id="editBtn" class="btn-modal">Edit</button>
@@ -343,6 +364,7 @@
                         $('#editDate').val(info.event.start.toISOString().slice(0, 10));
                         $('#editTime').val(info.event.start.toISOString().slice(11, 16));
                         $('#editLocation').val(info.event.extendedProps.location || '');
+                        $('#editNotification').val(info.event.extendedProps.notification || 'none');
                         $('#saveBtn').show();
                         $('#cancelEditBtn').show();
                         $('#editBtn').hide();
@@ -350,24 +372,20 @@
 
                     // Handle Save Button
                     $('#saveBtn').off('click').click(function () {
-                        const updatedTitle = $('#editTitle').val();
-                        const updatedDescription = $('#editDescription').val();
-                        const updatedDate = $('#editDate').val();
-                        const updatedTime = $('#editTime').val();
-                        const updatedLocation = $('#editLocation').val();
-                        const updatedStart = new Date(`${updatedDate}T${updatedTime}`);
+                        const updatedData = {
+                            title: $('#editTitle').val(),
+                            description: $('#editDescription').val(),
+                            start: new Date(`${$('#editDate').val()}T${$('#editTime').val()}`).toISOString(),
+                            location: $('#editLocation').val(),
+                            notification: $('#editNotification').val(),
+                            _token: $('meta[name="csrf-token"]').attr('content'),
+                        };
 
                         // Make AJAX request to update the event
                         $.ajax({
                             url: `/lect_event/${info.event.id}`,
                             method: 'PUT',
-                            data: {
-                                title: updatedTitle,
-                                description: updatedDescription,
-                                start: updatedStart.toISOString(),
-                                location: updatedLocation,
-                                _token: $('meta[name="csrf-token"]').attr('content'),
-                            },
+                            data: updatedData,
                             success: function () {
                                 calendar.refetchEvents(); // Refresh events in the calendar
                                 alert('Event updated successfully');

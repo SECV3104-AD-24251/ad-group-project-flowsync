@@ -9,9 +9,22 @@ class LectEvent extends Model
 {
     use HasFactory;
 
-    // Define the table name (optional, if your table is named 'events')
+    // Define the table name (optional if it differs from the model name)
     protected $table = 'lect_event';
 
     // Define the fields that are mass assignable
-    protected $fillable = ['title', 'start', 'end'];
+    protected $fillable = [
+        'title', 
+        'description', 
+        'location', 
+        'start', 
+        'end', 
+        'notification', 
+    ];
+
+    // Cast the start and end fields to date format
+    protected $casts = [
+        'start' => 'datetime',
+        'end' => 'datetime',
+    ];
 }

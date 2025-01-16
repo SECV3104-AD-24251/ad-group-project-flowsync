@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LectEvent;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use App\Models\LectEvent;
 
 class LectEventController extends Controller
 {
@@ -16,50 +15,47 @@ class LectEventController extends Controller
 
     public function store(Request $request)
     {
-        Log::info('Request data: ', $request->all());
-
-        // Validate the incoming request
-        $request->validate([
+        // Validate incoming request data
+        $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'start' => 'required|date',
-            'end' => 'required|date',
+            'end' => 'nullable|date|after_or_equal:start',
             'description' => 'nullable|string',
+            'location' => 'nullable|string',
+            'notification' => 'nullable|string|in:none,5,10,15,30,60',
         ]);
 
-        // Create the new event
-        try {
-            $event = LectEvent::create([
-                'title' => $request->title,
-                'start' => $request->start,
-                'end' => $request->end,
-                'description' => $request->description,
-            ]);
+        // Create the event
+        $event = LectEvent::create($validatedData);
 
-            return response()->json($event, 201);
-        } catch (\Exception $e) {
-            Log::error('Error: ' . $e->getMessage());
-            return response()->json(['error' => 'Failed to create event'], 500);
-        }
+        return response()->json($event, 201); // Return created event with HTTP 201 status
     }
 
     public function update(Request $request, $id)
     {
-        $event = LectEvent::findOrFail($id);
-
-        // Update the event
-        $event->update([
-            'start' => $request->start,
-            'end' => $request->end,
+        // Validate incoming request data
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            'start' => 'required|date',
+            'end' => 'nullable|date|after_or_equal:start',
+            'description' => 'nullable|string',
+            'location' => 'nullable|string',
+            'notification' => 'nullable|string|in:none,5,10,15,30,60',
         ]);
 
-        return response()->json($event);
+        // Find the event and update it
+        $event = LectEvent::findOrFail($id);
+        $event->update($validatedData);
+
+        return response()->json($event, 200); // Return updated event with HTTP 200 status
     }
 
     public function destroy($id)
     {
+        // Find the event and delete it
         $event = LectEvent::findOrFail($id);
         $event->delete();
 
-        return response()->json(['message' => 'Event deleted successfully']);
+        return response()->json(['message' => 'Event deleted successfully'], 200);
     }
 }
