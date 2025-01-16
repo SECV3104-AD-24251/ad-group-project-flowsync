@@ -1,4 +1,4 @@
-@extends('layouts.lecturer')   
+@extends('layouts.lecturer')
 @section('content')     <!-- Section where content is injected into the 'app' layout -->
 <div class="dashboard-container py-6 px-4 text-gray-800">
     <!-- Header Section -->
@@ -14,7 +14,7 @@
                 <h2 class="text-2xl font-semibold text-gray-800">Lecturer Timetable</h2>
                 <p class="text-gray-500 text-sm">Semester 1 Session 2024/2025</p>
             </div>
-            <a href="" 
+            <a href="{{ route('lecturer.timetable') }}" 
                class="w-full inline-block bg-red-500 text-white text-center py-2 rounded-lg font-medium hover:bg-red-600 transition">
                 View Schedule
             </a>

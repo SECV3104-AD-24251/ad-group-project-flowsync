@@ -181,3 +181,7 @@ Route::get('/helpCenter/{id}', [HelpCenterController::class, 'show'])->name('hel
 // Student Timetable
 Route::get('/student-timetable', [StudentTimetableController::class, 'index']);
 
+// Lecturer Timetable
+Route::get('/lecturer-timetable', function () {
+    return view('lect_timetable');
+})->name('lecturer.timetable');
