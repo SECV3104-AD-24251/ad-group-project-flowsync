@@ -244,6 +244,8 @@
         <h1>Student Timetable</h1>
     </header>
 
+    
+
     <div class="main-container">
         <!-- Student Info Section -->
         <div class="student-info">
@@ -332,6 +334,90 @@
             </table>
         </div>
 
+        <div class="main-container">
+    <!-- Insert Button -->
+    <div class="insert-button" style="text-align: center; margin: 20px 0;">
+        <button id="openInsertModal" style="background-color: #C8102E; color: white; padding: 12px 24px; font-size: 16px; border: none; border-radius: 4px; cursor: pointer;">
+            Insert into Timetable
+        </button>
+    </div>
+
+    <!-- Insert Modal -->
+    <div id="insertModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 8px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); padding: 20px; width: 50%; z-index: 1000;">
+        <h2 style="text-align: center; color: #C8102E;">Insert Timetable Entry</h2>
+        <form id="insertForm" action="{{ route('timetable.store') }}" method="POST">
+            @csrf <!-- Laravel CSRF Token -->
+            <div style="margin-bottom: 10px;">
+                <label for="day" style="font-weight: bold;">Day:</label>
+                <select id="day" name="day" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                </select>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label for="time" style="font-weight: bold;">Time:</label>
+                <input type="time" id="time" name="time" required style="width: 96%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label for="subject" style="font-weight: bold;">Subject:</label>
+                <input type="text" id="subject" name="subject" required placeholder="Enter subject" style="width: 96%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+            <div style="margin-bottom: 10px;">
+    <label for="slot" style="font-weight: bold;">Slot:</label>
+    <select id="slot" name="slot" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+        <option value="" disabled selected>Choose a slot</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+    </select>
+</div>
+
+            <div style="text-align: center;">
+                <button type="submit" style="background-color: #C8102E; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Save</button>
+                <button type="button" id="closeInsertModal" style="background-color: #ddd; color: black; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+
+    <!-- delete button -->
+     
+
+    <!-- Background overlay for modal -->
+    <div id="modalOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;"></div>
+</div>
+
+<script>
+    const openInsertModal = document.getElementById('openInsertModal');
+    const closeInsertModal = document.getElementById('closeInsertModal');
+    const insertModal = document.getElementById('insertModal');
+    const modalOverlay = document.getElementById('modalOverlay');
+
+    openInsertModal.addEventListener('click', () => {
+        insertModal.style.display = 'block';
+        modalOverlay.style.display = 'block';
+    });
+
+    closeInsertModal.addEventListener('click', () => {
+        insertModal.style.display = 'none';
+        modalOverlay.style.display = 'none';
+    });
+
+    modalOverlay.addEventListener('click', () => {
+        insertModal.style.display = 'none';
+        modalOverlay.style.display = 'none';
+    });
+</script>
+
+
         <footer class="footer">
             <p>&copy; 2025 Student Timetable Management System. All Rights Reserved. | <a href="#">Privacy Policy</a></p>
         </footer>
@@ -350,6 +436,12 @@
             tableView.classList.toggle('active');
             toggleButton.textContent = cardView.classList.contains('active') ? 'Switch to Table View' : 'Switch to Card View';
         });
+
+
+
+
+
+        
     </script>
 </body>
 </html>
