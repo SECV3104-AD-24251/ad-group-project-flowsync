@@ -180,3 +180,4 @@ Route::get('/helpCenter/{id}', [HelpCenterController::class, 'show'])->name('hel
 
 // Student Timetable
 Route::get('/student-timetable', [StudentTimetableController::class, 'index']);
+

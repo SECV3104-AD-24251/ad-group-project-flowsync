@@ -11,21 +11,20 @@
             color: #333333;
         }
 
-
         h1 {
             font-size: 2.5rem;
             font-weight: bold;
             color: #800000;
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 50px;
             text-transform: uppercase;
         }
+
         /* Main container */
         .main-container {
             width: 80%;
             margin: 30px auto;
         }
-
 
         /* Student Info Section */
         .student-info {
@@ -37,23 +36,19 @@
             font-size: 16px;
         }
 
-
         .student-info .details {
             display: flex;
             justify-content: space-between;
             margin-bottom: 10px;
         }
 
-
         .student-info .details div {
             width: 48%; /* For two columns */
         }
 
-
         .student-info .details span {
             font-weight: bold;
         }
-
 
         .student-info .btn-edit {
             background-color: #C8102E; /* UTM red */
@@ -69,11 +64,9 @@
             margin-top: 10px;
         }
 
-
         .student-info .btn-edit:hover {
             background-color: #9e0000; /* Darker UTM red */
         }
-
 
         /* Timetable toggle button */
         .toggle-button {
@@ -81,7 +74,6 @@
             display: flex;
             justify-content: center;
         }
-
 
         .toggle-button button {
             background-color: #C8102E; /* UTM red */
@@ -93,24 +85,18 @@
             cursor: pointer;
         }
 
-
         .toggle-button button:hover {
             background-color: #9e0000;
         }
-
 
         /* Timetable Cards and Table Styles */
         .timetable-cards, .timetable-table {
             display: none;
         }
 
-
         .timetable-cards.active, .timetable-table.active {
             display: block;
         }
-
-
-
 
         /* Cards layout */
         .timetable-cards .card {
@@ -124,19 +110,16 @@
             border-radius: 6px;
         }    
 
-
         .card h3 {
             font-size: 18px;
             color: #333;
         }
-
 
         .card p {
             font-size: 14px;
             color: #555;
             margin-bottom: 5px;
         }
-
 
         .card button {
             background-color: #C8102E; /* UTM red */
@@ -148,53 +131,46 @@
             cursor: pointer;
         }
 
-
         .card button:hover {
             background-color: #9e0000;
         }
 
-
         /* Table layout */
-.timetable-table table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #ffffff;
-    box-shadow: 0 0 20px rgba(200, 16, 46, 0.75); /* Strong red UTM shadow */
-    border-radius: 10px;
-    margin: 20px 0; /* Adds spacing around the table */
-    overflow: hidden; /* Ensures rounded corners are visible */
-}
+        .timetable-table table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            box-shadow: 0 0 20px rgba(200, 16, 46, 0.75); /* Strong red UTM shadow */
+            border-radius: 10px;
+            margin: 20px 0; /* Adds spacing around the table */
+            overflow: hidden; /* Ensures rounded corners are visible */
+        }
 
+        .timetable-table th, .timetable-table td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
 
-.timetable-table th, .timetable-table td {
-    padding: 15px;
-    text-align: center;
-    border: 1px solid #ddd;
-}
+        .timetable-table th {
+            background-color: #C8102E; /* UTM red */
+            color: white;
+            font-weight: bold;
+        }
 
+        /* Add shadow when the cursor is hovering over the elements */
+        .timetable-cards:hover, .timetable-details:hover, .timetable-table:hover {
+            box-shadow: 0 0 20px rgba(200, 16, 46, 0.75); /* UTM red shadow */
+            transition: box-shadow 0.3s ease-in-out; /* Smooth effect */
+        }
 
-.timetable-table th {
-    background-color: #C8102E; /* UTM red */
-    color: white;
-    font-weight: bold;
-}
+        /* Default shadow when not hovered */
+        .timetable-cards, .timetable-details, .timetable-table {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow by default */
+            transition: box-shadow 0.3s ease-in-out;
+        }
 
-
-/* Add shadow when the cursor is hovering over the elements */
-.timetable-cards:hover, .timetable-details:hover, .timetable-table:hover {
-    box-shadow: 0 0 20px rgba(200, 16, 46, 0.75); /* UTM red shadow */
-    transition: box-shadow 0.3s ease-in-out; /* Smooth effect */
-}
-
-
-/* Default shadow when not hovered */
-.timetable-cards, .timetable-details, .timetable-table {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow by default */
-    transition: box-shadow 0.3s ease-in-out;
-}
-
-
-.footer {
+        .footer {
             text-align: center;
             padding: 5px;
             background-color: #333;
@@ -202,17 +178,14 @@
             margin-top: 20px;
         }
 
-
         .footer a {
             color: #ffffff;
             text-decoration: none;
         }
 
-
         .footer a:hover {
             text-decoration: underline;
         }
-
 
         .back-button {
             position: absolute;
@@ -229,25 +202,21 @@
             font-weight: bold;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
+        }                  
 
         .back-button:hover {
             transform: scale(1.05);
             box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.3);
         }
 
-
         .back-button svg {
             margin-right: 8px;
             fill: white;
         }
 
-
         .back-button span {
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
         }
-
 
         /* Table layout */
         .timetable-table table {
@@ -259,10 +228,9 @@
             overflow: hidden; /* Ensures rounded corners are visible */
             margin: 20px 0; /* Adds some spacing around the table */
         }
-
-
     </style>
 </head>
+
 <body>
     <!-- Back Button -->
     <a href="/student-dashboard" class="back-button">
@@ -272,11 +240,9 @@
         <span>Back</span>
     </a>
 
-
     <header>
-        <h1>Student Timetable Management</h1>
+        <h1>Student Timetable</h1>
     </header>
-
 
     <div class="main-container">
         <!-- Student Info Section -->
@@ -301,36 +267,31 @@
             </div>
         </div>
 
-
         <!-- Toggle Button -->
         <div class="toggle-button">
             <button id="toggleView">Switch to Table View</button>
         </div>
 
-
         <!-- Timetable Cards Section -->
         <div class="timetable-cards active">
             <h2>Your Weekly Timetable (Card View)</h2>
-            <div class="card">
-                <div>
-                    <h3>Math Class</h3>
-                    <p><strong>Day:</strong> Monday</p>
-                    <p><strong>Time:</strong> 9:00 AM - 10:00 AM</p>
-                    <p><strong>Location:</strong> Room 101</p>
-                </div>
-                <button>Edit</button>
-            </div>
-            <div class="card">
-                <div>
-                    <h3>Science Class</h3>
-                    <p><strong>Day:</strong> Tuesday</p>
-                    <p><strong>Time:</strong> 10:00 AM - 11:00 AM</p>
-                    <p><strong>Location:</strong> Room 202</p>
-                </div>
-                <button>Edit</button>
-            </div>
-        </div>
 
+            @forelse ($timetable as $day => $classes)
+                <h3>{{ ucfirst($day) }}</h3>
+                @foreach ($classes as $class)
+                    <div class="card">
+                        <div>
+                            <h3>{{ $class->subject }}</h3>
+                            <p><strong>Time:</strong> {{ $class->time }}</p>
+                            <p><strong>Time Slot:</strong> {{ $class->slot }}</p>
+                        </div>
+                        <button>Edit</button>
+                    </div>
+                @endforeach
+            @empty
+                <p>No timetable data available.</p>
+            @endforelse
+        </div>
 
         <!-- Timetable Table Section -->
         <div class="timetable-table">
@@ -339,106 +300,50 @@
                 <thead>
                     <tr>
                         <th>Time</th>
-                        <th>Monday</th>
-                        <th>Tuesday</th>
-                        <th>Wednesday</th>
-                        <th>Thursday</th>
-                        <th>Friday</th>
+                        @foreach ($days as $day)
+                            <th>{{ $day }}</th>
+                        @endforeach
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>9:00 - 10:00 AM</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>10:00 - 11:00 AM</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>11:00 - 12:00 AM</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>12:00 - 1:00 PM</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>1:00 - 2:00 PM</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>2:00 - 3:00 PM</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>3:00 - 4:00 PM</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>4:00 - 5:00 PM</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>5:00 - 6:00 PM</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
+                    @foreach ($timeSlots as $time)
+                        <tr>
+                            <td>{{ $time }}</td>
+                            @foreach ($days as $day)
+                                <td>
+                                    @if (isset($timetable[$day]))
+                                        @php
+                                            $class = $timetable[$day]->firstWhere('time', $time);
+                                        @endphp
+                                        @if ($class)
+                                            <strong>{{ $class->subject }}</strong><br>
+                                            Slot: {{ $class->slot }}
+                                        @else
+                                            -
+                                        @endif
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                            @endforeach
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
-
 
         <footer class="footer">
             <p>&copy; 2025 Student Timetable Management System. All Rights Reserved. | <a href="#">Privacy Policy</a></p>
         </footer>
     </div>
 
-
     <!-- FontAwesome Icons (For the details section) -->
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-
 
     <script>
         const toggleButton = document.getElementById('toggleView');
         const cardView = document.querySelector('.timetable-cards');
         const tableView = document.querySelector('.timetable-table');
-
 
         toggleButton.addEventListener('click', () => {
             cardView.classList.toggle('active');
