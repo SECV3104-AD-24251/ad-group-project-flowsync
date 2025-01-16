@@ -29,6 +29,8 @@ Route::post('/timetable/insert', [TimetableController::class, 'store'])->name('t
 Route::get('/timetable', [StudentTimetableController::class, 'index'])->name('timetable.index');
 Route::post('/timetable/insert', [StudentTimetableController::class, 'store'])->name('timetable.store');
 Route::delete('/timetable/{id}', [StudentTimetableController::class, 'destroy'])->name('timetable.destroy');
+Route::get('/student-timetable/generate-copy', [StudentTimetableController::class, 'generateCopy'])->name('student.timetable.generate.copy');
+
 
 
 Route::get('/timetable', [TimetableController::class, 'showTimetable']);
@@ -192,5 +194,6 @@ Route::get('/student-timetable', [StudentTimetableController::class, 'index']);
 Route::get('/lecturer-timetable', function () {
     return view('lect_timetable');
 })->name('lecturer.timetable');
+
 Route::post('/lecturer-timetable', [LecturerTimetableController::class, 'storeTimetable']);
 

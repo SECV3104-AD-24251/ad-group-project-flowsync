@@ -251,8 +251,8 @@
         <div class="student-info">
             <div class="details">
                 <div>
-                    <p><span>Name:</span> John Doe</p>
-                    <p><span>Email:</span> johndoe@utm.edu.my</p>
+                    <p><span>Name:</span> Nur Ivy Maisarah</p>
+                    <p><span>Email:</span> ivymaisarah@graduate.utm.my</p>
                 </div>
                 <div>
                     <p><span>Matric No:</span> A21CS1234</p>
@@ -386,6 +386,60 @@
             </div>
         </form>
     </div>
+
+
+    <!-- Download Timetable Button -->
+<div id="download-container" style="text-align: center; margin-top: 20px;">
+    <button id="download-btn" style="background-color: #C8102E; color: white; padding: 12px 24px; font-size: 16px; border: none; border-radius: 4px; cursor: pointer;">
+        Download Timetable Copy
+    </button>
+    <span id="loading-indicator" style="display: none; margin-left: 10px; color: #C8102E; font-weight: bold;">
+        Downloading...
+    </span>
+</div>
+
+<script>
+    document.getElementById('download-btn').addEventListener('click', function () {
+        const downloadBtn = document.getElementById('download-btn');
+        const loadingIndicator = document.getElementById('loading-indicator');
+
+        // Show loading indicator
+        loadingIndicator.style.display = 'inline';
+        downloadBtn.disabled = true;
+
+        // Attempt download
+        fetch("{{ route('student.timetable.generate.copy') }}")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to download timetable. Please try again.');
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                // Create a link element to trigger download
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'timetable_copy.pdf'; // Change file name/extension as needed
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                // Confirmation message
+                alert('Timetable downloaded successfully!');
+            })
+            .catch(error => {
+                // Handle errors
+                alert(error.message || 'An unexpected error occurred.');
+            })
+            .finally(() => {
+                // Reset UI
+                loadingIndicator.style.display = 'none';
+                downloadBtn.disabled = false;
+            });
+    });
+</script>
+
 
 
     <!-- delete button -->

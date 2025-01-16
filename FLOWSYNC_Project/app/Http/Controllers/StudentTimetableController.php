@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\StudentTimetable; // Your existing model
+use App\Models\StudentTimetable;
 
 class StudentTimetableController extends Controller
 {
@@ -54,5 +54,39 @@ class StudentTimetableController extends Controller
 
         // Redirect back to the timetable page with success message
         return redirect()->back()->with('success', 'Timetable entry added successfully!');
+    }
+
+    /**
+     * Generate a copy of the timetable as a downloadable JSON file.
+     */
+    public function generateCopy()
+    {
+        // Fetch the timetable data grouped by day
+        $timetable = StudentTimetable::orderBy('time')
+            ->get()
+            ->groupBy('day');
+
+        // Prepare data for JSON
+        $data = $timetable->map(function ($items, $day) {
+            return [
+                'day' => $day,
+                'entries' => $items->map(function ($item) {
+                    return [
+                        'time' => $item->time,
+                        'subject' => $item->subject,
+                        'slot' => $item->slot,
+                    ];
+                })->toArray(),
+            ];
+        })->values();
+
+        // Set file name and content
+        $filename = 'student_timetable.json';
+        $content = json_encode($data, JSON_PRETTY_PRINT);
+
+        // Return a streamed download response
+        return response()->streamDownload(function () use ($content) {
+            echo $content;
+        }, $filename, ['Content-Type' => 'application/json']);
     }
 }
