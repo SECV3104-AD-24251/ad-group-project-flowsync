@@ -10,6 +10,7 @@ use App\Http\Controllers\FullCalendarController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\LectEventController;
 use App\Http\Controllers\HelpCenterController;
+use App\Http\Controllers\StudentTimetableController;
 
 
 // Public routes
@@ -176,3 +177,6 @@ Route::delete('/events/{id}', [FullCalendarController::class, 'deleteEvent']);
 // Help Center
 Route::get('/helpCenter', [HelpCenterController::class, 'index'])->name('helpCenter.index');
 Route::get('/helpCenter/{id}', [HelpCenterController::class, 'show'])->name('helpCenter.show');
+
+// Student Timetable
+Route::get('/student-timetable', [StudentTimetableController::class, 'index']);
