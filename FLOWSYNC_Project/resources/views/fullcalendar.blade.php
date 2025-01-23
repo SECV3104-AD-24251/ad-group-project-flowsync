@@ -247,7 +247,6 @@
     </style>
 </head>
 
-
 <body>
     <!-- Navigation Buttons -->
     <div class="nav-buttons">
@@ -256,7 +255,6 @@
             <a href="https://calendar.google.com/calendar/u/0/r?pli=1" target="_blank" class="btn">Google Calendar</a>
         </div>
     </div>
-
 
     <!-- Header -->
     <div class="header">
@@ -283,7 +281,6 @@
     </div>
     <!-- Calendar -->
     <div id="calendar"></div>
-
 
     <!-- Modal for Event Details -->
     <div id="eventModal">
@@ -347,7 +344,6 @@
                 </div>
             </form>
 
-
             <!-- Buttons -->
             <div class="modal-footer">
                 <button id="editBtn" class="btn-modal">Edit</button>
@@ -359,42 +355,34 @@
         </div>
     </div>
 
-
-
-
-
-
-<!-- Modal for Creating New Group -->
-<div id="createGroupModal" style="display: none;">
-    <div id="modalContent">
-        <h3>Create New Group</h3>
-        <form id="createGroupForm">
-            <div class="modal-row">
-                <label for="groupTitle">Group Title:</label>
-                <input type="text" id="groupTitle" name="groupTitle" required>
-            </div>
-            <div class="modal-row">
-                <label for="checklist">Checklist (comma separated):</label>
-                <input type="text" id="checklist" name="checklist" required>
-            </div>
-            <div class="modal-row">
-                <label for="participants">Add Participants (comma separated emails):</label>
-                <input type="text" id="participants" name="participants" required>
-            </div>
-            <button type="submit" class="btn-modal">Create Group</button>
-        </form>
-    </div>
-</div>
-<div style=" display: flex;justify-content: center;">
-    <div id="groupDetailModal" style="display: none;background-color:white;border-radius:20px;text-align-last: center;width: 400px;padding: 10px;">
-        <div id="modalContentGroup">
-            <!-- Content will be dynamically injected here -->
+    <!-- Modal for Creating New Group -->
+    <div id="createGroupModal" style="display: none;">
+        <div id="modalContent">
+            <h3>Create New Group</h3>
+            <form id="createGroupForm">
+                <div class="modal-row">
+                    <label for="groupTitle">Group Title:</label>
+                    <input type="text" id="groupTitle" name="groupTitle" required>
+                </div>
+                <div class="modal-row">
+                    <label for="checklist">Checklist (comma separated):</label>
+                    <input type="text" id="checklist" name="checklist" required>
+                </div>
+                <div class="modal-row">
+                    <label for="participants">Add Participants (comma separated emails):</label>
+                    <input type="text" id="participants" name="participants" required>
+                </div>
+                <button type="submit" class="btn-modal">Create Group</button>
+            </form>
         </div>
     </div>
-<div>
-
-
-
+    <div style=" display: flex;justify-content: center;">
+        <div id="groupDetailModal" style="display: none;background-color:white;border-radius:20px;text-align-last: center;width: 400px;padding: 10px;">
+            <div id="modalContentGroup">
+                <!-- Content will be dynamically injected here -->
+            </div>
+        </div>
+    <div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -432,7 +420,6 @@
                     $('#eventDescription').text(info.event.extendedProps.description ||'No description available');
                     $('#eventModal').show();
 
-
                     // Show edit form and prefill values
                     $('#editBtn').off('click').click(function () {
                         $('#eventDisplay').hide();
@@ -444,7 +431,6 @@
                         $('#cancelEditBtn').show();
                         $('#editBtn').hide();
                     });
-
 
                     // Save updated event details
                     $('#saveBtn').off('click').click(function () {
@@ -478,7 +464,6 @@
                         });
                     });
 
-
                     // Cancel edit
                     $('#cancelEditBtn').off('click').click(function () {
                         $('#eventEditForm').hide();
@@ -488,12 +473,10 @@
                         $('#editBtn').show();
                     });
 
-
                     // OK button to close the modal
                     $('#okBtn').off('click').click(function () {
                         $('#eventModal').hide();
                     });
-
 
                     // Delete event
                     $('#deleteBtn').off('click').click(function () {
@@ -516,10 +499,8 @@
                 },
             });
 
-
             calendar.render();
         });
-
 
         $(document).ready(function () {
         // Show the group checklist modal
@@ -529,14 +510,12 @@
             $('#createGroupModal').css('display', 'none');
         });
 
-
         // Show create group modal
         $('#createGroupBtn').click(function () {
             $('#createGroupModal').show();
             $('#groupChecklistModal').hide();
             $('#groupDetailModal').hide();
         });
-
 
         // Handle create group form submission
         $('#createGroupForm').submit(function (e) {
@@ -546,7 +525,6 @@
             const participants = $('#participants').val().split(',').map(email => email.trim());
             console.log("checklist:", checklist);
             console.log("participants:", participants);
-
 
             //Send data to the server to save the group
             $.ajax({
@@ -559,7 +537,6 @@
                     _token: $('meta[name="csrf-token"]').attr('content')
                 },
 
-
                 success: function (response) {
                     alert('Group Created');
                     $('#groupTitle').val('');
@@ -570,12 +547,12 @@
                     $('#groupChecklistModal').show();
                     $('#groupDetailModal').hide();
                 },
+
                 error: function (xhr, status, error) {
                     console.log("Error Details:");
-        console.log("Status:", status);
-        console.log("Error:", error);
-        console.log("Response Text:", xhr.responseText);
-
+                    console.log("Status:", status);
+                    console.log("Error:", error);
+                    console.log("Response Text:", xhr.responseText);
 
                     alert('Failed to create group');
                 }
@@ -658,8 +635,6 @@
 
 
     </script>
-
-
 </body>
 </html>  
 
