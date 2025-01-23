@@ -6,15 +6,12 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Student Calendar</title>
 
-
     <!-- FullCalendar CSS & JS -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
-
     <!-- jQuery Library -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 
     <!-- Custom Styles -->
     <style>
@@ -27,7 +24,6 @@
             color: #333;
         }
 
-
         /* Header Section */
         .header {
             color: white;
@@ -35,7 +31,6 @@
             text-align: center;
             border-radius: 0 0 5px 5px;
         }
-
 
         .header h1 {
             margin: 0;
@@ -45,7 +40,6 @@
             letter-spacing: 1px;
         }
 
-
         /* Navigation Buttons */
         .nav-buttons {
             display: flex;
@@ -54,7 +48,6 @@
             padding: 10px 10px;
             border-radius: 0 0 10px 10px;
         }
-
 
         .btn {
             text-decoration: none;
@@ -68,12 +61,10 @@
             transition: transform 0.2s, background-color 0.2s;
         }
 
-
         .btn:hover {
             background-color: darkred;
             transform: translateY(-2px);
         }
-
 
         /* Calendar Styles */
         #calendar {
@@ -87,7 +78,6 @@
             font-size: 15px;
         }
 
-
         /* Event Styling */
         .fc-event-title {
             background-color: maroon !important;
@@ -97,18 +87,17 @@
             text-align: center;
         }
 
-
         .fc-event, .fc-daygrid-event {
             background-color: maroon !important;
             color: white !important;
             border: none !important;
             border-radius: 5px;
         }
+
         .class{
             background-color:white;
             border-radius:20px;
         }
-
 
         /* Modal Styling */
         #eventModal {
@@ -123,7 +112,6 @@
             background-color: rgba(0, 0, 0, 0.6);
             padding-top: 60px;
         }
-
 
         #modalContent {
             background-color: #fff;
@@ -141,14 +129,12 @@
             gap: 15px;
         }
 
-
         #modalContent h3 {
             text-align: center;
             margin-bottom: 35px;
             font-size: 1.8rem;
             color: maroon;
         }
-
 
         .modal-row {
             display: flex;
@@ -157,14 +143,15 @@
             margin: 10px 0;
         }
 
-
         .modal-row label {
             flex: 1;
             font-weight: bold;
             color: #333;
             margin-right: 15px;
         }
+
         .modal-row input,
+
         .modal-row textarea {
             flex: 2;
             padding: 8px;
@@ -173,14 +160,12 @@
             font-size: 14px;
         }
 
-
         .modal-row span {
             flex: 2;
             background-color: #f7f7f7;
             padding: 8px;
             border-radius: 5px;
         }
-
 
         .modal-row select {
             flex: 2;
@@ -190,18 +175,15 @@
             font-size: 14px;
         }
 
-
         textarea {
             resize: none;
         }
-
 
         .modal-footer {
             display: flex;
             justify-content: space-around;
             margin-top: 20px;
         }
-
 
         .btn-modal {
             padding: 10px 20px;
@@ -214,21 +196,17 @@
             cursor: pointer;
             transition: background-color 0.3s, transform 0.2s;
         }
-       
-
 
         .btn-modal:hover {
             background-color: darkred;
             transform: scale(1.05);
         }
 
-
         #eventDisplay .modal-row span {
             background-color: #f9f9f9;
             border: 1px solid #ddd;
             padding: 8px;
         }
-
 
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -237,7 +215,6 @@
                 align-items: center;
                 gap: 10px;
             }
-
 
             #calendar {
                 padding: 15px;
@@ -279,6 +256,7 @@
             </div>
         </div>
     </div>
+
     <!-- Calendar -->
     <div id="calendar"></div>
 
@@ -286,30 +264,17 @@
     <div id="eventModal">
         <div id="modalContent">
             <h3>Event Details</h3>
-            <!-- Display Event Information -->
+
+            <!-- Event Display Mode -->
             <div id="eventDisplay">
-                <div class="modal-row">
-                    <strong>Title:</strong>
-                    <span id="eventTitle"></span>
-                </div>
-                <div class="modal-row">
-                    <strong>Description:</strong>
-                    <span id="eventDescription"></span>
-                </div>
-                <div class="modal-row">
-                    <strong>Date:</strong>
-                    <span id="eventDate"></span>
-                </div>
-                <div class="modal-row">
-                    <strong>Time:</strong>
-                    <span id="eventTime"></span>
-                </div>
-                <div class="modal-row">
-                    <strong>Location:</strong>
-                    <span id="eventLocation"></span>
-                </div>
+                <div class="modal-row"><strong>Title:</strong> <span id="eventTitle"></span></div>
+                <div class="modal-row"><strong>Description:</strong> <span id="eventDescription"></span></div>
+                <div class="modal-row"><strong>Date:</strong> <span id="eventDate"></span></div>
+                <div class="modal-row"><strong>Time:</strong> <span id="eventTime"></span></div>
+                <div class="modal-row"><strong>Location:</strong> <span id="eventLocation"></span></div>
             </div>
-            <!-- Editable Form -->
+
+            <!-- Event Edit Mode -->
             <form id="eventEditForm" style="display: none;">
                 <div class="modal-row">
                     <label for="editTitle">Title:</label>
@@ -344,7 +309,7 @@
                 </div>
             </form>
 
-            <!-- Buttons -->
+            <!-- Modal Buttons -->
             <div class="modal-footer">
                 <button id="editBtn" class="btn-modal">Edit</button>
                 <button id="saveBtn" class="btn-modal" style="display: none;">Save</button>
@@ -392,7 +357,6 @@
                 events: '/events', // Fetch events from the database
                 selectable: true,
                 editable: true,
-                eventDisplay: 'block',
                 select: function(info) {
                     var title = prompt('Enter Event Title:');
                     if (title) {
@@ -416,45 +380,55 @@
                     }
                 },
                 eventClick: function (info) {
-                    $('#eventTitle').text(info.event.title);
-                    $('#eventDescription').text(info.event.extendedProps.description ||'No description available');
+                    var event = info.event;
+
+                    // Display event details
+                    $('#eventTitle').text(event.title);
+                    $('#eventDescription').text(event.extendedProps.description || 'No description available');
+                    $('#eventDate').text(event.start.toLocaleDateString());
+                    $('#eventTime').text(event.start.toLocaleTimeString());
+                    $('#eventLocation').text(event.extendedProps.location || 'Not specified');
+
+                    // Show modal
                     $('#eventModal').show();
 
-                    // Show edit form and prefill values
+                    // Edit button
                     $('#editBtn').off('click').click(function () {
                         $('#eventDisplay').hide();
                         $('#eventEditForm').show();
-                        $('#editTitle').val(info.event.title);
-                        $('#editDescription').val(info.event.extendedProps.description || '');
-                        $('#editNotification').val(info.event.extendedProps.notification || 'none');
-                        $('#saveBtn').show();
-                        $('#cancelEditBtn').show();
+
+                        // Prefill form values
+                        $('#editTitle').val(event.title);
+                        $('#editDescription').val(event.extendedProps.description || '');
+                        $('#editDate').val(event.start.toISOString().split('T')[0]);
+                        $('#editTime').val(event.start.toISOString().split('T')[1].slice(0, 5));
+                        $('#editLocation').val(event.extendedProps.location || '');
+
+                        $('#saveBtn, #cancelEditBtn').show();
                         $('#editBtn').hide();
                     });
 
-                    // Save updated event details
+                    // Save button
                     $('#saveBtn').off('click').click(function () {
-                        const updatedTitle = $('#editTitle').val();
-                        const updatedDescription = $('#editDescription').val();
-                        const updatedDate = $('#editDate').val();
-                        const updatedTime = $('#editTime').val();
-                        const updatedLocation = $('#editLocation').val();
-                        const updatedNotification = $('#editNotification').val();
-                        const updatedStart = `${updatedDate}T${updatedTime}`;
-                    // AJAX request to update the event
-                    $.ajax({
-                            url: `/events/${info.event.id}`, // Update route
+                        var updatedTitle = $('#editTitle').val();
+                        var updatedDescription = $('#editDescription').val();
+                        var updatedDate = $('#editDate').val();
+                        var updatedTime = $('#editTime').val();
+                        var updatedLocation = $('#editLocation').val();
+                        var updatedStart = updatedDate + 'T' + updatedTime;
+
+                        $.ajax({
+                            url: '/events/' + event.id,
                             method: 'PUT',
                             data: {
                                 title: updatedTitle,
                                 description: updatedDescription,
                                 start: updatedStart,
                                 location: updatedLocation,
-                                notification: updatedNotification,
                                 _token: $('meta[name="csrf-token"]').attr('content'),
                             },
                             success: function () {
-                                calendar.refetchEvents(); // Refresh events
+                                calendar.refetchEvents();
                                 alert('Event updated successfully');
                                 $('#eventModal').hide();
                             },
@@ -464,7 +438,7 @@
                         });
                     });
 
-                    // Cancel edit
+                    // Cancel Edit button
                     $('#cancelEditBtn').off('click').click(function () {
                         $('#eventEditForm').hide();
                         $('#eventDisplay').show();
@@ -478,10 +452,10 @@
                         $('#eventModal').hide();
                     });
 
-                    // Delete event
+                    // Delete button
                     $('#deleteBtn').off('click').click(function () {
                         $.ajax({
-                            url: '/events/${info.event.id}',
+                            url: '/events/' + event.id,
                             method: 'DELETE',
                             data: {
                                 _token: $('meta[name="csrf-token"]').attr('content'),
