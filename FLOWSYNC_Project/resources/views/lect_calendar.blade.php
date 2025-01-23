@@ -146,6 +146,7 @@
         }
 
         .modal-row input,
+        
         .modal-row textarea {
             flex: 2;
             padding: 8px;
@@ -239,31 +240,17 @@
     <div id="eventModal">
         <div id="modalContent">
             <h3>Event Details</h3>
-            <!-- Display Event Information -->
+            
+            <!-- Event Display Mode -->
             <div id="eventDisplay">
-                <div class="modal-row">
-                    <strong>Title:</strong>
-                    <span id="eventTitle"></span>
-                </div>
-                <div class="modal-row">
-                    <strong>Description:</strong>
-                    <span id="eventDescription"></span>
-                </div>
-                <div class="modal-row">
-                    <strong>Date:</strong>
-                    <span id="eventDate"></span>
-                </div>
-                <div class="modal-row">
-                    <strong>Time:</strong>
-                    <span id="eventTime"></span>
-                </div>
-                <div class="modal-row">
-                    <strong>Location:</strong>
-                    <span id="eventLocation"></span>
-                </div>
+                <div class="modal-row"><strong>Title:</strong> <span id="eventTitle"></span></div>
+                <div class="modal-row"><strong>Description:</strong> <span id="eventDescription"></span></div>
+                <div class="modal-row"><strong>Date:</strong> <span id="eventDate"></span></div>
+                <div class="modal-row"><strong>Time:</strong> <span id="eventTime"></span></div>
+                <div class="modal-row"><strong>Location:</strong> <span id="eventLocation"></span></div>
             </div>
 
-            <!-- Editable Form -->
+            <!-- Event Edit Mode -->
             <form id="eventEditForm" style="display: none;">
                 <div class="modal-row">
                     <label for="editTitle">Title:</label>
@@ -317,10 +304,6 @@
                 events: '/lect_event', // Fetch events from the database
                 selectable: true,
                 editable: true,
-                eventDisplay: 'block',
-                eventContent: function(arg) {
-                    return { html: `<div class="fc-event-title">${arg.event.title}</div>` };
-                },
                 select: function(info) {
                     var title = prompt('Enter Event Title:');
                     if (title) {
@@ -344,50 +327,55 @@
                     }
                 },
                 eventClick: function (info) {
-                    // Populate modal with event details
-                    $('#eventTitle').text(info.event.title);
-                    $('#eventDescription').text(info.event.extendedProps.description || 'No description available');
-                    $('#eventDate').text(info.event.start.toISOString().slice(0, 10)); // Format date as YYYY-MM-DD
-                    $('#eventTime').text(
-                        info.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                    );
-                    $('#eventLocation').text(info.event.extendedProps.location || 'Not specified');
+                    var event = info.event;
+
+                    // Display event details
+                    $('#eventTitle').text(event.title);
+                    $('#eventDescription').text(event.extendedProps.description || 'No description available');
+                    $('#eventDate').text(event.start.toLocaleDateString());
+                    $('#eventTime').text(event.start.toLocaleTimeString());
+                    $('#eventLocation').text(event.extendedProps.location || 'Not specified');
+
+                    // Show modal
                     $('#eventModal').show();
 
-                    // Handle Edit Button
+                    // Edit button
                     $('#editBtn').off('click').click(function () {
-                        // Show edit form and prefill values
                         $('#eventDisplay').hide();
                         $('#eventEditForm').show();
-                        $('#editTitle').val(info.event.title);
-                        $('#editDescription').val(info.event.extendedProps.description || '');
-                        $('#editDate').val(info.event.start.toISOString().slice(0, 10));
-                        $('#editTime').val(info.event.start.toISOString().slice(11, 16));
-                        $('#editLocation').val(info.event.extendedProps.location || '');
-                        $('#editNotification').val(info.event.extendedProps.notification || 'none');
-                        $('#saveBtn').show();
-                        $('#cancelEditBtn').show();
+
+                        // Prefill form values
+                        $('#editTitle').val(event.title);
+                        $('#editDescription').val(event.extendedProps.description || '');
+                        $('#editDate').val(event.start.toISOString().split('T')[0]);
+                        $('#editTime').val(event.start.toISOString().split('T')[1].slice(0, 5));
+                        $('#editLocation').val(event.extendedProps.location || '');
+
+                        $('#saveBtn, #cancelEditBtn').show();
                         $('#editBtn').hide();
                     });
 
-                    // Handle Save Button
+                    // Save button
                     $('#saveBtn').off('click').click(function () {
-                        const updatedData = {
-                            title: $('#editTitle').val(),
-                            description: $('#editDescription').val(),
-                            start: new Date(`${$('#editDate').val()}T${$('#editTime').val()}`).toISOString(),
-                            location: $('#editLocation').val(),
-                            notification: $('#editNotification').val(),
-                            _token: $('meta[name="csrf-token"]').attr('content'),
-                        };
+                        var updatedTitle = $('#editTitle').val();
+                        var updatedDescription = $('#editDescription').val();
+                        var updatedDate = $('#editDate').val();
+                        var updatedTime = $('#editTime').val();
+                        var updatedLocation = $('#editLocation').val();
+                        var updatedStart = updatedDate + 'T' + updatedTime;
 
-                        // Make AJAX request to update the event
                         $.ajax({
-                            url: `/lect_event/${info.event.id}`,
+                            url: '/lect_event/' + event.id,
                             method: 'PUT',
-                            data: updatedData,
+                            data: {
+                                title: updatedTitle,
+                                description: updatedDescription,
+                                start: updatedStart,
+                                location: updatedLocation,
+                                _token: $('meta[name="csrf-token"]').attr('content'),
+                            },
                             success: function () {
-                                calendar.refetchEvents(); // Refresh events in the calendar
+                                calendar.refetchEvents();
                                 alert('Event updated successfully');
                                 $('#eventModal').hide();
                             },
@@ -397,7 +385,7 @@
                         });
                     });
 
-                    // Handle Cancel Edit Button
+                    // Cancel Edit button
                     $('#cancelEditBtn').off('click').click(function () {
                         $('#eventEditForm').hide();
                         $('#eventDisplay').show();
@@ -411,10 +399,10 @@
                         $('#eventModal').hide();
                     });
 
-                    // Handle Delete Button
+                    // Delete button
                     $('#deleteBtn').off('click').click(function () {
                         $.ajax({
-                            url: `/lect_event/${info.event.id}`,
+                            url: '/lect_event/' + event.id,
                             method: 'DELETE',
                             data: {
                                 _token: $('meta[name="csrf-token"]').attr('content'),

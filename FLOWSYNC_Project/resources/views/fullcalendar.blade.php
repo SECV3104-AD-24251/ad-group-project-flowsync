@@ -237,6 +237,7 @@
     <div class="header">
         <h1>Student Calendar</h1>
     </div>
+    
     <div style="display: flex;justify-content: right;margin-right: 15px;">
         <button id="showGroupChecklistModal" class="btn">Group Checklist</button>
     </div>
