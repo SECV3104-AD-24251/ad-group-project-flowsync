@@ -312,7 +312,7 @@
             <!-- Insert Modal -->
             <div id="insertModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 8px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); padding: 20px; width: 50%; z-index: 1000;">
                 <h2 style="text-align: center; color: #C8102E;">Insert Timetable Entry</h2>
-                <form id="insertForm" action="{{ route('timetable.store') }}" method="POST">
+                <form id="insertForm" action="{{ route('lecturer.timetable.store') }}" method="POST">
                     @csrf <!-- Laravel CSRF Token -->
                     <div style="margin-bottom: 10px;">
                         <label for="day" style="font-weight: bold;">Day:</label>

@@ -9,7 +9,7 @@ class LecturerTimetable extends Model
 {
     use HasFactory;
 
-    protected $table = 'lect_timetable';
+    protected $table = 'lect_timetable'; // Ensure this matches your database table name
 
     protected $fillable = [
         'day',
@@ -26,8 +26,7 @@ class LecturerTimetable extends Model
      */
     public function scopeGroupedByDay($query)
     {
-        $timetable = LecturerTimetable::orderBy('time')->get()->groupBy('day');
-
+        return $query->orderBy('time')->get()->groupBy('day'); // Corrected this method to return grouped data
     }
 
     /**
