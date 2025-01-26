@@ -20,6 +20,7 @@ class CreateLectTimetablesTable extends Migration
             $table->string('subject');
             $table->integer('slot');
             $table->timestamps();
+
         });
     }
 
