@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    
     <title>Lecturer Schedule Management</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <style>
         body {
             background-color: #ffffff;
@@ -21,37 +24,6 @@
             text-align: center;
             margin-bottom: 30px;
             text-transform: uppercase;
-        }
-
-        .table {
-            background-color: white;
-            border: 1px solid #800000;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .table th {
-            background-color: #800000;
-            color: white;
-        }
-
-        .table th, .table td {
-            text-align: center;
-            vertical-align: middle;
-        }
-
-        .form-select {
-            border: 1px solid #800000;
-        }
-
-        .btn-primary {
-            background-color: #800000;
-            border-color: #800000;
-        }
-
-        .btn-primary:hover {
-            background-color: #990000;
-            border-color: #990000;
         }
 
         .back-button {
@@ -85,34 +57,6 @@
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
         }
 
-        .ai-button-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-        }
-
-        .ai-button {
-            background-color: #800000;
-            border: none;
-            border-radius: 50%;
-            padding: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-            cursor: pointer;
-        }
-
-        .ai-button img {
-            width: 50px;
-            height: 50px;
-        }
-
-        .ai-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.3);
-        }
-
         /* Main container */
         .main-container {
             width: 80%;
@@ -142,10 +86,123 @@
         .lecturer-info .details span {
             font-weight: bold;
         }
+
+        /* Timetable toggle button */
+        .toggle-button {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .toggle-button button {
+            background-color: #C8102E; /* UTM red */
+            color: white;
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .toggle-button button:hover {
+            background-color: #9e0000;
+        }
+
+        /* Timetable Cards and Table Styles */
+        .timetable-cards, .timetable-table {
+            display: none;
+        }
+
+        .timetable-cards.active, .timetable-table.active {
+            display: block;
+        }
+
+        /* Cards layout */
+        .timetable-cards .card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 10px;
+            border:rgb(153, 0, 0);
+            border-radius: 6px;
+        }    
+
+        .card h3 {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .card p {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .card button {
+            background-color: #C8102E; /* UTM red */
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .card button:hover {
+            background-color: #9e0000;
+        }
+
+        /* Table layout */
+        .timetable-table table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            box-shadow: 0 0 20px rgba(200, 16, 46, 0.75); /* Strong red UTM shadow */
+            border-radius: 10px;
+            margin: 20px 0; /* Adds spacing around the table */
+            overflow: hidden; /* Ensures rounded corners are visible */
+        }
+
+        .timetable-table th, .timetable-table td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        .timetable-table th {
+            background-color: #C8102E; /* UTM red */
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Add shadow when the cursor is hovering over the elements */
+        .timetable-cards:hover, .timetable-details:hover, .timetable-table:hover {
+            box-shadow: 0 0 20px rgba(200, 16, 46, 0.75); /* UTM red shadow */
+            transition: box-shadow 0.3s ease-in-out; /* Smooth effect */
+        }
+
+        /* Default shadow when not hovered */
+        .timetable-cards, .timetable-details, .timetable-table {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow by default */
+            transition: box-shadow 0.3s ease-in-out;
+        }
+
+        /* Table layout */
+        .timetable-table table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Updated shadow */
+            border-radius: 8px;
+            overflow: hidden; /* Ensures rounded corners are visible */
+            margin: 20px 0; /* Adds some spacing around the table */
+        }
     </style>
 </head>
-<body>
 
+<body>
     <!-- Back Button -->
     <a href="/lecturer-dashboard" class="back-button">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
@@ -162,11 +219,12 @@
             <div class="lecturer-info">
                 <div class="details">
                     <div>
-                        <p><span>Name:</span> Dr. Zulaikha</p>
+                        <p><span>Lecturer Name:</span> Dr. Zulaikha</p>
                         <p><span>Email:</span> zulaikha@utm.edu.my</p>
                     </div>
                     <div>
-                        <p><span>Phone:</span> +6019 7645634</p>
+                        <p><span>Staff ID:</span> S24FC0001</p>
+                        <p><span>Phone Number:</span> +6019 7645634</p>
                     </div>
                 </div>
                 <div class="details">
@@ -175,225 +233,173 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Form for adding lecturer's timetable entries -->
-        <div class="mb-4">
-            <div class="row g-2">
-                <div class="col-md-2">
-                    <select id="courseName" class="form-select">
-                        <option value="">Select Course</option>
-                        <option value="Artificial Intelligence">SECJ3553 Artificial Intelligence</option>
-                        <option value="Application Development">SECV3104 Application Development</option>
-                        <option value="Geometry Modelling">SECV3113 Geometric Modelling</option>
-                        <option value="Fundamental of Image Processing">SECV3213 Fundamental of Image Processing</option>
-                        <option value="Professional Communication Skills 2">UHLB3132 Professional Communication Skills 2</option>
-                    </select>
-                </div>
-
-                <div class="col-md-2">
-                    <select id="section" class="form-select">
-                        <option value="">Select Section</option>
-                        <option value="01">01</option>
-                        <option value="02">02</option>
-                        <option value="11">11</option>
-                        <option value="12">12</option>
-                        <option value="ALL">ALL</option>
-                    </select>
-                </div>
-
-                <div class="col-md-2">
-                    <select id="timeSlot" class="form-select">
-                        <option value="">Select Time Slot</option>
-                        <option value="SUN 11:00-13:00">SUN 11:00-13:00</option>
-                        <option value="MON 8:00-10:00">MON 8:00-10:00</option>
-                        <option value="TUE 8:00-10:00">TUE 8:00-10:00</option>
-                        <option value="WED 10:00-13:00">WED 10:00-13:00</option>
-                        <option value="THU 8:00-11:00">THU 8:00-11:00</option>
-                    </select>
-                </div>
-
-                <div class="col-md-2">
-                    <select id="room" class="form-select">
-                        <option value="">Select Room</option>
-                        <option value="Room A">Room A</option>
-                        <option value="Room B">Room B</option>
-                        <option value="Room C">Room C</option>
-                        <option value="Room D">Room D</option>
-                    </select>
-                </div>
+            <!-- Toggle Button -->
+            <div class="toggle-button">
+                <button id="toggleView">Switch to Table View</button>
             </div>
 
-            <!-- Add button -->
-            <div class="d-flex justify-content-end mt-3">
-                <button id="addEntryBtn" class="btn btn-primary mb-3">Add</button>
+            <!-- Timetable Cards Section -->
+            <div class="timetable-cards active">
+                <h2>Your Weekly Timetable (Card View)</h2>
+
+                @forelse ($timetable as $day => $classes)
+                    <h3>{{ ucfirst($day) }}</h3>
+                    @foreach ($classes as $class)
+                        <div class="card">
+                            <div>
+                                <h3>{{ $class->subject }}</h3>
+                                <p><strong>Time:</strong> {{ $class->time }}</p>
+                                <p><strong>Time Slot:</strong> {{ $class->slot }}</p>
+                            </div>
+                            <button>Edit</button>
+                        </div>
+                    @endforeach
+                @empty
+                    <p>No timetable data available.</p>
+                @endforelse
+
+            </div>
+
+            <!-- Timetable Table Section -->
+            <div class="timetable-table">
+                <h2>Your Weekly Timetable (Table View)</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            @foreach ($days as $day)
+                                <th>{{ $day }}</th>
+                            @endforeach
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($timeSlots as $time)
+                            <tr>
+                                <td>{{ $time }}</td>
+                                @foreach ($days as $day)
+                                    <td>
+                                        @if (isset($timetable[$day]))
+                                            @php
+                                                $class = $timetable[$day]->firstWhere('time', $time);
+                                            @endphp
+                                            @if ($class)
+                                                <strong>{{ $class->subject }}</strong><br>
+                                                Slot: {{ $class->slot }}
+                                            @else
+                                                -
+                                            @endif
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+                                @endforeach
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <h3>Lecturer Timetable</h3>
+        <div class="main-container">
+            <!-- Insert Button -->
+            <div class="insert-button" style="text-align: center; margin: 20px 0;">
+                <button id="openInsertModal" style="background-color: #C8102E; color: white; padding: 12px 24px; font-size: 16px; border: none; border-radius: 4px; cursor: pointer;">
+                    Insert into Timetable
+                </button>
+            </div>
 
-        <!-- Display Timetable -->
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>Lecturer Name</th>
-                        <th>Course Name</th>
-                        <th>Section</th>
-                        <th>Time Slot</th>
-                        <th>Room</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="timetableBody">
-                    <!-- Lecturer timetable entries will be populated here -->
-                </tbody>
-            </table>
+            <!-- Insert Modal -->
+            <div id="insertModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 8px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); padding: 20px; width: 50%; z-index: 1000;">
+                <h2 style="text-align: center; color: #C8102E;">Insert Timetable Entry</h2>
+                <form id="insertForm" action="{{ route('timetable.store') }}" method="POST">
+                    @csrf <!-- Laravel CSRF Token -->
+                    <div style="margin-bottom: 10px;">
+                        <label for="day" style="font-weight: bold;">Day:</label>
+                        <select id="day" name="day" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <label for="time" style="font-weight: bold;">Time:</label>
+                        <input type="time" id="time" name="time" required style="width: 96%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <label for="subject" style="font-weight: bold;">Subject:</label>
+                        <input type="text" id="subject" name="subject" required placeholder="Enter subject" style="width: 96%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <label for="slot" style="font-weight: bold;">Slot:</label>
+                        <select id="slot" name="slot" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="" disabled selected>Choose a slot</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                        </select>
+                    </div>
+
+                    <div style="text-align: center;">
+                        <button type="submit" style="background-color: #C8102E; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Save</button>
+                        <button type="button" id="closeInsertModal" style="background-color: #ddd; color: black; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Background overlay for modal -->
+            <div id="modalOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;"></div>
         </div>
+
+        <script>
+            const openInsertModal = document.getElementById('openInsertModal');
+                const closeInsertModal = document.getElementById('closeInsertModal');
+                const insertModal = document.getElementById('insertModal');
+                const modalOverlay = document.getElementById('modalOverlay');
+
+                openInsertModal.addEventListener('click', () => {
+                    insertModal.style.display = 'block';
+                    modalOverlay.style.display = 'block';
+                });
+
+                closeInsertModal.addEventListener('click', () => {
+                    insertModal.style.display = 'none';
+                    modalOverlay.style.display = 'none';
+                });
+
+                modalOverlay.addEventListener('click', () => {
+                    insertModal.style.display = 'none';
+                    modalOverlay.style.display = 'none';
+                });
+        </script>
+
+        <footer class="footer">
+            <p>&copy; 2025 Student Timetable Management System. All Rights Reserved. | <a href="#">Privacy Policy</a></p>
+        </footer>
+
     </div>
 
-    <!-- AI Assistant Button -->
-    <div class="ai-button-container">
-        <button class="ai-button">
-            <img src="https://via.placeholder.com/50" alt="AI Icon" />
-        </button>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- FontAwesome Icons (For the details section) -->
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const timetableBody = document.getElementById('timetableBody');
-            const addEntryBtn = document.getElementById('addEntryBtn');
+        const toggleButton = document.getElementById('toggleView');
+        const cardView = document.querySelector('.timetable-cards');
+        const tableView = document.querySelector('.timetable-table');
 
-            // Fetch lecturer names and timetable entries on page load
-            fetch('/lecturers/get')
-                .then(response => response.json())
-                .then(data => {
-                    // Populate lecturer dropdown
-                    const lecturerSelect = document.getElementById('lecturerName');
-                    data.lecturers.forEach(lecturer => {
-                        const option = document.createElement('option');
-                        option.value = lecturer.id;
-                        option.textContent = lecturer.name;
-                        lecturerSelect.appendChild(option);
-                    });
-
-                    // Populate course dropdown
-                    const courseSelect = document.getElementById('courseName');
-                    data.courses.forEach(course => {
-                        const option = document.createElement('option');
-                        option.value = course.id;
-                        option.textContent = course.name;
-                        courseSelect.appendChild(option);
-                    });
-
-                    // Display timetable
-                    if (data.timetable.length === 0) {
-                        timetableBody.innerHTML = ` 
-                            <tr id="emptyRow">
-                                <td colspan="6" class="text-center">No timetable entries yet.</td>
-                            </tr>
-                        `;
-                    } else {
-                        timetableBody.innerHTML = '';
-                        data.timetable.forEach(entry => {
-                            const newRow = `
-                                <tr>
-                                    <td>${entry.name}</td>
-                                    <td>${entry.course_name}</td>
-                                    <td>${entry.section}</td>
-                                    <td>${entry.time_slot}</td>
-                                    <td>${entry.room}</td>
-                                    <td>
-                                        <button class="btn btn-danger delete-btn" data-id="${entry.id}">Delete</button>
-                                    </td>
-                                </tr>
-                            `;
-                            timetableBody.insertAdjacentHTML('beforeend', newRow);
-                        });
-                    }
-                });
-
-            // Handle Add button click
-            addEntryBtn.addEventListener('click', () => {
-                const lecturerName = "Dr. Zulaikha"; // Update this with a default or dynamically fetched lecturer name
-                const courseName = document.getElementById('courseName').value;
-                const section = document.getElementById('section').value;
-                const timeSlot = document.getElementById('timeSlot').value;
-                const room = document.getElementById('room').value;
-
-                if (!lecturerName || !courseName || !section || !timeSlot || !room) {
-                    Swal.fire('Error', 'Please fill in all fields.', 'error');
-                    return;
-                }
-
-                // Add timetable entry via AJAX
-                fetch('/lecturers/add', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                    },
-                    body: JSON.stringify({
-                        lecturer_name: lecturerName,
-                        course_name: courseName,
-                        section: section,
-                        time_slot: timeSlot,
-                        room: room
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire('Success', data.message, 'success');
-                        location.reload(); // Reload the page to reflect the new entry
-                    } else {
-                        Swal.fire('Error', data.message, 'error');
-                    }
-                })
-                .catch(error => {
-                    Swal.fire('Error', 'An error occurred while adding the entry.', 'error');
-                });
-            });
-
-
-            // Handle Delete button click
-            timetableBody.addEventListener('click', (e) => {
-                if (e.target && e.target.classList.contains('delete-btn')) {
-                    const entryId = e.target.getAttribute('data-id');
-                    Swal.fire({
-                        title: 'Are you sure?',
-                        text: 'This will permanently delete the entry.',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonText: 'Yes, delete it!',
-                        cancelButtonText: 'No, keep it'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            fetch(`/lecturers/delete/${entryId}`, {
-                                method: 'DELETE',
-                                headers: {
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                                }
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    Swal.fire('Deleted!', 'The timetable entry has been deleted.', 'success');
-                                    location.reload(); // Reload the page to reflect the deletion
-                                } else {
-                                    Swal.fire('Error', 'Failed to delete timetable entry.', 'error');
-                                }
-                            })
-                            .catch(error => {
-                                Swal.fire('Error', 'An error occurred while deleting the entry.', 'error');
-                            });
-                        }
-                    });
-                }
-            });
+        toggleButton.addEventListener('click', () => {
+            cardView.classList.toggle('active');
+            tableView.classList.toggle('active');
+            toggleButton.textContent = cardView.classList.contains('active') ? 'Switch to Table View' : 'Switch to Card View';
         });
     </script>
+    
 </body>
 </html>

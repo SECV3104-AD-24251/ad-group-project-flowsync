@@ -12,7 +12,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\LectEventController;
 use App\Http\Controllers\HelpCenterController;
 use App\Http\Controllers\StudentTimetableController;
-
+use App\Http\Controllers\LecturerTimetableController;
 
 
 
@@ -35,9 +35,13 @@ Route::delete('/timetable/{id}', [StudentTimetableController::class, 'destroy'])
 Route::get('/student-timetable/generate-copy', [StudentTimetableController::class, 'generateCopy'])->name('student.timetable.generate.copy');
 
 
-
-
-
+//lecturer timetable
+// Route to display the timetable page
+Route::get('/lecturer-timetable', [LecturerTimetableController::class, 'index'])->name('lecturer.timetable');
+// Route to store a new timetable entry
+Route::post('/lecturer-timetable/store', [LecturerTimetableController::class, 'store'])->name('lecturer.timetable.store');
+// Route to generate a downloadable JSON file of the timetable
+Route::get('/lecturer-timetable/generate-copy', [LecturerTimetableController::class, 'generateCopy'])->name('lecturer.timetable.generate-copy');
 
 
 
@@ -228,10 +232,7 @@ Route::get('/student-timetable', [StudentTimetableController::class, 'index']);
 
 
 // Lecturer Timetable
-Route::get('/lecturer-timetable', function () {
-    return view('lect_timetable');
-})->name('lecturer.timetable');
-
+Route::get('/lecturer-timetable', [LecturerTimetableController::class, 'index'])->name('lecturer.timetable');
 
 
 
