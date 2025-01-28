@@ -199,6 +199,33 @@
             overflow: hidden; /* Ensures rounded corners are visible */
             margin: 20px 0; /* Adds some spacing around the table */
         }
+
+        /* Shared button */
+        .shared-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            background-color: #800000;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .shared-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .shared-button span {
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
     </style>
 </head>
 
@@ -209,6 +236,11 @@
             <path fill-rule="evenodd" d="M15 8a.5.5 0 0 1-.5.5H3.707l3.147 3.146a.5.5 0 0 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L3.707 7.5H14.5A.5.5 0 0 1 15 8z"/>
         </svg>
         <span>Back</span>
+    </a>
+
+    <!-- Shared Button -->
+    <a id="sharedBtn" class="shared-button">
+        <span>Shared</span>
     </a>
 
     <div class="container mt-5">
@@ -400,6 +432,5 @@
             toggleButton.textContent = cardView.classList.contains('active') ? 'Switch to Table View' : 'Switch to Card View';
         });
     </script>
-    
 </body>
 </html>
