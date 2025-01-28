@@ -26,6 +26,7 @@ Route::view('/HC1', 'HC1');
 Route::view('/student-timetable', 'stud_timetable');
 Route::view('/student-calendar', 'fullcalendar');
 Route::view('/lecturer-calendar', 'lect_calendar');
+Route::view('/lecturer-timetable', 'lect_timetable');
 
 
 //student timetable
