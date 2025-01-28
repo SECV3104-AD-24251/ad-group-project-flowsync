@@ -216,6 +216,60 @@
                 font-size: 14px;
             }
         }
+
+        /* Popup */
+        #popup {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #800000;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 14px;
+            font-weight: bold;
+            display: none;
+            z-index: 1000;
+        }
+
+        #popup.show {
+            display: block;
+            animation: fadeInOut 5s ease-in-out;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(20px); }
+            10%, 90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(20px); }
+        }
+
+        /* Notification Popup */
+        #popupNotification {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #800000;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        #popupNotification button {
+            background-color: white;
+            color: #800000;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #popupNotification button:hover {
+            background-color: #f1f1f1;
+        }
     </style>
 </head>
 
@@ -235,6 +289,15 @@
 
     <!-- Calendar -->
     <div id="calendar"></div>
+
+    <!-- Popup -->
+    <div id="popup"></div>
+
+    <!-- Notification -->
+    <div id="popupNotification">
+        <p id="notificationText"></p>
+        <button id="closeNotification">Dismiss</button>
+    </div>
 
     <!-- Modal for Event Details -->
     <div id="eventModal">
@@ -297,13 +360,35 @@
     </div>
 
     <script>
+        // Function to show popup notification
+        function showNotification(message, type = 'success') {
+            var popup = document.getElementById('popup');
+            popup.textContent = message;
+            popup.style.backgroundColor = type === 'error' ? 'darkred' : '#800000';
+            popup.classList.add('show');
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 5000);
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             var calendarEl = document.getElementById('calendar');
+
+            var popupNotification = document.getElementById('popupNotification');
+            var notificationText = document.getElementById('notificationText');
+
+            // Close notification button functionality
+            document.getElementById('closeNotification').addEventListener('click', function () {
+                popupNotification.style.display = 'none';
+            });
+
+            // Initialize FullCalendar
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 events: '/lect_event', // Fetch events from the database
                 selectable: true,
                 editable: true,
+                eventTimeFormat: { hour: '2-digit', minute: '2-digit', meridiem: true },
                 select: function(info) {
                     var title = prompt('Enter Event Title:');
                     if (title) {
@@ -376,10 +461,12 @@
                             },
                             success: function () {
                                 calendar.refetchEvents();
+                                showNotification('Event updated successfully!');
                                 alert('Event updated successfully');
                                 $('#eventModal').hide();
                             },
                             error: function () {
+                                showNotification('Failed to update event.', 'error');
                                 alert('Failed to update event');
                             },
                         });
@@ -422,6 +509,20 @@
             });
 
             calendar.render();
+
+            // Periodically check for upcoming events
+            setInterval(function () {
+                var now = new Date();
+                calendar.getEvents().forEach(function (event) {
+                    var eventStart = new Date(event.start);
+                    var timeDifference = (eventStart - now) / 1000 / 60; // Time difference in minutes
+
+                    if (timeDifference > 0 && timeDifference <= 10) { // Within 10 minutes
+                        notificationText.textContent = `Upcoming Event: "${event.title}" at ${eventStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+                        popupNotification.style.display = 'block';
+                    }
+                });
+            }, 60000); // Check every minute
         });
     </script>
 </body>
