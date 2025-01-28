@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Http\Controllers;
-
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -12,7 +10,6 @@ use App\Models\Checklist;
 use App\Models\ParticipantsGroup;
 use Carbon\Carbon;
 
-
 class FullCalendarController extends Controller
 {
     // Render FullCalendar view
@@ -21,14 +18,12 @@ class FullCalendarController extends Controller
         return view('fullcalendar');
     }
 
-
     // Fetch events from the database
     public function fetchEvents(Request $request)
     {
         $events = Event::all();
         return response()->json($events);
     }
-
 
     // Store new events in the database
     public function storeEvent(Request $request)
@@ -39,19 +34,16 @@ class FullCalendarController extends Controller
             'end' => Carbon::parse($request->end)->toDateTimeString(),      // Format date
             'description' => $request->description,
             'location' => $request->location,
+            'notification' => $request->notification,
         ]);
-
-
         return response()->json($event);
     }
-
 
     // Update event details
     public function updateEvent(Request $request, $id)
     {
         // Find the event by ID
         $event = Event::findOrFail($id);
-
 
         // Update event details with formatted dates
         $event->update([
@@ -60,13 +52,12 @@ class FullCalendarController extends Controller
             'start' => Carbon::parse($request->start)->toDateTimeString(),  // Format date
             'end' => Carbon::parse($request->end)->toDateTimeString(),      // Format date
             'location' => $request->location,
+            'notification' => $request->notification,
         ]);
-
 
         // Return the updated event as a JSON response
         return response()->json($event);
     }
-
 
     // Delete an event
     public function deleteEvent($id)
@@ -74,10 +65,8 @@ class FullCalendarController extends Controller
         $event = Event::findOrFail($id);
         $event->delete();
 
-
         return response()->json(['message' => 'Event deleted successfully']);
     }
-
 
     public function createGroup(Request $request)
     {
@@ -90,17 +79,14 @@ class FullCalendarController extends Controller
             'participants.*' => 'email',
         ]);
 
-
         // Begin a database transaction to ensure all inserts succeed or fail together
         DB::beginTransaction();
-
 
         try {
             // Create the new group checklist
             $group = GroupChecklist::create([
                 'title' => $validatedData['title'],
             ]);
-
 
             // Insert checklist items into the 'checklists' table
             foreach ($validatedData['checklist'] as $task) {
@@ -111,7 +97,6 @@ class FullCalendarController extends Controller
                 ]);
             }
 
-
             // Insert participants into the 'participants_group' table
             foreach ($validatedData['participants'] as $email) {
                 ParticipantsGroup::create([
@@ -120,10 +105,8 @@ class FullCalendarController extends Controller
                 ]);
             }
 
-
             // Commit the transaction if everything succeeded
             DB::commit();
-
 
             // Return a JSON response to indicate success
             return response()->json([
@@ -135,7 +118,6 @@ class FullCalendarController extends Controller
             // Rollback the transaction on error
             DB::rollBack();
 
-
             // Return an error response
             return response()->json([
                 'success' => false,
@@ -145,14 +127,12 @@ class FullCalendarController extends Controller
         }
     }
 
-
     // Method to fetch groups
     public function getGroups()
     {
         $groups = GroupChecklist::all(); // Fetch all groups
         return response()->json(['groups' => $groups]);
     }
-
 
     // Method to get group details
     // public function groupDetails($id)
@@ -166,7 +146,6 @@ class FullCalendarController extends Controller
         $group = GroupChecklist::findOrFail($groupId);
         $checklist = Checklist::where('groupID', $groupId)->pluck('taskname'); // Assuming `task` is a column in `checklist`
         $participants = ParticipantsGroup::where('groupID', $groupId)->pluck('email'); // Assuming `email` is a column in `participants_group`
-
 
         // Return the data as JSON
         return response()->json([
