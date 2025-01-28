@@ -222,7 +222,7 @@
             }
         }
 
-        /* Notification Popup */
+        /* Popup */
         #popup {
             position: fixed;
             bottom: 20px;
@@ -249,6 +249,7 @@
             100% { opacity: 0; transform: translateY(20px); }
         }
 
+        /* Notification Popup */
         #popupNotification {
             display: none;
             position: fixed;
