@@ -236,13 +236,12 @@
             <path fill-rule="evenodd" d="M15 8a.5.5 0 0 1-.5.5H3.707l3.147 3.146a.5.5 0 0 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L3.707 7.5H14.5A.5.5 0 0 1 15 8z"/>
         </svg>
         <span>Back</span>
-    </a>
 
     <!-- Shared Button -->
-    <a id="sharedBtn" class="shared-button">
+    <a id="sharedBtn" class="shared-button" href="/shared-timetable">
         <span>Shared</span>
     </a>
-
+    
     <div class="container mt-5">
         <h1>Lecturer Schedule Management</h1>
 
