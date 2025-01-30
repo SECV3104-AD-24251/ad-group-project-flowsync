@@ -199,9 +199,13 @@ Route::delete('/api/events/{id}', [EventController::class, 'destroy']);
 Route::post('/api/openai', [OpenAIController::class, 'handleRequest']);
 
 
-// Google Authentication Routes
-Route::get('google/auth', [GoogleCalendarController::class, 'redirectToGoogle'])->name('google.calendar.auth');
-Route::get('google/callback', [GoogleCalendarController::class, 'handleGoogleCallback']);
+// Google Calendar Integration
+Route::get('/google-calendar/auth', [GoogleCalendarController::class, 'redirectToGoogle'])->name('google.auth');
+Route::get('/google-calendar/callback', [GoogleCalendarController::class, 'handleGoogleCallback'])->name('google.callback');
+Route::get('/google-calendar/events', [GoogleCalendarController::class, 'listEvents'])->name('google.events');
+Route::post('/google/create-event', [GoogleCalendarController::class, 'createEvent'])->name('google.create.event');
+Route::get('/google/calendar', [GoogleCalendarController::class, 'redirectToGoogle'])->name('google.calendar.auth');
+Route::get('/export/events', [EventController::class, 'exportEvents'])->name('export.events');
 
 
 // Detect clashes

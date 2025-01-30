@@ -275,6 +275,18 @@
         #popupNotification button:hover {
             background-color: #f1f1f1;
         }
+
+        .container {
+        max-width: 900px;
+        margin: auto;
+        padding: 20px;
+        }
+
+        .history-link {
+            margin-top: 20px;
+            text-align: right;
+        }
+
     </style>
 </head>
 
@@ -291,11 +303,12 @@
     <div class="header">
         <h1>Student Calendar</h1>
     </div>
-    
+
     <div style="display: flex;justify-content: right;margin-right: 15px;">
-        <button id="showGroupChecklistModal" class="btn">Group Checklist</button>
+    <button id="showGroupChecklistModal" class="btn">Group Checklist</button>
+    <a href="{{ route('export.events') }}" class="btn btn-primary">Export Schedule</a>
     </div>
-   
+
     <!-- Modal for Group Checklist -->
     <div id="groupChecklistModal" style="display: none;">
         <div id="modalContent">
@@ -444,27 +457,31 @@
                 editable: true,
                 eventTimeFormat: { hour: '2-digit', minute: '2-digit', meridiem: true },
                 select: function(info) {
-                    var title = prompt('Enter Event Title:');
-                    if (title) {
-                        $.ajax({
-                            url: '/events',
-                            method: 'POST',
-                            data: {
-                                title: title,
-                                start: info.startStr,
-                                end: info.endStr,
-                                _token: $('meta[name="csrf-token"]').attr('content')
-                            },
-                            success: function() {
-                                calendar.refetchEvents();
-                                alert('Event added successfully');
-                            },
-                            error: function() {
-                                alert('Failed to add event');
-                            }
-                        });
-                    }
-                },
+                var title = prompt('Enter Event Title:');
+                if (title) {
+                    $.ajax({
+                        url: '/events',
+                        method: 'POST',
+                        data: {
+                            title: title,
+                            start: info.startStr,
+                            end: info.endStr,
+                            _token: $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                        calendar.refetchEvents();
+                        alert('✅ Event added successfully!');
+                    },
+                    error: function(xhr) {
+                        console.error("Error:", xhr.responseJSON);
+                        if (xhr.status === 400) {
+                            alert('⚠️ ' + xhr.responseJSON.error);
+                        } else {
+                            alert('❌ Failed to add event');
+                        }                        }
+                     });
+                }
+            },
                 eventClick: function (info) {
                     var event = info.event;
 
@@ -496,35 +513,49 @@
 
                     // Save button
                     $('#saveBtn').off('click').click(function () {
-                        var updatedTitle = $('#editTitle').val();
-                        var updatedDescription = $('#editDescription').val();
-                        var updatedDate = $('#editDate').val();
-                        var updatedTime = $('#editTime').val();
-                        var updatedLocation = $('#editLocation').val();
-                        var updatedStart = updatedDate + 'T' + updatedTime;
+    var updatedTitle = $('#editTitle').val();
+    var updatedDescription = $('#editDescription').val();
+    var updatedDate = $('#editDate').val();
+    var updatedTime = $('#editTime').val();
+    var updatedLocation = $('#editLocation').val();
+    var updatedStart = updatedDate + 'T' + updatedTime;
 
-                        $.ajax({
-                            url: '/events/' + event.id,
-                            method: 'PUT',
-                            data: {
-                                title: updatedTitle,
-                                description: updatedDescription,
-                                start: updatedStart,
-                                location: updatedLocation,
-                                _token: $('meta[name="csrf-token"]').attr('content'),
-                            },
-                            success: function () {
-                                calendar.refetchEvents();
-                                showNotification('Event updated successfully!');
-                                alert('Event updated successfully');
-                                $('#eventModal').hide();
-                            },
-                            error: function () {
-                                showNotification('Failed to update event.', 'error');
-                                alert('Failed to update event');
-                            },
-                        });
-                    });
+    $.ajax({
+        url: '/events/' + event.id,
+        method: 'PUT',
+        data: {
+            title: updatedTitle,
+            description: updatedDescription,
+            start: updatedStart,
+            location: updatedLocation,
+            _token: $('meta[name="csrf-token"]').attr('content'),
+        },
+        success: function () {
+            calendar.refetchEvents();
+            alert('Event updated successfully');
+
+            // Log the change
+            $.ajax({
+                url: '/event-history',
+                method: 'POST',
+                data: {
+                    event_id: event.id,
+                    action: 'updated',
+                    user_id: $('meta[name="user-id"]').attr('content'), // Ensure you pass user ID
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                }
+            });
+
+            $('#eventModal').hide();
+        },
+        error: function () {
+            alert('Failed to update event');
+        },
+    });
+});
+$('#exportEventsBtn').click(function() {
+    window.location.href = '/events/export';
+});
 
                     // Cancel Edit button
                     $('#cancelEditBtn').off('click').click(function () {
