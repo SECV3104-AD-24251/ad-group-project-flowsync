@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\LecturerTimetable;
+use App\Models\StudentTimetable;
+
 use Illuminate\Http\Request;
 
 class LecturerTimetableController extends Controller
@@ -31,6 +33,21 @@ class LecturerTimetableController extends Controller
 
         // Pass data to the Blade view
         return view('lect_timetable', compact('timetable', 'timeSlots', 'days'));
+    }
+
+    /**
+     * Fetch the shared student timetable.
+     */
+    public function fetchSharedTimetable()
+    {
+        // Fetch all student timetable entries
+        $studentTimetable = StudentTimetable::orderBy('day')
+            ->orderBy('time')
+            ->get()
+            ->groupBy('day'); // Group by day
+
+        // Return as JSON response (useful for AJAX)
+        return response()->json($studentTimetable);
     }
 
     /**

@@ -13,7 +13,6 @@ use App\Http\Controllers\LectEventController;
 use App\Http\Controllers\HelpCenterController;
 use App\Http\Controllers\StudentTimetableController;
 use App\Http\Controllers\LecturerTimetableController;
-use App\Http\Controllers\SharedTimetableController;
 
 
 
@@ -44,6 +43,8 @@ Route::get('/lecturer-timetable', [LecturerTimetableController::class, 'index'])
 Route::post('/lecturer-timetable/store', [LecturerTimetableController::class, 'store'])->name('lecturer.timetable.store');
 // Route to generate a downloadable JSON file of the timetable
 Route::get('/lecturer-timetable/generate-copy', [LecturerTimetableController::class, 'generateCopy'])->name('lecturer.timetable.generate-copy');
+Route::post('/fetch-shared-timetable', [LecturerTimetableController::class, 'fetchSharedTimetable'])->name('fetch.shared.timetable');
+
 
 
 
@@ -231,16 +232,4 @@ Route::get('/helpCenter/{id}', [HelpCenterController::class, 'show'])->name('hel
 
 // Student Timetable
 Route::get('/student-timetable', [StudentTimetableController::class, 'index']);
-
-
-// Lecturer Timetable
-Route::get('/lecturer-timetable', [LecturerTimetableController::class, 'index'])->name('lecturer.timetable');
-
-Route::get('/shared-timetable', [SharedTimetableController::class, 'index'])->name('shared.timetable');
-
-
-
-
-
-
 

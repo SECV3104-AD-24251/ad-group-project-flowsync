@@ -226,6 +226,46 @@
         .shared-button span {
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
         }
+
+        /* Popup Modal Styles */
+        #sharedModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            width: 70%;
+            z-index: 1000;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        #modalOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .close-modal {
+            background-color: #C8102E;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: block;
+            margin: 10px auto 0;
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -238,9 +278,30 @@
         <span>Back</span>
 
     <!-- Shared Button -->
-    <a id="sharedBtn" class="shared-button" href="/shared-timetable">
+    <a id="sharedBtn" class="shared-button">
         <span>Shared</span>
     </a>
+
+    <!-- Shared Data Modal -->
+    <div id="modalOverlay"></div>
+    <div id="sharedModal">
+        <h2 style="text-align: center; color: #C8102E;">Shared Timetable Data</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Day</th>
+                    <th>Time</th>
+                    <th>Subject</th>
+                    <th>Slot</th>
+                </tr>
+            </thead>
+            <tbody id="sharedTableBody">
+                <!-- Data will be dynamically inserted here -->
+            </tbody>
+        </table>
+        <button class="close-modal">Close</button>
+    </div>
     
     <div class="container mt-5">
         <h1>Lecturer Schedule Management</h1>
@@ -430,6 +491,91 @@
             tableView.classList.toggle('active');
             toggleButton.textContent = cardView.classList.contains('active') ? 'Switch to Table View' : 'Switch to Card View';
         });
+
+        <!-- Shared Scheduling -->;
+        $(document).ready(function() {
+            // Toggle visibility of cards and table
+            $('#toggleCardsBtn').click(function() {
+                $('.timetable-cards').toggleClass('active');
+                $('.timetable-table').removeClass('active');
+            });
+
+            $('#toggleTableBtn').click(function() {
+                $('.timetable-table').toggleClass('active');
+                $('.timetable-cards').removeClass('active');
+            });
+
+            // Fetch timetable data for cards and table
+            $.ajax({
+                url: '/api/lecturer-timetable', // Endpoint for fetching timetable
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    // Display timetable data in table and cards
+                    let tableContent = '';
+                    let cardContent = '';
+                    data.forEach(function(item) {
+                        tableContent += `<tr>
+                                            <td>${item.id}</td>
+                                            <td>${item.day}</td>
+                                            <td>${item.time}</td>
+                                            <td>${item.subject}</td>
+                                          </tr>`;
+
+                        cardContent += `<div class="card">
+                                            <div>
+                                                <h3>${item.subject}</h3>
+                                                <p>Day: ${item.day}</p>
+                                                <p>Time: ${item.time}</p>
+                                            </div>
+                                            <button>Details</button>
+                                          </div>`;
+                    });
+
+                    // Inject content into respective containers
+                    $('#timetableTable tbody').html(tableContent);
+                    $('.timetable-cards').html(cardContent);
+                }
+            });
+
+            // Shared button click to show modal
+            $('#sharedBtn').click(function() {
+                $('#modalOverlay').fadeIn();
+                $('#sharedModal').fadeIn();
+
+                // Fetch shared timetable data for modal
+                $.ajax({
+                    url: '/api/shared-timetable', // Endpoint for fetching shared timetable
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        let sharedTableContent = '';
+                        data.forEach(function(item) {
+                            sharedTableContent += `<tr>
+                                                    <td>${item.id}</td>
+                                                    <td>${item.day}</td>
+                                                    <td>${item.time}</td>
+                                                    <td>${item.subject}</td>
+                                                  </tr>`;
+                        });
+                        $('#sharedTableContent').html(sharedTableContent);
+                    }
+                });
+            });
+
+            // Close modal functionality
+            $('.close-modal').click(function() {
+                $('#modalOverlay').fadeOut();
+                $('#sharedModal').fadeOut();
+            });
+
+            // Close modal when overlay is clicked
+            $('#modalOverlay').click(function() {
+                $('#modalOverlay').fadeOut();
+                $('#sharedModal').fadeOut();
+            });
+        });
     </script>
+
 </body>
 </html>
