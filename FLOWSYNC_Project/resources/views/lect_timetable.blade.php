@@ -26,6 +26,17 @@
             text-transform: uppercase;
         }
 
+        h2 {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 50px;
+        }
+
         .back-button {
             position: absolute;
             top: 10px;
@@ -266,6 +277,49 @@
             margin: 10px auto 0;
             text-align: center;
         }
+
+        /* Styling for Shared Modal Table */
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        /* Table Header */
+        .styled-table thead {
+            background-color: #C8102E;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Table Headings */
+        .styled-table th, .styled-table td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        /* Alternating Row Colors */
+        .styled-table tbody tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+
+        /* Hover Effect */
+        .styled-table tbody tr:hover {
+            background-color: #ffdde0;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Table Responsive Wrapper */
+        .table-responsive {
+            max-height: 60vh;
+            overflow-y: auto;
+            border-radius: 10px;
+        }
     </style>
 </head>
 
@@ -286,20 +340,82 @@
     <div id="modalOverlay"></div>
     <div id="sharedModal">
         <h2 style="text-align: center; color: #C8102E;">Shared Scheduling Timetable</h2>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Day</th>
-                    <th>Time</th>
-                    <th>Subject</th>
-                    <th>Slot</th>
-                </tr>
-            </thead>
-            <tbody id="sharedTableBody">
-                <!-- Data will be dynamically inserted here -->
-            </tbody>
-        </table>
+        <div class="table-responsive">
+        <h3 style="text-align: left; color:rgb(78, 11, 22);">Lecturer Schedule</h3>
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                            @foreach ($days as $day)
+                                <th>{{ $day }}</th>
+                            @endforeach
+                        </tr>
+                </thead>
+                <tbody>
+                    @foreach ($timeSlots as $time)
+                        <tr>
+                            <td>{{ $time }}</td>
+                            @foreach ($days as $day)
+                                <td>
+                                    @if (isset($timetable[$day]))
+                                        @php
+                                            $class = $timetable[$day]->firstWhere('time', $time);
+                                        @endphp
+                                        @if ($class)
+                                            <strong>{{ $class->subject }}</strong><br>
+                                            Slot: {{ $class->slot }}
+                                        @else
+                                            -
+                                        @endif
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                            @endforeach
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-responsive">
+        <h3 style="text-align: left; color:rgb(78, 11, 22);">Student Schedule</h3>
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                            @foreach ($days as $day)
+                                <th>{{ $day }}</th>
+                            @endforeach
+                        </tr>
+                </thead>
+                <tbody>
+                    @foreach ($timeSlots as $time)
+                        <tr>
+                            <td>{{ $time }}</td>
+                            @foreach ($days as $day)
+                                <td>
+                                    @if (isset($timetable[$day]))
+                                        @php
+                                            $class = $timetable[$day]->firstWhere('time', $time);
+                                        @endphp
+                                        @if ($class)
+                                            <strong>{{ $class->subject }}</strong><br>
+                                            Slot: {{ $class->slot }}
+                                        @else
+                                            -
+                                        @endif
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                            @endforeach
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
         <button class="close-modal">Close</button>
     </div>
     
