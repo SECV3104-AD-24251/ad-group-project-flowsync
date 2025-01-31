@@ -202,9 +202,6 @@ Route::post('/api/openai', [OpenAIController::class, 'handleRequest']);
 // Google Calendar Integration
 Route::get('/google-calendar/auth', [GoogleCalendarController::class, 'redirectToGoogle'])->name('google.auth');
 Route::get('/google-calendar/callback', [GoogleCalendarController::class, 'handleGoogleCallback'])->name('google.callback');
-
-
-// Schedule Event
 Route::get('/google-calendar/events', [GoogleCalendarController::class, 'listEvents'])->name('google.events');
 Route::post('/google/create-event', [GoogleCalendarController::class, 'createEvent'])->name('google.create.event');
 Route::get('/google/calendar', [GoogleCalendarController::class, 'redirectToGoogle'])->name('google.calendar.auth');
