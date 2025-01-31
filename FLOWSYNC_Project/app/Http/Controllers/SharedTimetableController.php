@@ -3,34 +3,43 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Timetable; // Adjust the model namespace as needed
+use App\Models\Timetable;
 
 class SharedTimetableController extends Controller
 {
     /**
-     * Display the combined timetable for students and lecturers.
+     * Display the shared timetable form.
      *
      * @return \Illuminate\View\View
      */
     public function index()
     {
-        // Fetch all timetable data
         $allTimetable = Timetable::all();
-
-        // Optionally, separate or filter data based on other attributes if needed
-        // Example: Add your own conditions for grouping or displaying timetables
-
-        // Pass the data to the view
-        return view('sharedtimetable', [
-            'combinedTimetable' => $allTimetable,
-        ]);
+        return view('sharedtimetable', compact('allTimetable'));
     }
 
     /**
-     * Handle additional shared timetable features, if any.
+     * Store shared timetable data.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function additionalFeature(Request $request)
+    public function store(Request $request)
     {
-        // Example for handling additional features like exporting the timetable
+        $request->validate([
+            'lecturer_name' => 'required|string|max:255',
+            'student_name' => 'required|string|max:255',
+            'time_slot' => 'required|string',
+            'room' => 'required|string',
+        ]);
+
+        Timetable::create([
+            'lecturer_name' => $request->lecturer_name,
+            'student_name' => $request->student_name,
+            'time_slot' => $request->time_slot,
+            'room' => $request->room,
+        ]);
+
+        return redirect()->route('sharedtimetable')->with('success', 'Timetable submitted successfully.');
     }
 }
