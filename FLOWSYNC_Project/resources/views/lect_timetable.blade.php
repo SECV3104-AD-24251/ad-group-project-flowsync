@@ -511,12 +511,17 @@
         </div>
 
         <div class="main-container">
-            <!-- Insert Button -->
-            <div class="insert-button" style="text-align: center; margin: 20px 0;">
-                <button id="openInsertModal" style="background-color: #C8102E; color: white; padding: 12px 24px; font-size: 16px; border: none; border-radius: 4px; cursor: pointer;">
-                    Insert into Timetable
-                </button>
-            </div>
+    <!-- Insert and Book Slot Buttons -->
+    <div class="insert-buttons" style="text-align: center; margin: 20px 0; display: flex; justify-content: center; gap: 10px;">
+        <!-- Insert into Timetable Button -->
+        <button id="openInsertModal" style="background-color: #C8102E; color: white; padding: 12px 24px; font-size: 16px; border: none; border-radius: 4px; cursor: pointer;">
+            Insert into Timetable
+        </button>
+         <!-- Book Slot Button -->
+         <button id="bookSlotBtn" style="background-color: #28a745; color: white; padding: 12px 24px; font-size: 16px; border: none; border-radius: 4px; cursor: pointer;">
+            Book Slot
+        </button>
+    </div>
 
             <!-- Insert Modal -->
             <div id="insertModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 8px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); padding: 20px; width: 50%; z-index: 1000;">
