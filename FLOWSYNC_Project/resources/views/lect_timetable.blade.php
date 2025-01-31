@@ -285,7 +285,7 @@
     <!-- Shared Data Modal -->
     <div id="modalOverlay"></div>
     <div id="sharedModal">
-        <h2 style="text-align: center; color: #C8102E;">Shared Timetable Data</h2>
+        <h2 style="text-align: center; color: #C8102E;">Shared Scheduling Timetable</h2>
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -452,24 +452,24 @@
 
         <script>
             const openInsertModal = document.getElementById('openInsertModal');
-                const closeInsertModal = document.getElementById('closeInsertModal');
-                const insertModal = document.getElementById('insertModal');
-                const modalOverlay = document.getElementById('modalOverlay');
+            const closeInsertModal = document.getElementById('closeInsertModal');
+            const insertModal = document.getElementById('insertModal');
+            const modalOverlay = document.getElementById('modalOverlay');
 
-                openInsertModal.addEventListener('click', () => {
-                    insertModal.style.display = 'block';
-                    modalOverlay.style.display = 'block';
-                });
+            openInsertModal.addEventListener('click', () => {
+                insertModal.style.display = 'block';
+                modalOverlay.style.display = 'block';
+            });
 
-                closeInsertModal.addEventListener('click', () => {
-                    insertModal.style.display = 'none';
-                    modalOverlay.style.display = 'none';
-                });
+            closeInsertModal.addEventListener('click', () => {
+                insertModal.style.display = 'none';
+                modalOverlay.style.display = 'none';
+            });
 
-                modalOverlay.addEventListener('click', () => {
-                    insertModal.style.display = 'none';
-                    modalOverlay.style.display = 'none';
-                });
+            modalOverlay.addEventListener('click', () => {
+                insertModal.style.display = 'none';
+                modalOverlay.style.display = 'none';
+            });
         </script>
 
         <footer class="footer">
@@ -493,87 +493,51 @@
         });
 
         <!-- Shared Scheduling -->;
-        $(document).ready(function() {
-            // Toggle visibility of cards and table
-            $('#toggleCardsBtn').click(function() {
-                $('.timetable-cards').toggleClass('active');
-                $('.timetable-table').removeClass('active');
+        document.addEventListener("DOMContentLoaded", function () {
+            const sharedBtn = document.getElementById("sharedBtn");
+            const sharedModal = document.getElementById("sharedModal");
+            const modalOverlay = document.getElementById("modalOverlay");
+            const closeModalBtn = document.querySelector(".close-modal");
+
+            sharedBtn.addEventListener("click", function () {
+                sharedModal.style.display = "block";
+                modalOverlay.style.display = "block";
             });
 
-            $('#toggleTableBtn').click(function() {
-                $('.timetable-table').toggleClass('active');
-                $('.timetable-cards').removeClass('active');
+            closeModalBtn.addEventListener("click", function () {
+                sharedModal.style.display = "none";
+                modalOverlay.style.display = "none";
             });
 
-            // Fetch timetable data for cards and table
-            $.ajax({
-                url: '/api/lecturer-timetable', // Endpoint for fetching timetable
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    // Display timetable data in table and cards
-                    let tableContent = '';
-                    let cardContent = '';
-                    data.forEach(function(item) {
-                        tableContent += `<tr>
-                                            <td>${item.id}</td>
-                                            <td>${item.day}</td>
-                                            <td>${item.time}</td>
-                                            <td>${item.subject}</td>
-                                          </tr>`;
+            modalOverlay.addEventListener("click", function () {
+                sharedModal.style.display = "none";
+                modalOverlay.style.display = "none";
+            });
+        });
 
-                        cardContent += `<div class="card">
-                                            <div>
-                                                <h3>${item.subject}</h3>
-                                                <p>Day: ${item.day}</p>
-                                                <p>Time: ${item.time}</p>
-                                            </div>
-                                            <button>Details</button>
-                                          </div>`;
+        document.getElementById("sharedBtn").addEventListener("click", function () {
+            fetch("{{ route('fetch.shared.timetable') }}") // Update with actual route
+                .then(response => response.json())
+                .then(data => {
+                    let tableBody = document.getElementById("sharedTableBody");
+                    tableBody.innerHTML = "";
+
+                    data.forEach((entry, index) => {
+                        let row = `<tr>
+                            <td>${index + 1}</td>
+                            <td>${entry.day}</td>
+                            <td>${entry.time}</td>
+                            <td>${entry.subject}</td>
+                            <td>${entry.slot}</td>
+                        </tr>`;
+                        tableBody.innerHTML += row;
                     });
 
-                    // Inject content into respective containers
-                    $('#timetableTable tbody').html(tableContent);
-                    $('.timetable-cards').html(cardContent);
-                }
-            });
-
-            // Shared button click to show modal
-            $('#sharedBtn').click(function() {
-                $('#modalOverlay').fadeIn();
-                $('#sharedModal').fadeIn();
-
-                // Fetch shared timetable data for modal
-                $.ajax({
-                    url: '/api/shared-timetable', // Endpoint for fetching shared timetable
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        let sharedTableContent = '';
-                        data.forEach(function(item) {
-                            sharedTableContent += `<tr>
-                                                    <td>${item.id}</td>
-                                                    <td>${item.day}</td>
-                                                    <td>${item.time}</td>
-                                                    <td>${item.subject}</td>
-                                                  </tr>`;
-                        });
-                        $('#sharedTableContent').html(sharedTableContent);
-                    }
-                });
-            });
-
-            // Close modal functionality
-            $('.close-modal').click(function() {
-                $('#modalOverlay').fadeOut();
-                $('#sharedModal').fadeOut();
-            });
-
-            // Close modal when overlay is clicked
-            $('#modalOverlay').click(function() {
-                $('#modalOverlay').fadeOut();
-                $('#sharedModal').fadeOut();
-            });
+                    // Show modal after data is loaded
+                    document.getElementById("sharedModal").style.display = "block";
+                    document.getElementById("modalOverlay").style.display = "block";
+                })
+                .catch(error => console.error("Error loading shared timetable:", error));
         });
     </script>
 
