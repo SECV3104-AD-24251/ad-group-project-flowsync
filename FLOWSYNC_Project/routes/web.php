@@ -13,7 +13,8 @@ use App\Http\Controllers\LectEventController;
 use App\Http\Controllers\HelpCenterController;
 use App\Http\Controllers\StudentTimetableController;
 use App\Http\Controllers\LecturerTimetableController;
-use App\Http\Controllers\SharedTimetableController;
+
+
 
 // Public routes
 Route::view('/', 'welcome');
@@ -239,7 +240,3 @@ Route::get('/helpCenter/{id}', [HelpCenterController::class, 'show'])->name('hel
 // Student Timetable
 Route::get('/student-timetable', [StudentTimetableController::class, 'index']);
 
-
-// Shared Schedule
-Route::match(['get', 'post'], '/shared-timetable', [SharedTimetableController::class, 'index'])->name('shared.timetable');
-Route::post('/lecturer-timetable', [LecturerTimetableController::class, 'store'])->name('lecturer.timetable.store');

@@ -276,71 +276,32 @@
             <path fill-rule="evenodd" d="M15 8a.5.5 0 0 1-.5.5H3.707l3.147 3.146a.5.5 0 0 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L3.707 7.5H14.5A.5.5 0 0 1 15 8z"/>
         </svg>
         <span>Back</span>
+
+    <!-- Shared Button -->
+    <a id="sharedBtn" class="shared-button">
+        <span>Shared</span>
     </a>
 
     <!-- Shared Data Modal -->
-    <div id="modalOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50"></div>
-    <div id="sharedModal" class="hidden fixed inset-0 flex items-center justify-center">
-        <div class="bg-white p-5 rounded-lg shadow-lg">
-            <h2 class="text-center text-red-600">Shared Timetable Data</h2>
-            <table class="table-auto border-collapse border border-gray-300 w-full">
-                <thead>
-                    <tr class="bg-gray-200">
-                        <th class="border border-gray-300 px-4 py-2">ID</th>
-                        <th class="border border-gray-300 px-4 py-2">Day</th>
-                        <th class="border border-gray-300 px-4 py-2">Time</th>
-                        <th class="border border-gray-300 px-4 py-2">Subject</th>
-                        <th class="border border-gray-300 px-4 py-2">Slot</th>
-                    </tr>
-                </thead>
-                <tbody id="sharedTableBody">
-                    @foreach ($timetable as $class)
-                        <tr>
-                            <td class="border px-4 py-2">{{ $class->id }}</td>
-                            <td class="border px-4 py-2">{{ $class->day }}</td>
-                            <td class="border px-4 py-2">{{ $class->time }}</td>
-                            <td class="border px-4 py-2">{{ $class->subject }}</td>
-                            <td class="border px-4 py-2">{{ $class->slot }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-            <button id="closeModal" class="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg">Close</button>
-        </div>
+    <div id="modalOverlay"></div>
+    <div id="sharedModal">
+        <h2 style="text-align: center; color: #C8102E;">Shared Timetable Data</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Day</th>
+                    <th>Time</th>
+                    <th>Subject</th>
+                    <th>Slot</th>
+                </tr>
+            </thead>
+            <tbody id="sharedTableBody">
+                <!-- Data will be dynamically inserted here -->
+            </tbody>
+        </table>
+        <button class="close-modal">Close</button>
     </div>
-
-    <form id="sharedForm" action="{{ route('shared.timetable') }}" method="POST">
-    @csrf
-    <button type="submit" class="shared-button">
-        <span>Shared</span>
-    </button>
-    </form>
-
-    <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let sharedBtn = document.getElementById("sharedBtn");
-        let modalOverlay = document.getElementById("modalOverlay");
-        let sharedModal = document.getElementById("sharedModal");
-        let closeModal = document.getElementById("closeModal");
-
-        if (sharedBtn) {
-            sharedBtn.addEventListener("click", function () {
-                modalOverlay.classList.remove("hidden");
-                sharedModal.classList.remove("hidden");
-                sharedBtn.disabled = false; // Ensure button remains clickable
-            });
-        }
-
-        if (closeModal) {
-            closeModal.addEventListener("click", function () {
-                modalOverlay.classList.add("hidden");
-                sharedModal.classList.add("hidden");
-                sharedBtn.disabled = false; // Re-enable button when closing modal
-            });
-        }
-    });
-</script>
-</body>
     
     <div class="container mt-5">
         <h1>Lecturer Schedule Management</h1>
@@ -602,35 +563,6 @@
                 });
             });
 
-            document.getElementById("sharedBtn").addEventListener("click", function(event) {
-                event.preventDefault(); // Prevent default GET request
-
-                fetch("{{ route('shared.timetable') }}", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-                    },
-                    body: JSON.stringify({})
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Handle the response (e.g., show a success message or update the modal)
-                    console.log(data);
-                    if (data.success) {
-                        // Open the modal or update the UI as needed
-                        document.getElementById("sharedModal").style.display = "block";
-                    } else {
-                        alert("Failed to fetch shared timetable.");
-                    }
-                })
-                .catch(error => console.error("Error:", error));
-            });
-
-
-            document.getElementById('sharedModal').style.display = 'block';
-            document.getElementById('modalOverlay').style.display = 'block';
-
             // Close modal functionality
             $('.close-modal').click(function() {
                 $('#modalOverlay').fadeOut();
@@ -643,11 +575,6 @@
                 $('#sharedModal').fadeOut();
             });
         });
-
-        document.querySelector('.close-modal').addEventListener('click', function() {
-        document.getElementById('sharedModal').style.display = 'none';
-        document.getElementById('modalOverlay').style.display = 'none';
-
     </script>
 
 </body>
