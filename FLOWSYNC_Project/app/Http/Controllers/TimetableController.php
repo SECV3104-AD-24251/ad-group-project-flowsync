@@ -125,6 +125,17 @@ public function detectClashes()
         'clashes_detected' => count($clashes), // Total number of clashes
         'clashes' => $clashes, // Clash details grouped by time slot
     ]);
+}
+    public function updateEntry(Request $request, $id)
+{
+    // Validate the incoming data
+    $validated = $request->validate([
+        'course_code' => 'required|string|max:10',
+        'course_name' => 'required|string|max:255',
+        'section' => 'required|string|max:10',
+        'day' => 'required|string|max:10',
+        'start_time' => 'required|string|regex:/^\d{2}:\d{2}$/',]);
+
 }        
     // Delete a timetable entry
 public function deleteEntry(Request $request)
@@ -158,7 +169,7 @@ public function deleteEntry(Request $request)
         }
     } catch (\Exception $e) {
         // Handle unexpected errors
-        \Log::error('Error deleting timetable entry: ' . $e->getMessage());
+        Log::error('Error deleting timetable entry: ' . $e->getMessage());
         return response()->json(['message' => 'Failed to delete entry'], 500);
     }
 }

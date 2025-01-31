@@ -69,7 +69,36 @@ class LecturerTimetableController extends Controller
         // Redirect back to the timetable page with success message
         return redirect()->back()->with('success', 'Timetable entry added successfully!');
     }
-
+    public function updateTimetable(Request $request)
+    {
+        // Validate the incoming data
+        $validated = $request->validate([
+            'subject' => 'required|string|max:255',
+            'time' => 'required',
+            'slot' => 'required|integer|min:2|max:9',
+        ]);
+    
+        // Find the timetable entry by subject, time, and slot or use unique identifier
+        $entry = LecturerTimetable::where('subject', $request->subject)
+            ->where('time', $request->time)
+            ->where('slot', $request->slot)
+            ->first();
+    
+        if ($entry) {
+            // Update the timetable entry
+            $entry->subject = $request->subject;
+            $entry->time = $request->time;
+            $entry->slot = $request->slot;
+            $entry->save();
+    
+            // Return success response
+            return response()->json(['success' => true]);
+        } else {
+            // Return error if entry not found
+            return response()->json(['error' => 'Timetable entry not found'], 404);
+        }
+    }
+    
     /**
      * Generate a copy of the timetable as a downloadable JSON file.
      */

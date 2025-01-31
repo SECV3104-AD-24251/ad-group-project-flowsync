@@ -655,7 +655,69 @@
                 })
                 .catch(error => console.error("Error loading shared timetable:", error));
         });
-    </script>
 
+            document.addEventListener("DOMContentLoaded", function () {
+    // Select all edit buttons dynamically
+    document.querySelector(".timetable-cards").addEventListener("click", function (event) {
+        if (event.target.tagName === "BUTTON" && event.target.innerText === "Edit") {
+            // Find the closest card
+            let card = event.target.closest(".card");
+            if (card) {
+                let subject = card.querySelector("h3").innerText;
+                let time = card.querySelector("p strong").nextSibling.nodeValue.trim();
+                let slot = card.querySelector("p:nth-of-type(2)").innerText.replace("Time Slot: ", "");
+
+                // Open a modal or alert with values for editing
+                Swal.fire({
+                    title: "Edit Timetable Entry",
+                    html: `
+                        <input id="edit-subject" class="swal2-input" value="${subject}">
+                        <input id="edit-time" class="swal2-input" value="${time}">
+                        <input id="edit-slot" class="swal2-input" value="${slot}">
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: "Save",
+                    preConfirm: () => {
+                        let newSubject = document.getElementById("edit-subject").value;
+                        let newTime = document.getElementById("edit-time").value;
+                        let newSlot = document.getElementById("edit-slot").value;
+
+                        if (!newSubject || !newTime || !newSlot) {
+                            Swal.showValidationMessage("All fields are required");
+                            return false;
+                        }
+
+                        // Submit the data via AJAX or update DOM
+                        return { subject: newSubject, time: newTime, slot: newSlot };
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Update the UI with new values
+                        card.querySelector("h3").innerText = result.value.subject;
+                        card.querySelector("p strong").nextSibling.nodeValue = " " + result.value.time;
+                        card.querySelector("p:nth-of-type(2)").innerText = "Time Slot: " + result.value.slot;
+
+                        // Optionally, send an AJAX request to update the database
+                        fetch('/update-timetable', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            },
+                            body: JSON.stringify({
+                                subject: result.value.subject,
+                                time: result.value.time,
+                                slot: result.value.slot
+                            })
+                        }).then(response => response.json())
+                          .then(data => Swal.fire("Updated!", "Your timetable entry has been updated.", "success"))
+                          .catch(error => Swal.fire("Error!", "Could not update timetable.", "error"));
+                    }
+                });
+            }
+        }
+    }); 
+});
+</script>
 </body>
 </html>
