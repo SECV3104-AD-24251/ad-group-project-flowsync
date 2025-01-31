@@ -567,32 +567,70 @@
                     </div>
                 </form>
             </div>
+           
+            <!-- Book Slot Modal -->
+    <div id="bookSlotModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 8px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); padding: 20px; width: 50%; z-index: 1000;">
+        <h2 style="text-align: center; color: #28a745;">Book a Slot</h2>
+        <form id="bookSlotForm">
+            <div style="margin-bottom: 10px;">
+                <label for="slotSubject" style="font-weight: bold;">Subject:</label>
+                <input type="text" id="slotSubject" name="subject" required placeholder="Enter subject" style="width: 96%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label for="slotTime" style="font-weight: bold;">Time:</label>
+                <input type="time" id="slotTime" name="time" required style="width: 96%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+            <!-- Duration (Hours) Input -->
+        <div style="margin-bottom: 10px;">
+            <label for="slotDuration" style="font-weight: bold;">Duration (Hours):</label>
+            <input type="number" id="slotDuration" name="duration" min="1" max="3" required placeholder="Enter duration (1-3 hours)" style="width: 96%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+            <div style="text-align: center;">
+                <button type="submit" style="background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Book Slot</button>
+                <button type="button" id="closeBookSlotModal" style="background-color: #ddd; color: black; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;">Cancel</button>
+            </div>
+        </form>
+    </div>
 
             <!-- Background overlay for modal -->
             <div id="modalOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;"></div>
         </div>
 
-        <script>
-            const openInsertModal = document.getElementById('openInsertModal');
-            const closeInsertModal = document.getElementById('closeInsertModal');
-            const insertModal = document.getElementById('insertModal');
-            const modalOverlay = document.getElementById('modalOverlay');
+    <script>
+    const openInsertModal = document.getElementById('openInsertModal');
+    const closeInsertModal = document.getElementById('closeInsertModal');
+    const insertModal = document.getElementById('insertModal');
+    const bookSlotModal = document.getElementById('bookSlotModal');
+    const closeBookSlotModal = document.getElementById('closeBookSlotModal');
+    const modalOverlay = document.getElementById('modalOverlay');
 
-            openInsertModal.addEventListener('click', () => {
-                insertModal.style.display = 'block';
-                modalOverlay.style.display = 'block';
-            });
+    openInsertModal.addEventListener('click', () => {
+        insertModal.style.display = 'block';
+        modalOverlay.style.display = 'block';
+    });
 
-            closeInsertModal.addEventListener('click', () => {
-                insertModal.style.display = 'none';
-                modalOverlay.style.display = 'none';
-            });
+    closeInsertModal.addEventListener('click', () => {
+        insertModal.style.display = 'none';
+        modalOverlay.style.display = 'none';
+    });
 
-            modalOverlay.addEventListener('click', () => {
-                insertModal.style.display = 'none';
-                modalOverlay.style.display = 'none';
-            });
-        </script>
+    closeBookSlotModal.addEventListener('click', () => {
+        bookSlotModal.style.display = 'none';
+        modalOverlay.style.display = 'none';
+    });
+
+    modalOverlay.addEventListener('click', () => {
+        insertModal.style.display = 'none';
+        bookSlotModal.style.display = 'none';
+        modalOverlay.style.display = 'none';
+    });
+
+    // Book Slot Button click event
+    document.getElementById('bookSlotBtn').addEventListener('click', () => {
+        bookSlotModal.style.display = 'block';
+        modalOverlay.style.display = 'block';
+    });
+</script>
 
         <footer class="footer">
             <p>&copy; 2025 Student Timetable Management System. All Rights Reserved. | <a href="#">Privacy Policy</a></p>
