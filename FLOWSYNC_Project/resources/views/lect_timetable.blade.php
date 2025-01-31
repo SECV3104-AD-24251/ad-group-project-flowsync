@@ -378,16 +378,17 @@
             </table>
         </div>
 
+        <!-- Student Schedule Table -->
         <div class="table-responsive">
-        <h3 style="text-align: left; color:rgb(78, 11, 22);">Student Schedule</h3>
+            <h3 style="text-align: left; color:rgb(78, 11, 22);">Student Schedule</h3>
             <table class="styled-table">
                 <thead>
                     <tr>
                         <th>Time</th>
-                            @foreach ($days as $day)
-                                <th>{{ $day }}</th>
-                            @endforeach
-                        </tr>
+                        @foreach ($days as $day)
+                            <th>{{ $day }}</th>
+                        @endforeach
+                    </tr>
                 </thead>
                 <tbody>
                     @foreach ($timeSlots as $time)
@@ -395,9 +396,9 @@
                             <td>{{ $time }}</td>
                             @foreach ($days as $day)
                                 <td>
-                                    @if (isset($timetable[$day]))
+                                    @if (isset($studentSchedule[$day]))
                                         @php
-                                            $class = $timetable[$day]->firstWhere('time', $time);
+                                            $class = $studentSchedule[$day]->firstWhere('time', $time);
                                         @endphp
                                         @if ($class)
                                             <strong>{{ $class->subject }}</strong><br>
@@ -415,7 +416,7 @@
                 </tbody>
             </table>
         </div>
-
+        
         <button class="close-modal">Close</button>
     </div>
     
@@ -632,21 +633,24 @@
         });
 
         document.getElementById("sharedBtn").addEventListener("click", function () {
-            fetch("{{ route('fetch.shared.timetable') }}") // Update with actual route
+            fetch("{{ route('fetch.shared.timetable') }}") // Fetch data from the route
                 .then(response => response.json())
                 .then(data => {
                     let tableBody = document.getElementById("sharedTableBody");
-                    tableBody.innerHTML = "";
+                    tableBody.innerHTML = ""; // Clear any existing table rows
 
-                    data.forEach((entry, index) => {
-                        let row = `<tr>
-                            <td>${index + 1}</td>
-                            <td>${entry.day}</td>
-                            <td>${entry.time}</td>
-                            <td>${entry.subject}</td>
-                            <td>${entry.slot}</td>
-                        </tr>`;
-                        tableBody.innerHTML += row;
+                    // Loop through the days
+                    data.forEach((dayData, index) => {
+                        dayData.entries.forEach((entry, entryIndex) => {
+                            let row = `<tr>
+                                <td>${entryIndex + 1}</td>
+                                <td>${dayData.day}</td> <!-- Day will be in the 'day' field of the response -->
+                                <td>${entry.time}</td>
+                                <td>${entry.subject}</td>
+                                <td>${entry.slot}</td>
+                            </tr>`;
+                            tableBody.innerHTML += row;
+                        });
                     });
 
                     // Show modal after data is loaded
@@ -656,68 +660,65 @@
                 .catch(error => console.error("Error loading shared timetable:", error));
         });
 
-            document.addEventListener("DOMContentLoaded", function () {
-    // Select all edit buttons dynamically
-    document.querySelector(".timetable-cards").addEventListener("click", function (event) {
-        if (event.target.tagName === "BUTTON" && event.target.innerText === "Edit") {
-            // Find the closest card
-            let card = event.target.closest(".card");
-            if (card) {
-                let subject = card.querySelector("h3").innerText;
-                let time = card.querySelector("p strong").nextSibling.nodeValue.trim();
-                let slot = card.querySelector("p:nth-of-type(2)").innerText.replace("Time Slot: ", "");
 
-                // Open a modal or alert with values for editing
-                Swal.fire({
-                    title: "Edit Timetable Entry",
-                    html: `
-                        <input id="edit-subject" class="swal2-input" value="${subject}">
-                        <input id="edit-time" class="swal2-input" value="${time}">
-                        <input id="edit-slot" class="swal2-input" value="${slot}">
-                    `,
-                    showCancelButton: true,
-                    confirmButtonText: "Save",
-                    preConfirm: () => {
-                        let newSubject = document.getElementById("edit-subject").value;
-                        let newTime = document.getElementById("edit-time").value;
-                        let newSlot = document.getElementById("edit-slot").value;
-
-                        if (!newSubject || !newTime || !newSlot) {
-                            Swal.showValidationMessage("All fields are required");
-                            return false;
-                        }
-
-                        // Submit the data via AJAX or update DOM
-                        return { subject: newSubject, time: newTime, slot: newSlot };
+        document.addEventListener("DOMContentLoaded", function () {
+            // Select all edit buttons dynamically
+             document.querySelector(".timetable-cards").addEventListener("click", function (event) {
+                if (event.target.tagName === "BUTTON" && event.target.innerText === "Edit") {
+                    // Find the closest card
+                    let card = event.target.closest(".card");
+                     if (card) {
+                        let subject = card.querySelector("h3").innerText;
+                        let time = card.querySelector("p strong").nextSibling.nodeValue.trim();
+                        let slot = card.querySelector("p:nth-of-type(2)").innerText.replace("Time Slot: ", "");
+                        // Open a modal or alert with values for editing
+                        Swal.fire({
+                            title: "Edit Timetable Entry",
+                            html: `
+                                <input id="edit-subject" class="swal2-input" value="${subject}">
+                                <input id="edit-time" class="swal2-input" value="${time}">
+                                <input id="edit-slot" class="swal2-input" value="${slot}">
+                            `,
+                            showCancelButton: true,
+                            confirmButtonText: "Save",
+                            preConfirm: () => {
+                                let newSubject = document.getElementById("edit-subject").value;
+                                let newTime = document.getElementById("edit-time").value;
+                                let newSlot = document.getElementById("edit-slot").value;
+                                if (!newSubject || !newTime || !newSlot) {
+                                    Swal.showValidationMessage("All fields are required");
+                                    return false;
+                                }
+                               // Submit the data via AJAX or update DOM
+                                return { subject: newSubject, time: newTime, slot: newSlot };
+                            }
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Update the UI with new values
+                                card.querySelector("h3").innerText = result.value.subject;
+                                card.querySelector("p strong").nextSibling.nodeValue = " " + result.value.time;
+                                card.querySelector("p:nth-of-type(2)").innerText = "Time Slot: " + result.value.slot;
+                                // Optionally, send an AJAX request to update the database
+                                fetch('/update-timetable', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                    },
+                                    body: JSON.stringify({
+                                        subject: result.value.subject,
+                                        time: result.value.time,
+                                        slot: result.value.slot
+                                    })
+                                }).then(response => response.json())
+                                .then(data => Swal.fire("Updated!", "Your timetable entry has been updated.", "success"))
+                                .catch(error => Swal.fire("Error!", "Could not update timetable.", "error"));
+                            }
+                        });
                     }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Update the UI with new values
-                        card.querySelector("h3").innerText = result.value.subject;
-                        card.querySelector("p strong").nextSibling.nodeValue = " " + result.value.time;
-                        card.querySelector("p:nth-of-type(2)").innerText = "Time Slot: " + result.value.slot;
-
-                        // Optionally, send an AJAX request to update the database
-                        fetch('/update-timetable', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                            },
-                            body: JSON.stringify({
-                                subject: result.value.subject,
-                                time: result.value.time,
-                                slot: result.value.slot
-                            })
-                        }).then(response => response.json())
-                          .then(data => Swal.fire("Updated!", "Your timetable entry has been updated.", "success"))
-                          .catch(error => Swal.fire("Error!", "Could not update timetable.", "error"));
-                    }
-                });
-            }
-        }
-    }); 
-});
-</script>
+                }
+            }); 
+        });
+    </script>
 </body>
 </html>

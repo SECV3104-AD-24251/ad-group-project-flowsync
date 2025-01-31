@@ -44,6 +44,10 @@ Route::post('/lecturer-timetable/store', [LecturerTimetableController::class, 's
 // Route to generate a downloadable JSON file of the timetable
 Route::get('/lecturer-timetable/generate-copy', [LecturerTimetableController::class, 'generateCopy'])->name('lecturer.timetable.generate-copy');
 Route::post('/fetch-shared-timetable', [LecturerTimetableController::class, 'fetchSharedTimetable'])->name('fetch.shared.timetable');
+Route::get('/fetch-shared-timetable', [LecturerTimetableController::class, 'fetchSharedTimetable'])->name('fetch.shared.timetable');
+
+
+
 Route::get('/timetable', [TimetableController::class, 'showTimetable']);
 Route::post('/timetable/add', [TimetableController::class, 'addTimetableEntry']);
 //Route::delete('/timetable/delete', [TimetableController::class, 'deleteTimeEntry']);

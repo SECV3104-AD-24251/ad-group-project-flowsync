@@ -14,11 +14,17 @@ class LecturerTimetableController extends Controller
      */
     public function index()
     {
-        // Fetch all timetable data, sorted by day and time
+        // Fetch lecturer timetable
         $timetable = LecturerTimetable::orderBy('day')
             ->orderBy('time')
             ->get()
-            ->groupBy('day'); // Group the collection by 'day'
+            ->groupBy('day');
+
+        // Fetch student timetable
+        $studentSchedule = StudentTimetable::orderBy('day')
+            ->orderBy('time')
+            ->get()
+            ->groupBy('day');
 
         // Fetch unique time slots for table headers
         $timeSlots = LecturerTimetable::select('time')
@@ -28,26 +34,31 @@ class LecturerTimetableController extends Controller
             ->pluck('time')
             ->toArray();
 
-        // Predefined list of days (to ensure order in the view)
+        // Predefined list of days
         $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
         // Pass data to the Blade view
-        return view('lect_timetable', compact('timetable', 'timeSlots', 'days'));
+        return view('lect_timetable', compact('timetable', 'studentSchedule', 'timeSlots', 'days'));
     }
+
 
     /**
      * Fetch the shared student timetable.
      */
     public function fetchSharedTimetable()
     {
-        // Fetch all student timetable entries
-        $studentTimetable = StudentTimetable::orderBy('day')
+        // Fetch student schedule grouped by day
+        $studentSchedule = StudentTimetable::orderBy('day')
             ->orderBy('time')
             ->get()
-            ->groupBy('day'); // Group by day
+            ->groupBy('day');
 
-        // Return as JSON response (useful for AJAX)
-        return response()->json($studentTimetable);
+        // Define available days and time slots
+        $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+        $timeSlots = ['08:00 AM', '09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM', '02:00 PM', '03:00 PM', '04:00 PM'];
+
+        // Pass data to the Blade view
+        return view('lect_timetable', compact('studentSchedule', 'days', 'timeSlots'));
     }
 
     /**
