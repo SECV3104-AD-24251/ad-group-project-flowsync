@@ -13,6 +13,7 @@ use App\Http\Controllers\LectEventController;
 use App\Http\Controllers\HelpCenterController;
 use App\Http\Controllers\StudentTimetableController;
 use App\Http\Controllers\LecturerTimetableController;
+use App\Http\Controllers\BookingController;
 
 
 
@@ -45,6 +46,7 @@ Route::post('/lecturer-timetable/store', [LecturerTimetableController::class, 's
 Route::get('/lecturer-timetable/generate-copy', [LecturerTimetableController::class, 'generateCopy'])->name('lecturer.timetable.generate-copy');
 Route::post('/fetch-shared-timetable', [LecturerTimetableController::class, 'fetchSharedTimetable'])->name('fetch.shared.timetable');
 Route::get('/fetch-shared-timetable', [LecturerTimetableController::class, 'fetchSharedTimetable'])->name('fetch.shared.timetable');
+Route::post('/book-slot', [TimetableController::class, 'bookSlot'])->name('book.slot');
 
 
 
@@ -236,3 +238,5 @@ Route::get('/helpCenter/{id}', [HelpCenterController::class, 'show'])->name('hel
 // Student Timetable
 Route::get('/student-timetable', [StudentTimetableController::class, 'index']);
 
+// Booking
+Route::post('/book-slot', [BookingController::class, 'bookSlot'])->name('book.slot');

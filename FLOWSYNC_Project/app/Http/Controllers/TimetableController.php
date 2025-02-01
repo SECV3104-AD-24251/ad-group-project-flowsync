@@ -172,6 +172,29 @@ public function deleteEntry(Request $request)
         Log::error('Error deleting timetable entry: ' . $e->getMessage());
         return response()->json(['message' => 'Failed to delete entry'], 500);
     }
-}
+
+    public function bookSlot(Request $request)
+    {
+        // Validate the form data
+        $validated = $request->validate([
+            'subject' => 'required|string|max:255',
+            'time' => 'required|date_format:H:i',
+            'duration' => 'required|integer|min:1|max:3', // Assuming duration in hours
+        ]);
+
+        // Process the data (e.g., save to database)
+        // Assuming you have a Timetable model to handle the database interaction
+        $slot = new Timetable;
+        $slot->subject = $validated['subject'];
+        $slot->time = $validated['time'];
+        $slot->duration = $validated['duration'];
+        $slot->save();
+
+        // Return a success response (this could be an alert or a redirect)
+        return response()->json([
+            'message' => 'Slot booked successfully!',
+            'status' => 'success'
+        ]);
+    }
 }
 
