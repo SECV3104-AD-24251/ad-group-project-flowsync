@@ -16,4 +16,9 @@ class Event extends Model
     protected $fillable = [
         'title', 'description', 'location', 'start', 'end', 'notification', 
     ];
+
+    public function eventHistory()
+    {
+        return $this->hasMany(EventHistory::class);
+    }
 }
